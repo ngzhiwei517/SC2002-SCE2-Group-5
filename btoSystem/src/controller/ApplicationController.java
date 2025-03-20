@@ -33,5 +33,15 @@ public class ApplicationController {
         return true;
     }
 
+    public void processApplication(String applicationId, boolean isApproved, HDBManager manager) {
+        for (Application app : applications) {
+            if (app.getApplicationId().equals(applicationId)) {
+                manager.processApplication(app, isApproved);
+                return;
+            }
+        }
+        System.out.println("Application not found.");
+    }
+
 
 }
