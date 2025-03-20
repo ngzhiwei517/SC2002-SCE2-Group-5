@@ -21,7 +21,7 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
     public void viewProjects() {
         //deal with csv where he can view the project he applies only
     }
-//
+
     @Override
     public boolean canApplyForProject(Project project) {
         if (activeApplication == null || activeApplication.getStatus() == Application.Status.UNSUCCESSFUL) {
