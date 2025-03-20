@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationController {
-    private List<Application> applications;
+    private final List<Application> applications;
     private HDBManager manager;
 
     public ApplicationController(HDBManager manager) {
