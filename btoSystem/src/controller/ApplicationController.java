@@ -33,15 +33,17 @@ public class ApplicationController {
         return true;
     }
 
-    public void processApplication(String applicationId, boolean isApproved, HDBManager manager) {
+    public void processApplication(String applicationId, boolean isApproved) {
         for (Application app : applications) {
             if (app.getApplicationId().equals(applicationId)) {
-                manager.processApplication(app, isApproved);
+                app.setStatus(isApproved ? Application.Status.SUCCESSFUL : Application.Status.UNSUCCESSFUL);
+                System.out.println("Application " + applicationId + " has been " + (isApproved ? "approved" : "rejected") + ".");
                 return;
             }
         }
         System.out.println("Application not found.");
     }
+
 
     public void viewApplications() {
         //deal with csv
