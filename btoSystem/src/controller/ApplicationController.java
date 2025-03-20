@@ -43,5 +43,7 @@ public class ApplicationController {
         System.out.println("Application not found.");
     }
 
-
+    public void viewApplications() {
+        //deal with csv
+        }
 }
