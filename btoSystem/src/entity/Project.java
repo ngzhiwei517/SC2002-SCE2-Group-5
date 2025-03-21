@@ -131,4 +131,13 @@ public class Project {
         this.status = status;
     }
 
+    public void addApplication(Application application) {
+        if (application == null) {
+            System.out.println("Error: Application is null.");
+            return;
+        }
+        applications.add(application);
+        System.out.println("Application " + application.getApplicationId() + " submitted for project " + projectName);
+    }
+
 }

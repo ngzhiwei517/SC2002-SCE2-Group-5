@@ -1,19 +1,20 @@
 package entity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class HDBManager extends User implements IEnquiryManager {
     private List<Enquiry>allEnquiries;
-    private List<Project> allProjects;
+    private Map<Project, List<Application>> projectApplications;  // Applications grouped by project
+    private List<HDBOfficer> officers;  // Officers under the manager
 
     public HDBManager(String name, String nric, String password,int age,boolean isMarried, List<Enquiry> allEnquiries) {
         super(name, nric, password, age, isMarried);
+        this.projectApplications = new HashMap<>();
         this.allEnquiries = new ArrayList<>();
-        this.allProjects =new ArrayList<>();
+
     }
+
 
     public void createEnquiry(String enquiryText, Project project) {
         Enquiry enquiry = EnquiryFactory.createEnquiry(enquiryText, this, project);
