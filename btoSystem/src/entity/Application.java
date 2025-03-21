@@ -23,7 +23,7 @@ public class Application  {
         this.applicationDate = new Date();
         this.flatType = flatType;
     }
-
+//
     public String getApplicationId() {
         return applicationId;
     }
