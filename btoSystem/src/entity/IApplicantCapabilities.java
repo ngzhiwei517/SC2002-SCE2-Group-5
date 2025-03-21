@@ -5,9 +5,7 @@ public interface IApplicantCapabilities {
     void applyForProject(Project project,String flatType);
     void viewApplication();
     void requestWithdrawal();
-    void viewEnquiry();
-    void addEnquiry(Enquiry enquiry);
+    boolean canApplyForProject(Project project);
 
-    //void editEnquiry(Enquiry enquiry, String newText);
-    //void deleteEnquiry(Enquiry enquiry);
+
 }

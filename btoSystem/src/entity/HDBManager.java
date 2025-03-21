@@ -88,10 +88,6 @@ public class HDBManager extends User implements IEnquiryManager {
         return false;
     }
 
-    @Override
-    public void viewProjects() { //deal with CSV file
-        //deal with csv [can view all type of projects]
-    }
 
     public void processApplication(Application application, boolean isApproved) {
         if (isApproved) {

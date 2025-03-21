@@ -64,6 +64,6 @@ public abstract class User {
     }
 
     // Abstract methods
-    public abstract void viewProjects();
+
     public abstract boolean canApplyForProject(Project project);
 }

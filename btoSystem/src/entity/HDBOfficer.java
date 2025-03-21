@@ -1,15 +1,20 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class HDBOfficer extends User implements IEnquiryHandler{
+public class HDBOfficer extends User implements IEnquiryHandler,IApplicationOfficerCapabilities{
     private List<Enquiry> allEnquiries;
-    private List<Project> allProjects;
+    private Project assignedProject; // Officer handles applications for one project
     private Applicant applicantProfile; // Composition for applying as an Applicant
+    private List<Application> handledApplications; //store a list of all applications to one project
 
-    public HDBOfficer(String name,String nric,String password,int age,boolean isMarried){
+    public HDBOfficer(String name,String nric,String password,int age,boolean isMarried,Project project){
         super(name, nric, password, age, isMarried);
+        this.assignedProject = project;
+        this.allEnquiries = new ArrayList<>();
+        this.handledApplications = new ArrayList<>()
         this.applicantProfile=null;
     }
 
@@ -23,13 +28,13 @@ public class HDBOfficer extends User implements IEnquiryHandler{
         return this.applicantProfile != null;
     }
 
-    public Applicant getApplicantProfile() {
-        return applicantProfile;
+
+    public Project getAssignedProject() {
+        return assignedProject;
     }
 
-    @Override
-    public void viewProjects() {
-        //deal with CSV where he can view the project he handles and apply
+    public Applicant getApplicantProfile() {
+        return applicantProfile;
     }
 
 
@@ -38,18 +43,17 @@ public class HDBOfficer extends User implements IEnquiryHandler{
         return true; //need to be revised
     }
 
-
-    @Override
-    public void replyToEnquiry(String enquiryId, String response) {
-        for (Enquiry e : allEnquiries) {
-            if (e.getEnquiryId().equals(enquiryId)) {
-                e.setResponse(response);
-                System.out.println("Replied to enquiry " + enquiryId + ": " + response);
-                return;
-            }
-        }
-        System.out.println("Enquiry not found.");
+    public boolean canHandleApplication(Application app) {
+        return app.getProject().equals(this.assignedProject);
     }
+
+    public void viewHandledApplications() {
+        System.out.println("Applications handled by " + getName() + ":");
+        for (Application app : handledApplications) {
+            System.out.println("Application ID: " + app.getApplicationId() + " | Status: " + app.getStatus());
+        }
+    }
+
 
     @Override
     public void createEnquiry(String enquiryText, Project project) {
@@ -91,6 +95,21 @@ public class HDBOfficer extends User implements IEnquiryHandler{
         }
         System.out.println("Enquiry " + enquiryId + " not found.");
     }
+
+    @Override
+    public void replyToEnquiry(String enquiryId, String response) {
+        for (Enquiry e : allEnquiries) {
+            if (e.getEnquiryId().equals(enquiryId)) {
+                e.setResponse(response);
+                System.out.println("Replied to enquiry " + enquiryId + ": " + response);
+                return;
+            }
+        }
+        System.out.println("Enquiry not found.");
+    }
+
+    @Override
+
 }
 
 class enquiryfactory {

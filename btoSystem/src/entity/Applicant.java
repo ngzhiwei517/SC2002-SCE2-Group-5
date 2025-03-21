@@ -18,11 +18,6 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
     }
 
     @Override
-    public void viewProjects() {
-        //deal with csv where he can view the project he applies only
-    }
-
-    @Override
     public boolean canApplyForProject(Project project) {
         if (activeApplication == null || activeApplication.getStatus() == Application.Status.UNSUCCESSFUL) {
             return true;
@@ -32,6 +27,10 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
         return false;
     }
 
+    public void viewEligibleProjects(){
+        //deal with csv
+    }
+
     @Override
     public void applyForProject(Project project, String flatType) {
         if (!canApplyForProject(project)) return;
@@ -39,14 +38,6 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
         activeApplication = new Application(this, project, flatType);
         System.out.println("Application submitted for project: " + project.getProjectName());
     }
-
-
-
-    public void viewEligibleProjects(){
-        //deal with csv
-    }
-
-
 
     @Override
     public void viewApplication() {
@@ -68,23 +59,6 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
         System.out.println("Withdrawal request submitted for project: " + activeApplication.getProject().getProjectName());
     }
 
-    @Override
-    public void viewEnquiry() {
-        if (enquiries.isEmpty()) {
-            System.out.println("No enquiries found.");
-            return;
-        }
-        System.out.println("Enquiries for " + getName() + ":");
-        for (Enquiry e : enquiries) {
-            System.out.println(e.getContent());
-        }
-    }
-
-    @Override
-    public void addEnquiry(Enquiry enquiry) {
-        enquiries.add(enquiry);
-    }
-
 
     @Override
     public void createEnquiry(String enquiryText, Project project) {
@@ -95,11 +69,16 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
 
     @Override
     public void viewEnquiries() {
-        System.out.println("HDB officer viewing all enquiries:");
+        if (enquiries.isEmpty()) {
+            System.out.println("No enquiries found.");
+            return;
+        }
+        System.out.println("Enquiries for " + getName() + ":");
         for (Enquiry e : enquiries) {
             System.out.println(e.getContent());
         }
     }
+
 
     @Override
     public void editEnquiry(String enquiryId, String newContent) {

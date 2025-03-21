@@ -51,4 +51,6 @@ public class Application  {
     public String getFlatType() {
         return flatType;
     }
+
+
 }
