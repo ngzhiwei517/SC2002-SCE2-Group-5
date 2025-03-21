@@ -33,4 +33,12 @@ public class Enquiry {
     public String getResponse() {
         return response;
     }
+
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
+    public Project getProject() {
+        return project;
+    }
 }

@@ -34,6 +34,10 @@ public class EnquiryController {
         handler.replyToEnquiry(enquiryId, replyContent);
     }
 
+    public void handleProjectEnquiry(HDBOfficer officer, Enquiry enquiry) {
+        officer.handleProjectEnquiry(enquiry);
+    }
+
     //HDB Manager can view all enquiries
     public void viewAllEnquiries(IEnquiryManager manager) {
         manager.viewAllEnquiries(allEnquiries);

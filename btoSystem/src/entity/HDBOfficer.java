@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class HDBOfficer extends User implements IEnquiryHandler, IApplicationOfficerCapabilities {
-    private List<Enquiry> allEnquiries;
+    private List<Enquiry> handledEnquiries;
     private Project assignedProject; // Officer handles applications for one project
     private Applicant applicantProfile; // Composition for applying as an Applicant
 
@@ -13,13 +13,13 @@ public class HDBOfficer extends User implements IEnquiryHandler, IApplicationOff
     public HDBOfficer(String name, String nric, String password, int age, boolean isMarried, Project project) {
         super(name, nric, password, age, isMarried);
         this.assignedProject = project;
-        this.allEnquiries = new ArrayList<>();
+        this.handledEnquiries = new ArrayList<>();
         this.applicantProfile = null;
     }
 
     public void enableApplicantMode() {
         if (this.applicantProfile == null) {
-            this.applicantProfile = new Applicant(this.getName(), this.getNric(), "tempPassword", this.getAge(), this.isMarried());
+            this.applicantProfile = new Applicant(this.getName(), this.getNric(), "Password", this.getAge(), this.isMarried());
         }
     }
 
@@ -42,10 +42,12 @@ public class HDBOfficer extends User implements IEnquiryHandler, IApplicationOff
             System.out.println("Error: Officer is already assigned to a project.");
             return;
         }
-        this.assignedProject = project;
-        project.getAssignedOfficers().add(this);
-        System.out.println("Officer " + getName() + " assigned to project: " + project.getProjectName());
+        if (project.addOfficer(this)) {
+            this.assignedProject = project;
+            System.out.println("Officer " + getName() + " assigned to project: " + project.getProjectName());
+        }
     }
+
 
     public Project getAssignedProject() {
         return assignedProject;
@@ -91,22 +93,38 @@ public class HDBOfficer extends User implements IEnquiryHandler, IApplicationOff
 
     @Override
     public void createEnquiry(String enquiryText, Project project) {
+        // Check if the enquiry is for the officer's assigned project
+        if (assignedProject == null || !assignedProject.equals(project)) {
+            System.out.println("Error: Cannot create enquiry for a project not assigned to this officer.");
+            return;
+        }
+
         Enquiry enquiry = enquiryfactory.createEnquiry(enquiryText, this, project);
-        allEnquiries.add(enquiry);
+        handledEnquiries.add(enquiry);
+        project.getEnquiries().add(enquiry); // Also add to project's enquiries list
         System.out.println("Enquiry created: " + enquiryText);
     }
 
     @Override
     public void viewEnquiries() {
-        System.out.println("HDB officer viewing all enquiries:");
-        for (Enquiry e : allEnquiries) {
-            System.out.println(e.getContent());
+        if (assignedProject == null) {
+            System.out.println("No project assigned to this officer.");
+            return;
+        }
+
+        System.out.println("Enquiries for project " + assignedProject.getProjectName() + ":");
+        for (Enquiry e : handledEnquiries) {
+            System.out.println("Enquiry ID: " + e.getEnquiryId() +
+                    " | Applicant: " + e.getApplicant().getName() +
+                    " | Content: " + e.getContent() +
+                    " | Response: " + (e.getResponse() != null ? e.getResponse() : "No response yet"));
         }
     }
 
+
     @Override
     public void editEnquiry(String enquiryId, String newContent) {
-        for (Enquiry e : allEnquiries) {
+        for (Enquiry e : handledEnquiries) {
             if (e.getEnquiryId().equals(enquiryId)) {
                 e.updateContent(newContent);
                 System.out.println("Edited enquiry " + enquiryId);
@@ -118,7 +136,7 @@ public class HDBOfficer extends User implements IEnquiryHandler, IApplicationOff
 
     @Override
     public void deleteEnquiry(String enquiryId) {
-        Iterator<Enquiry> iterator = allEnquiries.iterator();
+        Iterator<Enquiry> iterator =handledEnquiries.iterator();
         while (iterator.hasNext()) {
             Enquiry enquiry = iterator.next();
             if (enquiry.getEnquiryId().equals(enquiryId)) {
@@ -130,9 +148,41 @@ public class HDBOfficer extends User implements IEnquiryHandler, IApplicationOff
         System.out.println("Enquiry " + enquiryId + " not found.");
     }
 
+    public void handleProjectEnquiry(Enquiry enquiry) {
+        if (assignedProject == null || !assignedProject.equals(enquiry.getProject())) {
+            System.out.println("Error: Cannot handle enquiry for a project not assigned to this officer.");
+            return;
+        }
+
+        if (!handledEnquiries.contains(enquiry)) {
+            handledEnquiries.add(enquiry);
+            System.out.println("Enquiry " + enquiry.getEnquiryId() + " assigned to officer " + getName());
+        } else {
+            System.out.println("Enquiry already handled by this officer.");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public void replyToEnquiry(String enquiryId, String response) {
-        for (Enquiry e : allEnquiries) {
+        for (Enquiry e : handledEnquiries) {
             if (e.getEnquiryId().equals(enquiryId)) {
                 e.setResponse(response);
                 System.out.println("Replied to enquiry " + enquiryId + ": " + response);

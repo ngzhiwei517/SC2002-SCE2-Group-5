@@ -19,9 +19,16 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
 
     @Override
     public boolean canApplyForProject(Project project) {
+        if (project.getStatus() != ToggleStatus.ON) {
+            System.out.println("Cannot apply. Project " + project.getProjectName() +
+                    " is not currently accepting applications.");
+            return false;
+        }
+        //  check if applicant already has an active application
         if (activeApplication == null || activeApplication.getStatus() == Application.Status.UNSUCCESSFUL) {
             return true;
         }
+
         System.out.println("Cannot apply. You already have an active application for: " +
                 activeApplication.getProject().getProjectName() + " (Status: " + activeApplication.getStatus() + ")");
         return false;
@@ -33,9 +40,10 @@ public class Applicant extends User implements IApplicantCapabilities,IEnquiryCr
 
     @Override
     public void applyForProject(Project project, String flatType) {
-        if (!canApplyForProject(project)) return;
-
+        if (!canApplyForProject(project))
+            return;
         activeApplication = new Application(this, project, flatType);
+        project.addApplication(activeApplication);
         System.out.println("Application submitted for project: " + project.getProjectName());
     }
 

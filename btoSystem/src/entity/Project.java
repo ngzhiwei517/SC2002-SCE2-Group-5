@@ -131,13 +131,25 @@ public class Project {
         this.status = status;
     }
 
-    public void addApplication(Application application) {
-        if (application == null) {
-            System.out.println("Error: Application is null.");
-            return;
+    public boolean addOfficer(HDBOfficer officer) {
+        if (assignedOfficers.size() >= MAX_OFFICER_SLOTS) {
+            System.out.println("Error: Cannot assign more officers. Maximum reached.");
+            return false;
+        }
+        assignedOfficers.add(officer);
+        return true;
+    }
+
+    public boolean addApplication(Application application) {
+        if (applications.contains(application)) {
+            System.out.println("Error: Application already exists for this project.");
+            return false;
         }
         applications.add(application);
-        System.out.println("Application " + application.getApplicationId() + " submitted for project " + projectName);
+        return true;
     }
+
+
+
 
 }
