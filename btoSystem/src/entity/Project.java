@@ -1,18 +1,12 @@
 package entity;
 
+import controller.UserController;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-enum ToggleStatus {
-    ON, OFF;
-
-
-    //turn on or off the status alternatively/ if current is on then turn off
-    public ToggleStatus toggle() {
-        return this == ON ? OFF : ON;
-    }
-}
 
 enum FlatType {
     TWO_ROOM("2-Room"),
@@ -29,31 +23,33 @@ enum FlatType {
     }
 }
 public class Project {
+
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
     private String projectName;
     private String neighborhood;
     private LocalDate applicationOpeningDate;
     private LocalDate applicationClosingDate;
-    private HDBManager managerInCharge;
-    private final int MAX_OFFICER_SLOTS=10;
-    private int remainingOfficerSlots;
-    private List<HDBOfficer> assignedOfficers; //list that store num of officers that handle this project
-    private List<Application> applications;
-    private List<Enquiry> enquiries;
-    private ToggleStatus status;
+    private Manager managerInCharge;
+    private int OfficerSlots;
+    private List<Officer> Officers; //list that store num of officers that handle this project
+    private List<Flat> Flats = new ArrayList<>();
 
-    public Project(String projectName, String neighborhood, HDBManager manager) {
+    public Project(String projectName, String neighborhood, String Type1, int Type1Units, int Type1Price, String Type2, int Type2Units, int Type2Price, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers) {
         this.projectName = projectName;
         this.neighborhood = neighborhood;
-        this.applicationOpeningDate = LocalDate.now(); // Default to today
-        this.applicationClosingDate = LocalDate.now().plusMonths(1); // Default closing in 1 month
         this.managerInCharge = manager;
-        this.remainingOfficerSlots = MAX_OFFICER_SLOTS;
-        this.assignedOfficers = new ArrayList<>();
-        this.applications = new ArrayList<>();
-        this.enquiries = new ArrayList<>();
-        this.status = ToggleStatus.OFF; // Default status is OFF
+        this.applicationOpeningDate = LocalDate.parse(OpeningDate, formatter);
+        this.applicationClosingDate = LocalDate.parse(ClosingDate, formatter);
+        this.OfficerSlots = officerSlots;
+        this.Officers = officers;
+
+        Flats.add(new Flat(Type1, Type1Units, Type1Price));
+        Flats.add(new Flat(Type2, Type2Units, Type2Price));
     }
 
+    public List<Flat> getFlats() {
+        return Flats;
+    }
 
     public String getProjectName() {
         return projectName;
@@ -87,66 +83,12 @@ public class Project {
         this.applicationClosingDate = applicationClosingDate;
     }
 
-    public HDBManager getManagerInCharge() {
+    public Manager getManagerInCharge() {
         return managerInCharge;
     }
 
-    public void setManagerInCharge(HDBManager managerInCharge) {
+    public void setManagerInCharge(Manager managerInCharge) {
         this.managerInCharge = managerInCharge;
-    }
-
-    public int getRemainingOfficerSlots(){
-        return this.remainingOfficerSlots;
-    }
-
-    public List<HDBOfficer> getAssignedOfficers() {
-        return assignedOfficers;
-    }
-
-    public void setAssignedOfficers(List<HDBOfficer> assignedOfficers) {
-        this.assignedOfficers = assignedOfficers;
-    }
-
-    public List<Application> getApplications() {
-        return applications;
-    }
-
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
-    }
-
-    public List<Enquiry> getEnquiries() {
-        return enquiries;
-    }
-
-    public void setEnquiries(List<Enquiry> enquiries) {
-        this.enquiries = enquiries;
-    }
-
-    public ToggleStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ToggleStatus status) {
-        this.status = status;
-    }
-
-    public boolean addOfficer(HDBOfficer officer) {
-        if (assignedOfficers.size() >= MAX_OFFICER_SLOTS) {
-            System.out.println("Error: Cannot assign more officers. Maximum reached.");
-            return false;
-        }
-        assignedOfficers.add(officer);
-        return true;
-    }
-
-    public boolean addApplication(Application application) {
-        if (applications.contains(application)) {
-            System.out.println("Error: Application already exists for this project.");
-            return false;
-        }
-        applications.add(application);
-        return true;
     }
 
 

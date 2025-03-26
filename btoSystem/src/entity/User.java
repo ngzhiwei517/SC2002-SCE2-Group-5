@@ -3,22 +3,20 @@ package entity;
 public abstract class User {
     private String name;
     private String nric;
-    private String password;
     private int age;
     private boolean isMarried;
+    private String password;
     //private List<Enquiry> enquiries;
 
 
     // Constructor
-    public User(String name, String nric, String password, int age, boolean isMarried) {
+    public User(String name, String nric, int age, boolean isMarried, String password) {
         this.name = name;
         this.nric = nric;
-        this.password = password;
         this.age = age;
         this.isMarried = isMarried;
+        this.password = password;
     }
-
-
 
     // Getters
     public String getName() {
@@ -64,6 +62,4 @@ public abstract class User {
     }
 
     // Abstract methods
-
-    public abstract boolean canApplyForProject(Project project);
 }
