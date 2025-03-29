@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectController {
     private List<Project> projects = new ArrayList<Project>();
@@ -56,10 +57,13 @@ public class ProjectController {
                 {
                     assignedManager = userController.getManager(ManagerName);
                 }
+                officerArr = officerArr.replaceAll("[\"']", "");
                 String[] officerStrings = officerArr.split(",");
                 List<Officer> officerList = new ArrayList<Officer>();
                 for (String officerString : officerStrings) {
+                    System.out.println(officerString);
                     if(userController.getOfficer(officerString) != null) {
+
                         officerList.add(userController.getOfficer(officerString));
                     }
                 }
@@ -83,9 +87,47 @@ public class ProjectController {
         }
     }
 
+    public void printProjectContents()
+    {
+        for (Project project : projects) {
+            System.out.println("Project Name: " + project.getProjectName());
+            System.out.println("Neighbourhood: " + project.getNeighborhood());
+            System.out.println("Application Opening Date: " + project.getApplicationOpeningDate());
+            System.out.println("Application Closing Date: " + project.getApplicationClosingDate());
+            System.out.println("Manager: " + project.getManagerInCharge().getName());
+            System.out.println("Officer Slots: " + project.getOfficerSlots());
+
+            for(Officer officer : project.getOfficers()) {
+                System.out.println("Officer: " + officer.getName());
+            }
+            System.out.println("----------------------------");
+            for(Flat flat : project.getFlats()) {
+                System.out.println("Flat Type: " + flat.getType());
+                System.out.println("Flat Price: " + flat.getPrice());
+                System.out.println("No. Units: " + flat.getUnits());
+                System.out.println("----------------------------");
+            }
+
+            System.out.println("================================");
+
+        }
+    }
+
     public boolean writeData()
     {
         return false;
+    }
+
+    public Project getProject(String projectName)
+    {
+        for(Project project : projects)
+        {
+            if(project.getProjectName().equals(projectName))
+            {
+                return project;
+            }
+        }
+        return null;
     }
 
     public void viewProjectList(User user)

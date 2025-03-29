@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserController {
-    User loggedUser = null;
+    private User loggedUser = null;
 
     private Map<String, User> Users = new HashMap<>();;
     private final String applicantPath = "ApplicantList.csv";
@@ -27,7 +27,6 @@ public class UserController {
         {
             e.printStackTrace();
         }
-        printUsersContent();
     }
 
     public User getLoggedUser()
@@ -35,13 +34,10 @@ public class UserController {
         return loggedUser;
     }
 
+    public void clearLoggedUser() { loggedUser = null; }
+
     public void printUsersContent()
     {
-
-        File file = new File(applicantPath);
-        System.out.println("Looking for: " + file.getAbsolutePath());
-        System.out.println("Exists? " + file.exists());
-
         for (Map.Entry<String, User> entry : Users.entrySet()) {
             User user = entry.getValue();
             System.out.println("NRIC: " + entry.getKey());
@@ -135,6 +131,15 @@ public class UserController {
             }
         }
         return false;
+    }
+
+    public User getUser(String nric)
+    {
+        if(Users.containsKey(nric))
+        {
+            return Users.get(nric);
+        }
+        return null;
     }
 
     public Manager getManager(String name)

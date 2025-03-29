@@ -1,3 +1,5 @@
+import boundary.ApplicantBoundary;
+import boundary.MainBoundary;
 import entity.*;
 import controller.*;
 
@@ -12,10 +14,21 @@ public class Main {
         UserController userController = new UserController();
         ProjectController projectController = new ProjectController();
         projectController.setUserController(userController);
+
         userController.init();
         projectController.init();
 
+        userController.printUsersContent();
+        projectController.printProjectContents();
+
+        MainBoundary.setUserController(userController);
+        ApplicantBoundary.setControllers(userController, projectController);
+
+        MainBoundary.welcome();
+
         //temp login code
+
+/*
         Scanner sc = new Scanner(System.in);
         System.out.println("Login ID: ");
         String loginID = sc.nextLine();
@@ -31,7 +44,9 @@ public class Main {
             System.out.println("Login Failed");
         }
 
-        projectController.viewProjectList(userController.getLoggedUser());
+ */
+
+        //projectController.viewProjectList(userController.getLoggedUser());
 
 
         //display dashboard for respective

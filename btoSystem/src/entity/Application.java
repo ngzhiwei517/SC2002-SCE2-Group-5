@@ -7,26 +7,28 @@ public class Application  {
         UNSUCCESSFUL,   // Rejected, applicant may apply for another project
         BOOKED          // Successfully booked a unit
     }
-    private static int applicationCounter = 0;
-    private final String applicationId;
+
+    //can store applicant id within the csv, as an index, this will never be wiped, and is sequential.
     private final Applicant applicant;
     private final Project project;
+    private final Flat flat;
     private Status status;
-    private final Date applicationDate;
-    private final String flatType;
 
-    public Application(Applicant applicant, Project project, String flatType) {
-        this.applicationId = "APP" + (++applicationCounter);
-        this.applicant = applicant;
+    public Application(int id, User user, Project project, Flat flat, Status status) {
+        this.applicant = user instanceof Applicant ? (Applicant) user : null;
         this.project = project;
-        this.status=Status.PENDING;
-        this.applicationDate = new Date();
-        this.flatType = flatType;
+        this.flat = flat;
+        this.status=status;
     }
-//
-    public String getApplicationId() {
-        return applicationId;
+
+    public Application(User user, Project project, Flat flat, Status status) {
+        this.applicant = user instanceof Applicant ? (Applicant) user : null;
+        this.project = project;
+        this.flat = flat;
+        this.status=status;
     }
+
+
 
     public Applicant getApplicant() {
         return applicant;
@@ -40,17 +42,12 @@ public class Application  {
         return status;
     }
 
+    public Flat getFlat() { return flat; }
+
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public Date getApplicationDate() {
-        return applicationDate;
-    }
-
-    public String getFlatType() {
-        return flatType;
-    }
 
 
 }

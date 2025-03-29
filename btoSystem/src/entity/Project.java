@@ -43,49 +43,79 @@ public class Project {
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
 
-        Flats.add(new Flat(Type1, Type1Units, Type1Price));
-        Flats.add(new Flat(Type2, Type2Units, Type2Price));
+        if(Type1 != null)
+        {
+            Flats.add(new Flat(Type1, Type1Units, Type1Price));
+        }
+        if(Type2 != null)
+        {
+            Flats.add(new Flat(Type2, Type2Units, Type2Price));
+        }
     }
 
     public List<Flat> getFlats() {
         return Flats;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public Flat getFlatByString(String flatType){
+        for(Flat flat : Flats)
+        {
+            if(flat.getType() == Flat.Type.valueOf(flatType))
+            {
+                return flat;
+            }
+        }
+        return null;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public String getProjectName() {
+        return projectName;
     }
 
     public String getNeighborhood() {
         return neighborhood;
     }
 
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
-    }
-
     public LocalDate getApplicationOpeningDate() {
         return applicationOpeningDate;
-    }
-
-    public void setApplicationOpeningDate(LocalDate applicationOpeningDate) {
-        this.applicationOpeningDate = applicationOpeningDate;
     }
 
     public LocalDate getApplicationClosingDate() {
         return applicationClosingDate;
     }
 
+    public Manager getManagerInCharge() {
+        return managerInCharge;
+    }
+
+    public int getOfficerSlots() { return OfficerSlots; }
+
+    public List<Officer> getOfficers() { return Officers; }
+
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+
+
+    public void setNeighborhood(String neighborhood) {
+        this.neighborhood = neighborhood;
+    }
+
+
+
+    public void setApplicationOpeningDate(LocalDate applicationOpeningDate) {
+        this.applicationOpeningDate = applicationOpeningDate;
+    }
+
+
+
     public void setApplicationClosingDate(LocalDate applicationClosingDate) {
         this.applicationClosingDate = applicationClosingDate;
     }
 
-    public Manager getManagerInCharge() {
-        return managerInCharge;
-    }
+
 
     public void setManagerInCharge(Manager managerInCharge) {
         this.managerInCharge = managerInCharge;
