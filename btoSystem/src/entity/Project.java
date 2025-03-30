@@ -25,6 +25,7 @@ enum FlatType {
 public class Project {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+    private int projectID;
     private String projectName;
     private String neighborhood;
     private LocalDate applicationOpeningDate;
@@ -34,7 +35,8 @@ public class Project {
     private List<Officer> Officers; //list that store num of officers that handle this project
     private List<Flat> Flats = new ArrayList<>();
 
-    public Project(String projectName, String neighborhood, String Type1, int Type1Units, int Type1Price, String Type2, int Type2Units, int Type2Price, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers) {
+    public Project(int projectID, String projectName, String neighborhood, String Type1, int Type1Units, int Type1Price, String Type2, int Type2Units, int Type2Price, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers) {
+        this.projectID = projectID;
         this.projectName = projectName;
         this.neighborhood = neighborhood;
         this.managerInCharge = manager;
@@ -52,6 +54,8 @@ public class Project {
             Flats.add(new Flat(Type2, Type2Units, Type2Price));
         }
     }
+
+    public int getProjectID() { return projectID; }
 
     public List<Flat> getFlats() {
         return Flats;
@@ -92,12 +96,9 @@ public class Project {
 
     public List<Officer> getOfficers() { return Officers; }
 
-
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
-
-
 
     public void setNeighborhood(String neighborhood) {
         this.neighborhood = neighborhood;

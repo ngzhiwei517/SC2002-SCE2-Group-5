@@ -38,9 +38,11 @@ public class ApplicantBoundary {
                     exit = true;
                     break;
                 case 3:
+                    viewAppliedProjects();
                     exit = true;
                     break;
                 case 4:
+                    withdrawApplication();
                     exit = true;
                     break;
                 case 5:
@@ -146,7 +148,43 @@ public class ApplicantBoundary {
 
     private static void viewAppliedProjects()
     {
-        applicationController.getUserProjects(userController.getLoggedUser());
+        List<Application> appList = applicationController.getUserApplications(userController.getLoggedUser());
+        for(Application app : appList) {
+            System.out.println(app.getApplicant() + " | " + app.getProject() + " | " + app.getFlat() + " | " + app.getStatus());
+        }
+
     }
+
+    private static void withdrawApplication()
+    {
+        List<Application> appList = applicationController.getUserApplications(userController.getLoggedUser());
+        int count = 0;
+        for(Application app : appList) {
+            System.out.println(count + ". " + app.getApplicant() + " | " + app.getProject() + " | " + app.getFlat() + " | " + app.getStatus());
+            count++;
+        }
+
+        boolean exit = false;
+        while(!exit) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Selection: ");
+            int choice = sc.nextInt();
+
+            if (choice < appList.size()) {
+                applicationController.tryWithdrawApplication(appList.get(choice));
+                System.out.println("Withdraw Successful");
+                exit = true;
+            }
+            else{
+                System.out.println("invalid option");
+            }
+        }
+    }
+
+    private static void enquiryOptions()
+    {
+
+    }
+
 
 }

@@ -16,46 +16,42 @@ public class ProjectController {
     private static UserController userController;
     private final String projectPath = "ProjectList.csv";
 
-    public static void setUserController(UserController controller)
-    {
+    public static void setUserController(UserController controller) {
         userController = controller;
     }
 
-    public void init()
-    {
-        try{readData();}
-        catch (IOException e)
-        {
+    public void init() {
+        try {
+            readData();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean readData() throws IOException
-    {
+    public boolean readData() throws IOException {
         //process applicants
         try (BufferedReader br = new BufferedReader(new FileReader(projectPath))) {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-
-                String projectName = values[0];
-                String neighbourhood = values[1];
-                String type1 = values[2];
-                int type1units = Integer.parseInt(values[3]);
-                int type1price = Integer.parseInt(values[4]);
-                String type2 = values[5];
-                int type2units = Integer.parseInt(values[6]);
-                int type2price = Integer.parseInt(values[7]);
-                String openingDate = values[8];
-                String closingDate = values[9];
-                String ManagerName = values[10];
-                int officerSlots = Integer.parseInt(values[11]);
-                String officerArr = values[12];
+                int projectId = Integer.parseInt(values[0]);
+                String projectName = values[1];
+                String neighbourhood = values[2];
+                String type1 = values[3];
+                int type1units = Integer.parseInt(values[4]);
+                int type1price = Integer.parseInt(values[5]);
+                String type2 = values[6];
+                int type2units = Integer.parseInt(values[7]);
+                int type2price = Integer.parseInt(values[8]);
+                String openingDate = values[9];
+                String closingDate = values[10];
+                String ManagerName = values[11];
+                int officerSlots = Integer.parseInt(values[12]);
+                String officerArr = values[13];
 
                 Manager assignedManager = null;
-                if(userController.getManager(ManagerName) != null)
-                {
+                if (userController.getManager(ManagerName) != null) {
                     assignedManager = userController.getManager(ManagerName);
                 }
                 officerArr = officerArr.replaceAll("[\"']", "");
@@ -63,13 +59,14 @@ public class ProjectController {
                 List<Officer> officerList = new ArrayList<Officer>();
                 for (String officerString : officerStrings) {
                     System.out.println(officerString);
-                    if(userController.getOfficer(officerString) != null) {
+                    if (userController.getOfficer(officerString) != null) {
 
                         officerList.add(userController.getOfficer(officerString));
                     }
                 }
 
-                projects.add(new Project(projectName,
+                projects.add(new Project(projectId,
+                        projectName,
                         neighbourhood,
                         type1,
                         type1units,
@@ -82,14 +79,12 @@ public class ProjectController {
                         assignedManager,
                         officerSlots,
                         officerList));
-
             }
             return true;
         }
     }
 
-    public void printProjectContents()
-    {
+    public void printProjectContents() {
         for (Project project : projects) {
             System.out.println("Project Name: " + project.getProjectName());
             System.out.println("Neighbourhood: " + project.getNeighborhood());
@@ -98,11 +93,11 @@ public class ProjectController {
             System.out.println("Manager: " + project.getManagerInCharge().getName());
             System.out.println("Officer Slots: " + project.getOfficerSlots());
 
-            for(Officer officer : project.getOfficers()) {
+            for (Officer officer : project.getOfficers()) {
                 System.out.println("Officer: " + officer.getName());
             }
             System.out.println("----------------------------");
-            for(Flat flat : project.getFlats()) {
+            for (Flat flat : project.getFlats()) {
                 System.out.println("Flat Type: " + flat.getType());
                 System.out.println("Flat Price: " + flat.getPrice());
                 System.out.println("No. Units: " + flat.getUnits());
@@ -114,21 +109,29 @@ public class ProjectController {
         }
     }
 
-    public boolean writeData()
-    {
+    public boolean writeData() {
         return false;
     }
 
-    public Project getProject(String projectName)
-    {
-        for(Project project : projects)
-        {
-            if(project.getProjectName().equals(projectName))
-            {
+    public Project getProject(String projectName) {
+        for (Project project : projects) {
+            if (project.getProjectName().equals(projectName)) {
                 return project;
             }
         }
         return null;
+    }
+
+    public void addProject(String projectName, String neighbourhood, String Type1, int Type1Units, int Type1Price, String Type2, int Type2Units, int Type2Price, String OpeningDate, String ClosingDate, Manager manager, int officerSlots)
+    {
+        //get length of project + 1 as projectid
+        Project newProject = new Project(projects.size() + 1, projectName, neighbourhood,
+                Type1, Type1Units, Type1Price,
+                Type2, Type2Units, Type2Price,
+                OpeningDate, ClosingDate, manager,
+                officerSlots, new ArrayList<Officer>() {
+        }) ;
+        projects.add(newProject);
     }
 
     public void selectProject(Project project)

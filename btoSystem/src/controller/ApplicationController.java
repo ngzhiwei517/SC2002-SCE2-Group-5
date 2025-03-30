@@ -79,7 +79,7 @@ public class ApplicationController {
         //return false;
     }
 
-    public List<Application> getUserProjects(User user)
+    public List<Application> getUserApplications(User user)
     {
         List<Application> retList = new ArrayList<>();
         for(Application app : applications)
@@ -88,9 +88,17 @@ public class ApplicationController {
             {
                 retList.add(app);
             }
-
             //System.out.println(app.getApplicant().getName() + " | " + app.getStatus() + " | " + app.getFlat().getType() + " | " + app.getProject().getProjectName());
         }
         return retList;
+    }
+
+    public boolean tryWithdrawApplication(Application application)
+    {
+        if(applications.contains(application)) {
+            applications.remove(application);
+            return true;
+        }
+        return false;
     }
 }
