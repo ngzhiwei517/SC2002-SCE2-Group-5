@@ -4,11 +4,12 @@ import entity.*;
 import controller.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationController {
     private final String applicantPath = "ApplicationList.csv";
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<Application>();
     private UserController userController;
     private ProjectController projectController;
 
@@ -23,6 +24,14 @@ public class ApplicationController {
 
     }
 
+    public void displayAllApplications()
+    {
+        for(Application app : applications)
+        {
+            System.out.println(app.getApplicant().getName() + " | " + app.getStatus() + " | " + app.getFlat().getType() + " | " + app.getProject().getProjectName());
+        }
+    }
+
     public boolean readData() throws IOException
     {
         try (BufferedReader br = new BufferedReader(new FileReader(applicantPath))) {
@@ -33,7 +42,7 @@ public class ApplicationController {
                 String applicantID = data[0];
                 User user = userController.getUser(applicantID);
                 Project project = projectController.getProject(data[1]);
-                Flat flat = project.getFlatByString(data[2]);
+                Flat flat = project.getFlatByType(data[2]);
                 Application.Status status = Application.Status.valueOf(data[3]);
                 Application application = new Application(user, project,flat,status);
                 applications.add(application);
@@ -64,10 +73,24 @@ public class ApplicationController {
         //if() //assertion check to check if user can actually apply for project, by default this should be true, as it is asserted previously within the boundary.
 
         //assertion check that user does not already have a application for this flat.
-
-
         Application application = new Application(user, project, flat, Application.Status.PENDING);
+        applications.add(application);
         return true;
         //return false;
+    }
+
+    public List<Application> getUserProjects(User user)
+    {
+        List<Application> retList = new ArrayList<>();
+        for(Application app : applications)
+        {
+            if(app.getApplicant() == user)
+            {
+                retList.add(app);
+            }
+
+            //System.out.println(app.getApplicant().getName() + " | " + app.getStatus() + " | " + app.getFlat().getType() + " | " + app.getProject().getProjectName());
+        }
+        return retList;
     }
 }

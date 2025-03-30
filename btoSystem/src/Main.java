@@ -13,6 +13,8 @@ public class Main {
     public static void main(String[] args) {
         UserController userController = new UserController();
         ProjectController projectController = new ProjectController();
+        ApplicationController applicationController = new ApplicationController();
+
         projectController.setUserController(userController);
 
         userController.init();
@@ -22,7 +24,7 @@ public class Main {
         projectController.printProjectContents();
 
         MainBoundary.setUserController(userController);
-        ApplicantBoundary.setControllers(userController, projectController);
+        ApplicantBoundary.setControllers(userController, projectController, applicationController);
 
         MainBoundary.welcome();
 

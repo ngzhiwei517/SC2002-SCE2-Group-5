@@ -57,7 +57,7 @@ public class Project {
         return Flats;
     }
 
-    public Flat getFlatByString(String flatType){
+    public Flat getFlatByType(String flatType){
         for(Flat flat : Flats)
         {
             if(flat.getType() == Flat.Type.valueOf(flatType))

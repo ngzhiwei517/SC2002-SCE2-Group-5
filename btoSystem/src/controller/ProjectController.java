@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ProjectController {
+    private Project selectedProject = null;
     private List<Project> projects = new ArrayList<Project>();
     private static UserController userController;
     private final String projectPath = "ProjectList.csv";
@@ -130,44 +131,42 @@ public class ProjectController {
         return null;
     }
 
-    public void viewProjectList(User user)
+    public void selectProject(Project project)
     {
-        //check for visibility
-        if(user instanceof Officer)
-        {
-
-        }
-        else if(user instanceof Applicant)
-        {
-            if(user.getAge() >= 21 && user.isMarried()) {             //married > 21y/o, can only apply for any type.
-                for (Project project : projects) {
-                    System.out.println(project.getProjectName());
-                    for (Flat flat : project.getFlats()) {
-                        System.out.println(flat.getType() + " " + flat.getUnits() + " " + flat.getPrice());
-                    }
-                }
-            }
-            else if(user.getAge() >= 35) {            //single > 35y/o, can only apply for 2 room
-                for (Project project : projects) {
-                    System.out.println(project.getProjectName());
-                    for (Flat flat : project.getFlats()) {
-                        if(flat.getType() == Flat.Type.TwoRoom) {
-                            System.out.println(flat.getType() + " " + flat.getUnits() + " " + flat.getPrice());
-                        }
-                    }
-                }
-            }
-            else {
-                //not elligible;
-            }
-        }
-        else
-        {
-
-        }
-
-
+        selectedProject = project;
     }
+
+    public Project getSelectedProject()
+    {
+        return selectedProject;
+    }
+
+    public void clearSelectedProject()
+    {
+        selectedProject = null;
+    }
+
+    public List<Project> getEligibleProjects(User user)
+    {
+        List<Project> remapped = new ArrayList<Project>();
+        for (Project project : projects) {
+            if(user.getAge() >= 21 && user.isMarried()) //assert age conditions
+            {
+                remapped.add(project);
+            }
+            else if(user.getAge() >= 35)
+            {
+                for(Flat flat : project.getFlats()) {
+                    if(flat.getType() == Flat.Type.TwoRoom)
+                    {
+                        remapped.add(project);
+                    }
+                }
+            }
+        }
+        return remapped;
+    }
+
 
     public void applyProject(User user, boolean asApplicant) {
         //check for visibility
