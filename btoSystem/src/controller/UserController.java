@@ -40,7 +40,8 @@ public class UserController {
     {
         for (Map.Entry<String, User> entry : Users.entrySet()) {
             User user = entry.getValue();
-            System.out.println("NRIC: " + entry.getKey());
+            System.out.println("ID: " + user.getID());
+            System.out.println("NRIC: " + user.getNric());
             System.out.println("Name: " + user.getName());
             System.out.println("Age: " + user.getAge());
             System.out.println("Married: " + user.isMarried());
@@ -70,49 +71,38 @@ public class UserController {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
+                System.out.println(line);
                 String[] values = line.split(",");
-                String name = values[0];
-                String nric = values[1];
-                int age = Integer.parseInt(values[2]);
-                boolean isMarried = values[3].equals("Married");
-                String password = values[4];
-                User newUser = new Applicant(name, nric, age, isMarried, password);
-                Users.put(nric, newUser);
+                int id = Integer.parseInt(values[0]);
+                String name = values[1];
+                String nric = values[2];
+                int age = Integer.parseInt(values[3]);
+                boolean isMarried = values[4].equals("Married");
+                String password = values[5];
+                String type = values[6];
+                switch(type)
+                {
+                    case "Applicant":
+                    {
+                        User newUser = new Applicant(id, name, nric, age, isMarried, password);
+                        Users.put(nric, newUser);
+                    }
+                    break;
+                    case "Officer":
+                    {
+                        User newUser = new Officer(id, name, nric, age, isMarried, password);
+                        Users.put(nric, newUser);
+                    }
+                    break;
+                    case "Manager":
+                    {
+                        User newUser = new Manager(id, name, nric, age, isMarried, password);
+                        Users.put(nric, newUser);
+                    }
+                    break;
+                }
             }
         }
-
-        //process managers
-        try (BufferedReader br = new BufferedReader(new FileReader(managerPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                String name = values[0];
-                String nric = values[1];
-                int age = Integer.parseInt(values[2]);
-                boolean isMarried = values[3].equals("Married");
-                String password = values[4];
-                User newUser = new Manager(name, nric, age, isMarried, password);
-                Users.put(nric, newUser);
-            }
-        }
-
-        //process officers
-        try (BufferedReader br = new BufferedReader(new FileReader(officerPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                String name = values[0];
-                String nric = values[1];
-                int age = Integer.parseInt(values[2]);
-                boolean isMarried = values[3].equals("Married");
-                String password = values[4];
-                User newUser = new Officer(name, nric, age, isMarried, password);
-                Users.put(nric, newUser);
-            }
-        }
-
         return true;
     }
 
@@ -133,20 +123,21 @@ public class UserController {
         return false;
     }
 
-    public User getUser(String nric)
+    public User getUser(int id)
     {
-        if(Users.containsKey(nric))
+        for(User user: Users.values())
         {
-            return Users.get(nric);
+            if(user.getID() == id)
+                return user;
         }
         return null;
     }
 
-    public Manager getManager(String name)
+    public Manager getManager(int id)
     {
         for(String key : Users.keySet())
         {
-            if(Users.get(key).getName().equals(name) && Users.get(key) instanceof Manager)
+            if(Users.get(key).getID() == id && Users.get(key) instanceof Manager)
             {
                 return (Manager) Users.get(key);
             }
@@ -154,11 +145,11 @@ public class UserController {
         return null;
     }
 
-    public Officer getOfficer(String name)
+    public Officer getOfficer(int id)
     {
         for(String key : Users.keySet())
         {
-            if(Users.get(key).getName().equals(name) && Users.get(key) instanceof Officer)
+            if(Users.get(key).getID() == id && Users.get(key) instanceof Officer)
             {
                 return (Officer) Users.get(key);
             }

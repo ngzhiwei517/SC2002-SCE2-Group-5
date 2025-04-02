@@ -1,6 +1,7 @@
 package entity;
 
 public abstract class User {
+    int id;
     private String name;
     private String nric;
     private int age;
@@ -10,7 +11,8 @@ public abstract class User {
 
 
     // Constructor
-    public User(String name, String nric, int age, boolean isMarried, String password) {
+    public User(int id, String name, String nric, int age, boolean isMarried, String password) {
+        this.id = id;
         this.name = name;
         this.nric = nric;
         this.age = age;
@@ -18,7 +20,10 @@ public abstract class User {
         this.password = password;
     }
 
+
     // Getters
+    public int getID() { return id; }
+
     public String getName() {
         return name;
     }

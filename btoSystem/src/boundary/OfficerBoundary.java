@@ -12,6 +12,7 @@ public class OfficerBoundary {
     private static ProjectController projectController;
     private static ApplicationController applicationController;
 
+
     public static void setControllers(UserController uController, ProjectController pController, ApplicationController aController)
     {
         userController = uController;

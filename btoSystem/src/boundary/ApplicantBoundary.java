@@ -31,21 +31,26 @@ public class ApplicantBoundary {
             switch(choice){
                 case 1:
                     viewListOfProjects();
+                    waitForContinue(true);
                     exit = true;
                     break;
                 case 2:
                     applyForProject();
+                    waitForContinue(true);
                     exit = true;
                     break;
                 case 3:
                     viewAppliedProjects();
+                    waitForContinue(true);
                     exit = true;
                     break;
                 case 4:
                     withdrawApplication();
+                    waitForContinue(true);
                     exit = true;
                     break;
                 case 5:
+                    waitForContinue(true);
                     exit = true;
                     break;
                 case 6:
@@ -76,75 +81,63 @@ public class ApplicantBoundary {
         int index = 0;
         for(Project p : projectList)
         {
-            System.out.println(String.valueOf(index) + ". " + p.getProjectName());
+            System.out.println(index + ". ");
+            Project.print(p, false);
             index++;
         }
     }
 
-    private static void applyForProject()
-    {
+    private static void applyForProject(){
         //get list of eligible projects, in format List<Projects>
         List<Project> projectList = projectController.getEligibleProjects(userController.getLoggedUser());
         List<Flat> flatList = null;
         int index = 0;
-        for(Project p : projectList)
-        {
-            System.out.println(String.valueOf(index) + ". " + p.getProjectName());
+        for (Project p : projectList) {
+            System.out.println(index + ". ");
+            Project.print(p, false);
             index++;
         }
 
         int state = 0;
-        while(state != 3) {
-            switch(state) {
-            case 0: {
-                Scanner sc = new Scanner(System.in);
-                int choice = 0;
-                System.out.println("Select Project: "); //TODO: use b to back
-                choice = sc.nextInt();         //allow user to select a project using the list,
-                projectController.selectProject(projectList.get(choice)); //value is stored inside selectedproject within projectcontroller
-                state = 1;
-            }
-            break;
-            case 1: {
-                flatList = projectController.getSelectedProject().getFlats();
-                for (Flat f : flatList) {
-                    //TODO: assert flatlist here
-                    System.out.println(f.getType() + ", " + f.getUnits() + ", " + f.getPrice());
+        while (state != 3) {
+            switch (state) {
+                case 0: {
+                    Scanner sc = new Scanner(System.in);
+                    int choice;
+                    System.out.println("Select Project: "); //TODO: use b to back
+                    choice = sc.nextInt();         //allow user to select a project using the list,
+                    projectController.selectProject(projectList.get(choice)); //value is stored inside selectedproject within projectcontroller
+                    state = 1;
                 }
-                System.out.println("Select Flat: "); //use b to back
-                state = 2;
-            }
                 break;
-
-                //select flat based on eligibility
-            case 2: {
-
-                Scanner sc = new Scanner(System.in);
-                int choice = 0;
-                choice = sc.nextInt(); //TODO: check whether b is inserted. if inserted, go back to state 0;
-                if(choice < flatList.size()) {
-                    applicationController.tryApply(userController.getLoggedUser(), projectController.getSelectedProject(), flatList.get(choice));
-                    applicationController.displayAllApplications();
-                    state = 3;
+                case 1: {
+                    flatList = projectController.getSelectedProject().getFlats();
+                    for (Flat f : flatList) {
+                        //TODO: assert flatlist here
+                        Flat.print(f);
+                    }
+                    System.out.println("Select Flat: "); //use b to back
+                    state = 2;
+                }
+                break;
+                case 2: {
+                    Scanner sc = new Scanner(System.in);
+                    int choice = 0;
+                    choice = sc.nextInt(); //TODO: check whether b is inserted. if inserted, go back to state 0;
+                    if (choice < flatList.size()) {
+                        applicationController.tryApply(userController.getLoggedUser(), projectController.getSelectedProject(), flatList.get(choice));
+                        applicationController.displayAllApplications();
+                        state = 3;
+                    }
+                }
+                break;
+                default: {
+                    System.out.println("error. invalid state");
                 }
             }
-            break;
-            default:{
-
-
-            }
-            break;
-            }
-            System.out.println("newloop"); //use b to back
         }
-
-
-        //projectController.applyProject();
-        //when user confirms selection, use tryApply, where within that it will assert all cnds
-
-
-
     }
+
 
     private static void viewAppliedProjects()
     {
@@ -152,7 +145,6 @@ public class ApplicantBoundary {
         for(Application app : appList) {
             System.out.println(app.getApplicant() + " | " + app.getProject() + " | " + app.getFlat() + " | " + app.getStatus());
         }
-
     }
 
     private static void withdrawApplication()
@@ -172,7 +164,7 @@ public class ApplicantBoundary {
 
             if (choice < appList.size()) {
                 applicationController.tryWithdrawApplication(appList.get(choice));
-                System.out.println("Withdraw Successful");
+                System.out.println("Withdraw Request Sent");
                 exit = true;
             }
             else{
@@ -184,6 +176,17 @@ public class ApplicantBoundary {
     private static void enquiryOptions()
     {
 
+    }
+
+    private static void waitForContinue(boolean refresh)
+    {
+        System.out.println("Press any key to continue");
+        Scanner sc = new Scanner(System.in);
+        sc.nextLine();
+        if(refresh)
+        {
+            welcome();
+        }
     }
 
 

@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Manager extends User {
 
-    public Manager(String name, String nric, int age, boolean isMarried, String password) {
-        super(name, nric, age, isMarried, password);
+    public Manager(int id, String name, String nric, int age, boolean isMarried, String password) {
+        super(id, name, nric, age, isMarried, password);
     }
 }

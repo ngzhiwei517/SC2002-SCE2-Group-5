@@ -1,6 +1,7 @@
 package boundary;
 
 import controller.UserController;
+import entity.Manager;
 import utils.utils;
 
 import java.util.Scanner;
@@ -26,22 +27,20 @@ public class MainBoundary {
             switch (choice) {
                 case 1:
                     login();
+                    displayDashboard();
                     // go to login ui.
                     break;
                 case 2:
-
+                    displayDashboard();
                     // go to register user ui.
-
                     break;
                 case 3:
-
+                    displayDashboard();
                     // go to forgot password ui
-
                     break;
                 case 4:
-
+                    displayDashboard();
                     // break out of loop.
-
                     break;
                 default:
                     System.out.println("Invalid choice");
@@ -75,7 +74,13 @@ public class MainBoundary {
             {
                 System.out.println("Login Successful");
                 login = true;
-                ApplicantBoundary.welcome();
+                if(userController.getLoggedUser() instanceof Manager)
+                {
+                    ManagerBoundary.welcome();
+                }
+                else {
+                    ApplicantBoundary.welcome();
+                }
             }
             else {
                 System.out.println("Login Failed");

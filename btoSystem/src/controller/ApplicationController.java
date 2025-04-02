@@ -21,6 +21,12 @@ public class ApplicationController {
 
     public void init()
     {
+        try {
+            readData();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -39,12 +45,16 @@ public class ApplicationController {
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                String applicantID = data[0];
-                User user = userController.getUser(applicantID);
-                Project project = projectController.getProject(data[1]);
-                Flat flat = project.getFlatByType(data[2]);
-                Application.Status status = Application.Status.valueOf(data[3]);
-                Application application = new Application(user, project,flat,status);
+                int id = Integer.parseInt(data[0]);
+                int applicant_id = Integer.parseInt(data[1]);
+                int project_id = Integer.parseInt(data[2]);
+                int flat_id = Integer.parseInt(data[3]);
+
+                User user = userController.getUser(applicant_id);
+                Project project = projectController.getProject(project_id);
+                Flat flat = project.getFlat(flat_id);
+                Application.Status status = Application.Status.valueOf(data[5]);
+                Application application = new Application(id, user, project,flat,status);
                 applications.add(application);
             }
         }
@@ -66,6 +76,16 @@ public class ApplicationController {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<Application> getApplications(List<Application.Status> filter)
+    {
+        List<Application> filteredApplications = new ArrayList<>();
+        for(Application app: applications) {
+            if(filter.contains(app.getStatus()))
+                filteredApplications.add(app);
+        }
+        return filteredApplications;
     }
 
     public boolean tryApply(User user, Project project, Flat flat)
@@ -96,7 +116,7 @@ public class ApplicationController {
     public boolean tryWithdrawApplication(Application application)
     {
         if(applications.contains(application)) {
-            applications.remove(application);
+            application.setStatus(Application.Status.WITHDRAWN);
             return true;
         }
         return false;
