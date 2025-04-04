@@ -15,20 +15,20 @@ public class Main {
         UserController userController = new UserController();
         ProjectController projectController = new ProjectController();
         ApplicationController applicationController = new ApplicationController();
+        EnquiryController enquiryController = new EnquiryController();
 
         projectController.setUserController(userController);
         applicationController.setControllers(userController, projectController);
 
+        MainBoundary.setUserController(userController);
+        ApplicantBoundary.setControllers(userController, projectController, applicationController, enquiryController);
+        enquiryController.setControllers(userController, projectController);
+        ManagerBoundary.setControllers(userController, projectController, applicationController);
+
         userController.init();
         projectController.init();
         applicationController.init();
-
-        userController.printUsersContent();
-        projectController.printProjectContents();
-
-        MainBoundary.setUserController(userController);
-        ApplicantBoundary.setControllers(userController, projectController, applicationController);
-        ManagerBoundary.setControllers(userController, projectController, applicationController);
+        enquiryController.init();
 
         MainBoundary.welcome();
 

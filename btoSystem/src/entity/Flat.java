@@ -12,18 +12,18 @@ public class Flat {
 
     private static int next_id = 0;
     private int id;
-    private int p_id;
+    private Project project;
     private Type type;
     private int units;
     private int price;
 
-    public Flat(int id, int p_id, String type, int units, int price) {
+    public Flat(int id, Project project, String type, int units, int price) {
         this.id = id;
         if(id >= next_id) //ensure new generated ids are unique
         {
             next_id = id+1;
         }
-        this.p_id = p_id;
+        this.project = project;
         this.type = stringToType(type);
         this.units = units;
         this.price = price;
@@ -36,13 +36,11 @@ public class Flat {
         this.price = price;
     }
 
-    public void setPid(int pid) {
-        this.p_id = pid;
-    }
+    public Project getProject() { return project; }
 
-    public static void print(Flat flat)
+    public void print()
     {
-        System.out.println(flat.getType() + ", " + flat.getUnits() + ", " + flat.getPrice());
+        System.out.println(this.getType() + ", " + this.getUnits() + ", " + this.getPrice());
     }
 
     public int getId() { return id;}

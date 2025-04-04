@@ -41,6 +41,7 @@ public class ManagerBoundary {
                     exit = true;
                     break;
                 case 3:
+                    viewOfficerRegistrations();
                     waitForContinue(true);
                     exit = true;
                     break;
@@ -94,6 +95,8 @@ public class ManagerBoundary {
         for (Project project : projects) {
             Project.print(project, true);
         }
+
+        //implement RUD functions here
     }
 
     private static void createBTOListing()
@@ -153,29 +156,30 @@ public class ManagerBoundary {
     private static void viewApplicantApplications()
     {
         List<Application.Status> filter = List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED);
-        List<Application> applications = applicationController.getApplications(filter);
+        List<Application> applications = applicationController.getApplications(filter, Application.Type.Applicant);
         for(Application app : applications) {
-            Application.print(app);
+            app.print();
         }
+
+        //add editing here.
     }
 
     private static void viewApplicantWithdrawal()
     {
         List<Application.Status> filter = List.of(Application.Status.REQUESTED_WITHDRAW);
-        List<Application> applications = applicationController.getApplications(filter);
+        List<Application> applications = applicationController.getApplications(filter, Application.Type.Applicant);
         for(Application app : applications) {
-            Application.print(app);
+            app.print();
         }
     }
 
-    private static void applicantWithdrawalDashboard()
+    private static void viewOfficerRegistrations()
     {
-
-    }
-
-    private static void applicantViewDashboard()
-    {
-
+        List<Application.Status> filter = List.of(Application.Status.PENDING, Application.Status.APPROVED, Application.Status.REJECTED);
+        List<Application> applications = applicationController.getApplications(filter, Application.Type.Officer);
+        for(Application app : applications) {
+            app.print();
+        }
     }
 
     private static void waitForContinue(boolean refresh)

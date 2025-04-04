@@ -1,7 +1,7 @@
 package boundary;
 
 import controller.UserController;
-import entity.Manager;
+import entity.*;
 import utils.utils;
 
 import java.util.Scanner;
@@ -46,7 +46,6 @@ public class MainBoundary {
                     System.out.println("Invalid choice");
                     break;
             }
-
         }
     }
 
@@ -77,6 +76,9 @@ public class MainBoundary {
                 if(userController.getLoggedUser() instanceof Manager)
                 {
                     ManagerBoundary.welcome();
+                }
+                else if(userController.getLoggedUser() instanceof Officer) {
+                    OfficerBoundary.welcome();
                 }
                 else {
                     ApplicantBoundary.welcome();

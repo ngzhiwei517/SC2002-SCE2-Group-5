@@ -13,12 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserController {
-    private User loggedUser = null;
+    private static User loggedUser = null;
 
     private Map<String, User> Users = new HashMap<>();;
     private final String applicantPath = "ApplicantList.csv";
-    private final String officerPath = "OfficerList.csv";
-    private final String managerPath = "ManagerList.csv";
 
     public void init()
     {
@@ -29,40 +27,12 @@ public class UserController {
         }
     }
 
-    public User getLoggedUser()
+    public static User getLoggedUser()
     {
         return loggedUser;
     }
 
-    public void clearLoggedUser() { loggedUser = null; }
-
-    public void printUsersContent()
-    {
-        for (Map.Entry<String, User> entry : Users.entrySet()) {
-            User user = entry.getValue();
-            System.out.println("ID: " + user.getID());
-            System.out.println("NRIC: " + user.getNric());
-            System.out.println("Name: " + user.getName());
-            System.out.println("Age: " + user.getAge());
-            System.out.println("Married: " + user.isMarried());
-
-            // Check subclass
-            if (user instanceof Officer) {
-                System.out.println("Type: Officer");
-            }
-            else if (user instanceof Applicant) {
-                System.out.println("Type: Applicant");
-                // If Applicant has specific methods or fields, you can cast and print
-                // Applicant applicant = (Applicant) user;
-            } else if (user instanceof Manager) {
-                System.out.println("Type: Manager");
-            } else {
-                System.out.println("Type: Unknown or base User");
-            }
-
-            System.out.println("-----");
-        }
-    }
+    public static void clearLoggedUser() { loggedUser = null; }
 
     public boolean readData() throws IOException
     {

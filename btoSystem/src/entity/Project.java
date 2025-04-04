@@ -24,7 +24,6 @@ enum FlatType {
 }
 
 
-
 public class Project {
     public enum Status {
         VISIBLE,
@@ -36,14 +35,14 @@ public class Project {
     private int p_id;
     private String projectName;
     private String neighborhood;
-    private LocalDate applicationOpeningDate;
-    private LocalDate applicationClosingDate;
+    private LocalDate openingDate;
+    private LocalDate closingDate;
     private Manager managerInCharge;
     private Status status;
     private int OfficerSlots;
 
     private List<Officer> Officers; //list that store num of officers that handle this project
-    private List<Flat> Flats = new ArrayList<>();
+    private List<Flat> flats = new ArrayList<>();
 
     public Project(int p_id, String projectName, String neighborhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
         this.p_id = p_id;
@@ -54,8 +53,8 @@ public class Project {
         this.projectName = projectName;
         this.neighborhood = neighborhood;
         this.managerInCharge = manager;
-        this.applicationOpeningDate = LocalDate.parse(OpeningDate, formatter);
-        this.applicationClosingDate = LocalDate.parse(ClosingDate, formatter);
+        this.openingDate = LocalDate.parse(OpeningDate, formatter);
+        this.closingDate = LocalDate.parse(ClosingDate, formatter);
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
         this.status = status;
@@ -66,8 +65,8 @@ public class Project {
         this.projectName = projectName;
         this.neighborhood = neighborhood;
         this.managerInCharge = manager;
-        this.applicationOpeningDate = LocalDate.parse(OpeningDate, formatter);
-        this.applicationClosingDate = LocalDate.parse(ClosingDate, formatter);
+        this.openingDate = LocalDate.parse(OpeningDate, formatter);
+        this.closingDate = LocalDate.parse(ClosingDate, formatter);
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
         this.status = status;
@@ -78,11 +77,11 @@ public class Project {
     }
 
     public List<Flat> getFlats() {
-        return Flats;
+        return flats;
     }
 
     public boolean addFlat(Flat flat) {
-        Flats.add(flat);
+        flats.add(flat);
         return true;
     }
 
@@ -93,7 +92,7 @@ public class Project {
     }
 
     public Flat getFlat(int id){
-        for(Flat flat : Flats)
+        for(Flat flat : flats)
         {
             if(flat.getId() == id)
             {
@@ -112,7 +111,7 @@ public class Project {
 
         //separated for easier reading.
         System.out.print("Application Window: ");
-        System.out.println(project.getApplicationOpeningDate() + " to " + project.getApplicationClosingDate());
+        System.out.println(project.getOpeningDate() + " to " + project.getClosingDate());
 
         System.out.println("Manager: " + project.getManagerInCharge().getName());
 
@@ -134,59 +133,75 @@ public class Project {
         System.out.println("Flats: ");
         for(Flat flat : project.getFlats())
         {
-            Flat.print(flat);
+            flat.print();
         }
 
         System.out.println("=====================================");
-        /*
-        System.out.println("Project ID: " + project.getProjectID());
-        System.out.println("Project Name: " + project.getProjectName());
-        System.out.println("Neighbourhood: " + project.getNeighborhood());
-        System.out.println("Application Opening Date: " + project.getApplicationOpeningDate());
-        System.out.println("Application Closing Date: " + project.getApplicationClosingDate());
-        System.out.println("Manager: " + project.getManagerInCharge().getName());
-        System.out.println("Officer Slots: " + project.getOfficerSlots());
+    }
 
-        for (Officer officer : project.getOfficers()) {
-            System.out.print("Officer: " + officer.getName());
+    public void printBasicInformation()
+    {
+        System.out.print("Project: ");
+        System.out.print(this.getProjectName());
+        System.out.print(", ");
+        System.out.println(this.getNeighborhood());
+
+        //separated for easier reading.
+        System.out.print("Application Window: ");
+        System.out.println(this.getOpeningDate() + " to " + this.getClosingDate());
+
+        System.out.println("Manager: " + this.getManagerInCharge().getName());
+    }
+
+    public void printName()
+    {
+        System.out.print("Project: ");
+        System.out.print(this.getProjectName());
+    }
+
+    public boolean isEligible(User user)
+    {
+        if(user instanceof Officer)
+        {
+            if(Officers.contains((Officer)user))
+            {
+                return false;
+            }
         }
-        System.out.println("----------------------------");
-        for (Flat flat : project.getFlats()) {
-            System.out.println("Flat Type: " + flat.getType());
-            System.out.println("Flat Price: " + flat.getPrice());
-            System.out.println("No. Units: " + flat.getUnits());
-            System.out.println("----------------------------");
+        for(Flat f : flats) {
+            if (user.isMarried()) {
+                return true;
+            } else if (user.getAge() >= 35)
+            {
+                if(f.getType() == Flat.Type.TwoRoom)
+                    return true;
+            }
         }
-        System.out.println("================================");
-        */
+        return false;
     }
 
-    public Status getStatus() {
-        return status;
+    public List<Flat> getEligibleFlats(Applicant applicant)
+    {
+        List<Flat> filtered = new ArrayList<>();
+        for(Flat f : flats) {
+            if (applicant.isMarried()) {
+                filtered.add(f);
+            } else if (applicant.getAge() >= 35)
+            {
+                if(f.getType() == Flat.Type.TwoRoom)
+                    filtered.add(f);
+            }
+        }
+        return filtered;
     }
 
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    public LocalDate getApplicationOpeningDate() {
-        return applicationOpeningDate;
-    }
-
-    public LocalDate getApplicationClosingDate() {
-        return applicationClosingDate;
-    }
-
-    public Manager getManagerInCharge() {
-        return managerInCharge;
-    }
-
+    public Status getStatus() { return status; }
+    public String getProjectName() { return projectName; }
+    public String getNeighborhood() { return neighborhood; }
+    public LocalDate getOpeningDate() { return openingDate; }
+    public LocalDate getClosingDate() { return closingDate; }
+    public Manager getManagerInCharge() {  return managerInCharge; }
     public int getOfficerSlots() { return OfficerSlots; }
-
     public List<Officer> getOfficers() { return Officers; }
 
     public void setProjectName(String projectName) {
@@ -197,13 +212,12 @@ public class Project {
         this.neighborhood = neighborhood;
     }
     
-    public void setApplicationOpeningDate(LocalDate applicationOpeningDate) {
-        this.applicationOpeningDate = applicationOpeningDate;
+    public void setOpeningDate(LocalDate applicationOpeningDate) {
+        this.openingDate = applicationOpeningDate;
     }
 
-
-    public void setApplicationClosingDate(LocalDate applicationClosingDate) {
-        this.applicationClosingDate = applicationClosingDate;
+    public void setClosingDate(LocalDate applicationClosingDate) {
+        this.closingDate = applicationClosingDate;
     }
 
     public void setManagerInCharge(Manager managerInCharge) {
@@ -211,6 +225,12 @@ public class Project {
     }
 
 
-
-
+    public boolean isDateClash(Project project)
+    {
+        if(project != this)
+        {
+            return (project.getOpeningDate().isAfter(this.getOpeningDate()) && project.getOpeningDate().isBefore(this.getClosingDate())) || (project.getClosingDate().isAfter(this.getOpeningDate()) && project.getClosingDate().isBefore(this.getClosingDate()));
+        }
+        return false;
+    }
 }

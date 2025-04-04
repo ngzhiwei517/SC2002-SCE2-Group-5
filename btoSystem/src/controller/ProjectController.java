@@ -7,11 +7,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectController {
-    private Project selectedProject = null;
-    private List<Project> projects = new ArrayList<Project>();
+    private static Project selectedProject = null;
+    private static Map<Integer, Project> projects = new HashMap<Integer, Project>();
     private static UserController userController;
     private final String projectPath = "ProjectList.csv";
     private final String flatPath = "FlatList.csv";
@@ -58,14 +60,19 @@ public class ProjectController {
                     }
                 }
 
-                projects.add(new Project(project_id,
-                        projectName,
-                        neighbourhood,
-                        openingDate,
-                        closingDate,
-                        assignedManager,
-                        officerSlots,
-                        officerList, status));
+                if(!projects.containsKey(project_id)) {
+                    projects.put(project_id, new Project(project_id,
+                            projectName,
+                            neighbourhood,
+                            openingDate,
+                            closingDate,
+                            assignedManager,
+                            officerSlots,
+                            officerList, status));
+                }
+                else {
+                    System.out.println("Duplicate Project ID" + project_id);
+                }
             }
 
         }
@@ -80,144 +87,101 @@ public class ProjectController {
             int cost = Integer.parseInt(values[3]);
             int units = Integer.parseInt(values[4]);
 
-            Flat flat = new Flat(f_id, p_id, type, cost, units);
-            getProject(p_id).addFlat(flat);
+            Project project = projects.get(p_id);
+            if(project != null)
+            {
+                Flat flat = new Flat(f_id, project, type, cost, units);
+                project.addFlat(flat);
+            }
+            System.out.println("Invalid Project ID: " + p_id);
             }
         }
         return true;
-    }
-
-    public void printProjectContents() { //debug function
-        for (Project project : projects) {
-            System.out.println("Project ID: " + project.getProjectID());
-            System.out.println("Project Name: " + project.getProjectName());
-            System.out.println("Neighbourhood: " + project.getNeighborhood());
-            System.out.println("Application Opening Date: " + project.getApplicationOpeningDate());
-            System.out.println("Application Closing Date: " + project.getApplicationClosingDate());
-            System.out.println("Manager: " + project.getManagerInCharge().getName());
-            System.out.println("Officer Slots: " + project.getOfficerSlots());
-
-            for (Officer officer : project.getOfficers()) {
-                System.out.println("Officer: " + officer.getName());
-            }
-            System.out.println("----------------------------");
-            for (Flat flat : project.getFlats()) {
-                System.out.println("Flat Type: " + flat.getType());
-                System.out.println("Flat Price: " + flat.getPrice());
-                System.out.println("No. Units: " + flat.getUnits());
-                System.out.println("----------------------------");
-            }
-            System.out.println("================================");
-        }
     }
 
     public boolean writeData() {
         return false;
     }
 
-    public Project getProject(String projectName) {
-        for (Project project : projects) {
-            if (project.getProjectName().equals(projectName)) {
-                return project;
-            }
-        }
-        return null;
-    }
-
-    public Project addProject(String projectName, String neighbourhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots)
+    public static Project addProject(String projectName, String neighbourhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots)
     {
         //get length of project + 1 as projectid
-        Project newProject = new Project(projectName, neighbourhood,
+        Project new_project = new Project(projectName, neighbourhood,
                 OpeningDate, ClosingDate, manager,
                 officerSlots, new ArrayList<Officer>() {
         }, Project.Status.VISIBLE) ;
-        projects.add(newProject);
-        return newProject;
+
+        if(!projects.containsKey(new_project.getProjectID())) {
+            projects.put(new_project.getProjectID(), new_project);
+        }
+        return new_project;
     }
 
-    public void selectProject(Project project)
+    public static void selectProject(Project project)
     {
         selectedProject = project;
     }
 
-    public Project getSelectedProject()
+    public static Project getSelectedProject()
     {
         return selectedProject;
     }
 
-    public void clearSelectedProject()
+    public static void clearSelectedProject()
     {
         selectedProject = null;
     }
 
-    public Project getProject(int id)
+    public static Project getProject(int id)
     {
-        for (Project project : projects) {
-            if(project.getProjectID() == id)
-            {
-                return project;
-            }
+        if(projects.containsKey(id))
+        {
+            return projects.get(id);
         }
-        return null;
+        else
+            return null;
     }
 
-    public List<Project> getProjects(List<Project.Status> filter, boolean rejectFilter)
+
+    public static List<Project> getProjects(List<Project.Status> filter, boolean rejectFilter)
     {
         List<Project> filteredList = new ArrayList<>();
         if(rejectFilter) {
-            for (Project project : projects) {
-                if(!filter.contains(project.getStatus())) {
-                    filteredList.add(project);
+            for (int key : projects.keySet()) {
+                if(!filter.contains(projects.get(key).getStatus())) {
+                    filteredList.add(projects.get(key));
                 }
             }
         }
         else {
-            for (Project project : projects) {
-                if(filter.contains(project.getStatus())) {
-                    filteredList.add(project);
+            for (int key : projects.keySet()) {
+                if(filter.contains(projects.get(key).getStatus())) {
+                    filteredList.add(projects.get(key));
                 }
             }
         }
-        return projects;
+        return filteredList;
     }
 
-    public List<Project> getEligibleProjects(User user)
+    public static List<Project> getProjects(Officer officer)
     {
-        List<Project> remapped = new ArrayList<Project>();
-        for (Project project : projects) {
-            if(user.getAge() >= 21 && user.isMarried()) //assert age conditions
-            {
-                remapped.add(project);
+        List<Project> filtered = new ArrayList<Project>();
+        for(int key : projects.keySet()) {
+            if(projects.get(key).getOfficers().contains(officer)) {
+                filtered.add(projects.get(key));
             }
-            else if(user.getAge() >= 35)
-            {
-                for(Flat flat : project.getFlats()) {
-                    if(flat.getType() == Flat.Type.TwoRoom)
-                    {
-                        remapped.add(project);
-                    }
-                }
+        }
+        return filtered;
+    }
+
+    public List<Project> getEligibleProjects(User user) {
+        List<Project> remapped = new ArrayList<Project>();
+        for (int key : projects.keySet()) {
+            if(projects.get(key).isEligible(user)) {
+                remapped.add(projects.get(key));
             }
         }
         return remapped;
-    }
-
-
-    public void applyProject(User user, boolean asApplicant) {
-        //check for visibility
-        if (user instanceof Officer && !asApplicant) {
-
-        } else if (user instanceof Applicant) {
-            if (user.getAge() > 21 && user.isMarried()) {             //married > 21y/o, can only apply for any type.
-
-            } else if (user.getAge() > 35) {            //single > 35y/o, can only apply for 2 room
-
-            } else {
-                //not elligible;
-            }
-        } else {
-
-        }
     }
 
 }

@@ -30,14 +30,6 @@ public class ApplicationController {
 
     }
 
-    public void displayAllApplications()
-    {
-        for(Application app : applications)
-        {
-            System.out.println(app.getApplicant().getName() + " | " + app.getStatus() + " | " + app.getFlat().getType() + " | " + app.getProject().getProjectName());
-        }
-    }
-
     public boolean readData() throws IOException
     {
         try (BufferedReader br = new BufferedReader(new FileReader(applicantPath))) {
@@ -49,12 +41,15 @@ public class ApplicationController {
                 int applicant_id = Integer.parseInt(data[1]);
                 int project_id = Integer.parseInt(data[2]);
                 int flat_id = Integer.parseInt(data[3]);
+                Application.Type type = Application.Type.valueOf(data[4]);
+                Application.Status status = Application.Status.valueOf(data[5]);
 
                 User user = userController.getUser(applicant_id);
                 Project project = projectController.getProject(project_id);
-                Flat flat = project.getFlat(flat_id);
-                Application.Status status = Application.Status.valueOf(data[5]);
-                Application application = new Application(id, user, project,flat,status);
+
+                Flat flat = flat_id != -1 ? project.getFlat(flat_id) : null;
+
+                Application application = new Application(id, user, project,flat,status,type);
                 applications.add(application);
             }
         }
@@ -66,7 +61,7 @@ public class ApplicationController {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(applicantPath))){
             //form the line application string here
             for(Application app: applications) {
-                String applicationString = app.getApplicant().getNric() + "," +
+                String applicationString = app.getUser().getNric() + "," +
                                         app.getProject().getProjectName() + "," +
                                         app.getFlat().getType() + "," +
                                         app.getStatus();
@@ -78,25 +73,40 @@ public class ApplicationController {
         return false;
     }
 
-    public List<Application> getApplications(List<Application.Status> filter)
+    public List<Application> getApplications(List<Application.Status> filter, Application.Type type)
     {
         List<Application> filteredApplications = new ArrayList<>();
         for(Application app: applications) {
-            if(filter.contains(app.getStatus()))
+            if(filter.contains(app.getStatus()) && app.getType().equals(type))
                 filteredApplications.add(app);
         }
         return filteredApplications;
     }
 
-    public boolean tryApply(User user, Project project, Flat flat)
+    public Application tryApply(User user, Flat flat)
     {
         //if() //assertion check to check if user can actually apply for project, by default this should be true, as it is asserted previously within the boundary.
 
-        //assertion check that user does not already have a application for this flat.
-        Application application = new Application(user, project, flat, Application.Status.PENDING);
+        //assertion check that user does not already have an application for this flat.
+
+        Application application = new Application(user, flat.getProject(), flat, Application.Status.PENDING, Application.Type.Applicant);
         applications.add(application);
-        return true;
+        return application;
         //return false;
+    }
+
+    public Application tryApplyOfficer(Officer officer, Project project)
+    {
+        //get all projects officer is applied to.
+        //TODO: CHECK AGAINST SELF (APPLICANT)
+
+        List<Project> projects = ProjectController.getProjects(officer);
+        for(Project p: projects) {
+            if(!p.isDateClash(project)) {  //check stuff here.
+                return null;
+            }
+        }
+        return new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
     }
 
     public List<Application> getUserApplications(User user)
@@ -104,7 +114,7 @@ public class ApplicationController {
         List<Application> retList = new ArrayList<>();
         for(Application app : applications)
         {
-            if(app.getApplicant() == user)
+            if(app.getUser() == user)
             {
                 retList.add(app);
             }

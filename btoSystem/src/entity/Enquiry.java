@@ -1,44 +1,79 @@
 package entity;
 public class Enquiry {
-    private String enquiryId;
-    private String content;
-    private String response;
-    private Applicant applicant;
+    public enum Status {
+        PENDING,
+        CLOSED
+    }
+
+    private static int next_id = 0;
+    private int e_id;
     private Project project;
+    private User user;
+    private Status status;
+    private String title;
+    private String text;
+    private User responder;
+    private String response;
 
-    public Enquiry(String enquiryId, String content,Applicant applicant, Project project) {
-        this.enquiryId = enquiryId;
-        this.content = content;
-        this.response = null;
+    public Enquiry(int e_id, Project project, User user, String status, String title, String text, User responder, String response) {
+        this.e_id = e_id;
+        if(e_id >= next_id)
+        {
+            next_id = ++e_id;
+        }
         this.project = project;
-        this.applicant = applicant;
-    }
-
-    public String getEnquiryId() {
-        return enquiryId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void updateContent(String newContent) {
-        this.content = newContent;
-    }
-
-    public void setResponse(String response) {
+        this.user = user;
+        this.status = Status.valueOf(status);
+        this.title = title;
+        this.text = text;
+        this.responder = responder;
         this.response = response;
     }
 
-    public String getResponse() {
-        return response;
+    public Enquiry(Project project, User user, Status status, String title, String text) { //used for new enquiry
+        this.e_id = next_id++;
+        this.project = project;
+        this.user = user;
+        this.status = status;
+        this.title = title;
+        this.text = text;
     }
 
-    public Applicant getApplicant() {
-        return applicant;
+    public void print()
+    {
+        System.out.print("Enquiry ID" + e_id + ": ");
+        System.out.print(title);
+        System.out.println();
+        System.out.println(text);
+
+
+        if(responder != null) {
+            System.out.println("..................................");
+            System.out.println("Response by: " + responder.getName());
+            System.out.println(response);
+        }
+
+        System.out.println("==================================");
     }
 
-    public Project getProject() {
-        return project;
+    public boolean respond(User user, String response)
+    {
+        if(user instanceof Officer || user instanceof Manager) {
+            this.responder = user;
+            this.response = response;
+            this.status = Status.CLOSED;
+            return true;
+        }
+        return false;
     }
+
+    public int getEnquiryId() { return e_id; }
+    public Project getProject() { return project; }
+    public User getUser() { return user; }
+    public Status getStatus() { return status; }
+    public String getTitle() { return title; }
+    public String getText() { return text; }
+    public User getResponder() { return responder; }
+    public String getResponse() { return response; }
+
 }
