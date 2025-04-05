@@ -94,9 +94,17 @@ public class Application  {
         this.status = status;
     }
 
-    public void approve() { this.status = Status.APPROVED; }
+    public void approve() { this.status = Status.APPROVED;
+    if (this.type == Type.Officer) {
+        this.project.addOfficer((Officer) user);
+        }
+    }
 
     public void reject() { this.status = Status.REJECTED; }
+
+    public void withdraw() { this.status = Status.WITHDRAWN; }
+
+    public void book() { this.status = Status.BOOKED; }
 
 
 

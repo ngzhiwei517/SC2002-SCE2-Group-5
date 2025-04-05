@@ -85,12 +85,6 @@ public class Project {
         return true;
     }
 
-    public boolean addOfficer(Officer officer)
-    {
-        Officers.add(officer);
-        return true;
-    }
-
     public Flat getFlat(int id){
         for(Flat flat : flats)
         {
@@ -230,6 +224,16 @@ public class Project {
         if(project != this)
         {
             return (project.getOpeningDate().isAfter(this.getOpeningDate()) && project.getOpeningDate().isBefore(this.getClosingDate())) || (project.getClosingDate().isAfter(this.getOpeningDate()) && project.getClosingDate().isBefore(this.getClosingDate()));
+        }
+        return false;
+    }
+
+    public boolean addOfficer(Officer officer)
+    {
+        if(!Officers.contains(officer))
+        {
+            Officers.add(officer);
+            return true;
         }
         return false;
     }

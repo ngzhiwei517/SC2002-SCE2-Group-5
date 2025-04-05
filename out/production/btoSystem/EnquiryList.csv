@@ -1,0 +1,3 @@
+e.id,p.id,u.id,status,title,body,responder_id,response
+1,1,11,PENDING,sampletitle,sampletext,null,null
+2,1,11,CLOSED,sampletitle2,sampletext2,7,hehexd
