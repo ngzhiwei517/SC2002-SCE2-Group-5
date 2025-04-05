@@ -2,10 +2,9 @@ package boundary;
 
 import controller.*;
 import entity.*;
+import utils.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ManagerBoundary {
 
@@ -96,7 +95,48 @@ public class ManagerBoundary {
             Project.print(project, true);
         }
 
-        //implement RUD functions here
+        Map<String, Integer> options = new HashMap<>();
+        options.put("q", -2);
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Select Project (number to select, q to quit): ");
+        while(true)
+        {
+            String input = sc.nextLine();
+            int choice = utils.getRange(options, 1, projects.size(), input);
+            if (choice == -2) {
+                return;
+            } else if (choice == -1) {
+                System.out.println("Invalid Option");
+            } else {
+                ProjectController.selectProject(projects.get(choice - 1));
+                break;
+            }
+        }
+
+        //implement UD functions here
+        //display UD options here/
+    }
+
+    private static void optionsUpdateDelete()
+    {
+        System.out.println("1. Update Selected Project");
+        System.out.println("2. Delete Selected Project");
+
+        //update code here
+        //update options
+        // change name?
+        // change location?
+        // add flat?
+        // remove flat?
+        // edit flat?
+        // -- within flat menu
+        // update room type
+        // update room value
+
+        //delete code here
+
+        //confirm delete?
     }
 
     private static void createBTOListing()
@@ -155,13 +195,123 @@ public class ManagerBoundary {
 
     private static void viewApplicantApplications()
     {
-        List<Application.Status> filter = List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED);
-        List<Application> applications = applicationController.getApplications(filter, Application.Type.Applicant);
-        for(Application app : applications) {
-            app.print();
+        //get all applications where applications are pending
+        List<Application> applications = applicationController.getApplications(List.of(Application.Status.PENDING), Application.Type.Applicant);
+        Map<Project, List<Application>> map = new HashMap<>();
+
+        //add all filtered applications to a map
+        for(Application app :applications) {
+            if(map.containsKey(app.getProject())) {
+                map.get(app.getProject()).add(app);
+            }
+            else {
+                map.put(app.getProject(), new ArrayList<>());
+                map.get(app.getProject()).add(app);
+            }
         }
 
-        //add editing here.
+        int index = 1;
+        List<Project> projects =  new ArrayList<>();
+        //assign index to each project item.
+        for(Project key : map.keySet() ) {
+            System.out.println(index + ": ");
+            projects.add(key);
+            key.printBasicInformation();
+            System.out.println("Pending Applications: " + map.get(key).size());
+            index++;
+        }
+
+        //allow for selection here
+        Map<String, Integer> options = new HashMap<>();
+        options.put("q", -2);
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Select Project (number to select, q to quit): ");
+        while(true)
+        {
+            String input = sc.nextLine();
+            int choice = utils.getRange(options, 1, projects.size(), input);
+            if (choice == -2) {
+                return;
+            } else if (choice == -1) {
+                System.out.println("Invalid Option");
+            } else {
+                ProjectController.selectProject(projects.get(choice - 1)); //saves selected project inside the project controller.
+                break;
+            }
+        }
+
+        //after selecting project, display all project applications.
+        List<Application> project_applications = map.get(ProjectController.getSelectedProject());
+
+        index = 1;
+        for(Application app : project_applications) {
+            System.out.println(index + ": ");
+            app.print();
+            index++;
+        }
+
+        Application selected_app = null;
+        //allow user to select application here
+        System.out.print("Select application (number to select, q to quit): ");
+        while(true)
+        {
+            String input = sc.nextLine();
+            int choice = utils.getRange(options, 1, applications.size(), input);
+            if (choice == -2) {
+                return;
+            } else if (choice == -1) {
+                System.out.println("Invalid Option");
+            } else {
+                selected_app = project_applications.get(choice-1); //saves selected project inside the project controller.
+                break;
+            }
+        }
+
+        //let manager approve, reject or back/quit here
+        int status = -1;
+        if(selected_app != null) { //null case should never happen, there is just a sanity check here.
+
+            selected_app.print(); //print the application details itself
+
+            options.put("a", 1);
+            options.put("r", 2);
+
+            //request user if want to approve or reject or back
+            while(true) {
+                String input = sc.nextLine();
+                int choice = utils.getRange(options, 0, 0, input);
+                if (choice == -2) {
+                    return;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                } else {
+                    status = choice;
+                    break;
+                }
+            }
+        }
+
+        if(status != -1) //another sanity check here
+        {
+            switch(status) {
+                case 1:{
+                    selected_app.approve();
+                }
+                break;
+                case 2: {
+                    selected_app.reject();
+                }
+                break;
+                default: //default case should never happen as its asserted beforehand.
+                    break;
+            }
+
+        }
+
+
+
+
     }
 
     private static void viewApplicantWithdrawal()
@@ -171,6 +321,8 @@ public class ManagerBoundary {
         for(Application app : applications) {
             app.print();
         }
+
+        //copy whatever from on top down to here.
     }
 
     private static void viewOfficerRegistrations()
@@ -180,6 +332,8 @@ public class ManagerBoundary {
         for(Application app : applications) {
             app.print();
         }
+
+        //copy whatever from on top down to here.
     }
 
     private static void waitForContinue(boolean refresh)

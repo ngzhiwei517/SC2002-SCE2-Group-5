@@ -114,7 +114,7 @@ public class OfficerBoundary {
 
     public static void viewManagedProjects()
     {
-
+        //todo its just a filter.
     }
 
     public static void viewEnquiries() //send in
@@ -188,32 +188,6 @@ public class OfficerBoundary {
         {
             System.out.println("Response Failed");
         }
-
-
-
-
-
-
-        //ask for selection
-
-
-        //for(ProjectController.getSelectedProject())
-        /*
-        List<Enquiry.Status> filter = List.of(Enquiry.Status.PENDING);
-        for(Project project : projects) {
-
-            List<Enquiry> enquiries = EnquiryController.getEnquiries(filter, project);
-            if(!enquiries.isEmpty()) {
-                project.printBasicInformation();
-                for (Enquiry enquiry : enquiries) {
-                    enquiry.print();
-                }
-            }
-        }*/
-
-        //allow user to select project, then enquiry id
-
-
     }
 
 }

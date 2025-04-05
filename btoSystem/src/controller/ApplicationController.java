@@ -89,7 +89,7 @@ public class ApplicationController {
 
         //assertion check that user does not already have an application for this flat.
 
-        Application application = new Application(user, flat.getProject(), flat, Application.Status.PENDING, Application.Type.Applicant);
+        Application application = new Application((Applicant) user, flat.getProject(), flat, Application.Status.PENDING, Application.Type.Applicant);
         applications.add(application);
         return application;
         //return false;

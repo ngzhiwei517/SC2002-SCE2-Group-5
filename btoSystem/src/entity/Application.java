@@ -39,9 +39,9 @@ public class Application  {
         this.type = type;
     }
 
-    public Application(User user, Project project, Flat flat, Status status, Type type) {         //new applicant
+    public Application(Applicant applicant, Project project, Flat flat, Status status, Type type) {         //new applicant
         this.id = nextid++;
-        this.user = user;
+        this.user = (User) applicant;
         this.project = project;
         this.flat = flat;
         this.status=status;
@@ -94,6 +94,9 @@ public class Application  {
         this.status = status;
     }
 
+    public void approve() { this.status = Status.APPROVED; }
+
+    public void reject() { this.status = Status.REJECTED; }
 
 
 

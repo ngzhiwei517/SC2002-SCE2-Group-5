@@ -174,6 +174,15 @@ public class ProjectController {
         return filtered;
     }
 
+    public static List<Project> getProjects()
+    {
+        List<Project> ret = new ArrayList<Project>();
+        for(int key : projects.keySet()) {
+            ret.add(projects.get(key));
+        }
+        return ret;
+    }
+
     public List<Project> getEligibleProjects(User user) {
         List<Project> remapped = new ArrayList<Project>();
         for (int key : projects.keySet()) {
