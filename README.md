@@ -9,31 +9,4 @@ Controller Classes: Handle business logic and operations
 Entity Classes: Represent system data and enforce business rules
 
 
-Project Structure
-src/
-├── boundary/
-│   ├── ApplicantBoundary.java
-│   ├── MainBoundary.java
-│   ├── ManagerBoundary.java
-│   └── OfficerBoundary.java
-│
-├── controller/
-│   ├── ApplicationController.java
-│   ├── EnquiryController.java
-│   ├── ProjectController.java
-│   └── UserController.java
-│
-├── entity/
-│   ├── Applicant.java
-│   ├── Application.java
-│   ├── Enquiry.java
-│   ├── Flat.java
-│   ├── IEnquiryManageable.java
-│   ├── Manager.java
-│   ├── Officer.java
-│   ├── Project.java
-│   ├── Receipt.java
-│   └── User.java
-│
-├── utils/
-│   └── Main.java
+Project Structure src/ ├── boundary/ │ ├── ApplicantBoundary.java │ ├── MainBoundary.java │ ├── ManagerBoundary.java │ └── OfficerBoundary.java │ ├── controller/ │ ├── ApplicationController.java │ ├── EnquiryController.java │ ├── ProjectController.java │ └── UserController.java │ ├── entity/ │ ├── Applicant.java │ ├── Application.java │ ├── Enquiry.java │ ├── Flat.java │ ├── IEnquiryManageable.java │ ├── Manager.java │ ├── Officer.java │ ├── Project.java │ ├── Receipt.java │ └── User.java │ ├── utils/ │ └── Main.java
