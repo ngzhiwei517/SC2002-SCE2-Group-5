@@ -11,13 +11,14 @@ public class Flat {
     }
 
     private static int next_id = 0;
-    private int id;
+    private final int id;
     private Project project;
     private Type type;
+    private float price;
     private int units;
-    private int price;
 
-    public Flat(int id, Project project, String type, int units, int price) {
+
+    public Flat(int id, Project project, String type, float price, int units) {
         this.id = id;
         if(id >= next_id) //ensure new generated ids are unique
         {
@@ -29,27 +30,17 @@ public class Flat {
         this.price = price;
     }
 
-    public Flat(String type, int units, int price) {
+    public Flat(String type, float price, int units) {
         this.id = next_id++;
         this.type = stringToType(type);
         this.units = units;
         this.price = price;
     }
 
-    public Project getProject() { return project; }
-
     public void print()
     {
-        System.out.println(this.getType() + ", " + this.getUnits() + ", " + this.getPrice());
+        System.out.println(this.getType() + ", " + this.getPrice() + ", " + this.getUnits());
     }
-
-    public int getId() { return id;}
-
-    public Type getType() { return type; }
-
-    public int getUnits() { return units; }
-
-    public int getPrice() { return price; }
 
     public Type stringToType(String strType)
     {
@@ -62,4 +53,22 @@ public class Flat {
         }
         return null;
     }
+
+    public void deleteSelf(){
+        if(project.deleteFlat(this)) {
+            project = null; }
+    }
+
+    public int getId() { return id;}
+    public Type getType() { return type; }
+    public int getUnits() { return units; }
+    public float getPrice() { return price; }
+    public Project getProject() { return project; }
+
+    public void setType(Type type) { this.type = type; }
+    public void setPrice(float price) { this.price = price; }
+    public void setUnits(int units) { this.units = units; }
+    public void setProject(Project project) { this.project = project; }
+
+
 }

@@ -80,20 +80,20 @@ public class ProjectController {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
-            String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-            int f_id = Integer.parseInt(values[0]);
-            int p_id = Integer.parseInt(values[1]);
-            String type = values[2];
-            int cost = Integer.parseInt(values[3]);
-            int units = Integer.parseInt(values[4]);
+                String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                int f_id = Integer.parseInt(values[0]);
+                int p_id = Integer.parseInt(values[1]);
+                String type = values[2];
+                float cost = Float.parseFloat(values[3]);
+                int units = Integer.parseInt(values[4]);
 
-            Project project = projects.get(p_id);
-            if(project != null)
-            {
-                Flat flat = new Flat(f_id, project, type, cost, units);
-                project.addFlat(flat);
-            }
-            System.out.println("Invalid Project ID: " + p_id);
+                Project project = projects.get(p_id);
+                if (project != null) {
+                    Flat flat = new Flat(f_id, project, type, cost, units);
+                    project.addFlat(flat);
+                } else {
+                    System.out.println("Invalid Project ID: " + p_id);
+                }
             }
         }
         return true;

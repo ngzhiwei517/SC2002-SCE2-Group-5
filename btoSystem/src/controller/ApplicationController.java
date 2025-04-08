@@ -44,8 +44,8 @@ public class ApplicationController {
                 Application.Type type = Application.Type.valueOf(data[4]);
                 Application.Status status = Application.Status.valueOf(data[5]);
 
-                User user = userController.getUser(applicant_id);
-                Project project = projectController.getProject(project_id);
+                Applicant user = (Applicant) UserController.getUser(applicant_id);
+                Project project = ProjectController.getProject(project_id);
 
                 Flat flat = flat_id != -1 ? project.getFlat(flat_id) : null;
 

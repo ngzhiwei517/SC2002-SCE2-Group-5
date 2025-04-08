@@ -235,7 +235,7 @@ public class ApplicantBoundary {
                         exit = true;
                         break;
                     }
-                    enquiryController.newEnquiry(userController.getLoggedUser(), projectController.getSelectedProject(), title, body);
+                    enquiryController.newEnquiry((Applicant) UserController.getLoggedUser(), ProjectController.getSelectedProject(), title, body);
                     exit = true;
                 break;
             }
@@ -245,7 +245,7 @@ public class ApplicantBoundary {
 
     private static void withdrawApplication()
     {
-        List<Application> appList = applicationController.getUserApplications(userController.getLoggedUser()); //TODO: limit to just type == applciant in getuserapplications.
+        List<Application> appList = ((Applicant) UserController.getLoggedUser()).getApplications();//applicationController.getUserApplications(UserController.getLoggedUser()); //TODO: limit to just type == applciant in getuserapplications.
 
         if(!appList.isEmpty()) {
             int count = 1;
@@ -284,7 +284,7 @@ public class ApplicantBoundary {
 
     private static void viewAllEnquiries()
     {
-        List<Enquiry> enquiries = enquiryController.getEnquiries(UserController.getLoggedUser(), null);
+        List<Enquiry> enquiries = ((Applicant) UserController.getLoggedUser()).getEnquiries();
         for(Enquiry e : enquiries) {
             e.print();
         }

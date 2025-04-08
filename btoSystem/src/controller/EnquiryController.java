@@ -52,13 +52,13 @@ public class EnquiryController {
                 String str_responder_id = data[6];
                 String response = data[7];
 
-                Project project = projectController.getProject(p_id);
-                User user = userController.getUser(u_id);
+                Project project = ProjectController.getProject(p_id);
+                Applicant user = (Applicant) UserController.getUser(u_id);
 
                 User responder = null;
                 if(!str_responder_id.equalsIgnoreCase("null"))
                 {
-                    responder = userController.getUser(Integer.parseInt(str_responder_id));
+                    responder = UserController.getUser(Integer.parseInt(str_responder_id));
                 }
 
                 //sanity check to check if e_id already in hashmap
@@ -108,7 +108,7 @@ public class EnquiryController {
     }
 
 
-    public boolean newEnquiry(User user, Project project, String title, String body)
+    public boolean newEnquiry(Applicant user, Project project, String title, String body)
     {
         Enquiry enquiry = new Enquiry(project, user, Enquiry.Status.PENDING, title, body);
         enquiries.put(enquiry.getEnquiryId(), enquiry);

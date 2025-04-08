@@ -20,13 +20,13 @@ public class Application  {
     //can store applicant id within the csv, as an index, this will never be wiped, and is sequential.
     private static int nextid;
     private int id;
-    private User user;
-    private final Project project;
-    private final Flat flat;
+    private Applicant user;
+    private Project project;
+    private Flat flat;
     private Status status;
     private Type type;
 
-    public Application(int id, User user, Project project, Flat flat, Status status, Type type) {
+    public Application(int id, Applicant user, Project project, Flat flat, Status status, Type type) {
         this.id = id;
         if(id >= nextid)
         {
@@ -37,25 +37,34 @@ public class Application  {
         this.flat = flat;
         this.status=status;
         this.type = type;
+
+        project.addApplication(this);
+        user.addApplication(this);
     }
 
     public Application(Applicant applicant, Project project, Flat flat, Status status, Type type) {         //new applicant
         this.id = nextid++;
-        this.user = (User) applicant;
+        this.user = applicant;
         this.project = project;
         this.flat = flat;
         this.status=status;
         this.type = type;
+
+        this.project.addApplication(this);
+        this.user.addApplication(this);
     }
 
     public Application(Officer officer, Project project, Status status, Type type)
     {
         this.id = nextid++;
-        this.user = (User) officer;
+        this.user = officer;
         this.project = project;
         this.status = status;
         this.type = type;
         this.flat = null;
+
+        this.project.addApplication(this);
+        this.user.addApplication(this);
     }
 
     public void print()

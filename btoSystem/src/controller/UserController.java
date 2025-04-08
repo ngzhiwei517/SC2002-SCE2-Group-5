@@ -15,7 +15,7 @@ import java.util.Map;
 public class UserController {
     private static User loggedUser = null;
 
-    private Map<String, User> Users = new HashMap<>();;
+    private static Map<String, User> Users = new HashMap<>();;
     private final String applicantPath = "ApplicantList.csv";
 
     public void init()
@@ -93,7 +93,7 @@ public class UserController {
         return false;
     }
 
-    public User getUser(int id)
+    public static User getUser(int id)
     {
         for(User user: Users.values())
         {

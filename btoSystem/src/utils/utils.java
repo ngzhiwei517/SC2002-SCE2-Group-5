@@ -42,4 +42,40 @@ public class utils {
         return -1;
     }
 
+    public static boolean assertInt(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean assertFloat(String input) {
+        try {
+            Float.parseFloat(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean assertIntRange(int min, int max, String input) {
+        try {
+            int value = Integer.parseInt(input);
+            return value >= min && value <= max;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean assertFloatRange(float min, float max, String input) {
+        try {
+            float value = Float.parseFloat(input);
+            return value >= min && value <= max;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 }

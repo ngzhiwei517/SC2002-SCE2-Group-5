@@ -15,7 +15,7 @@ public class Enquiry {
     private User responder;
     private String response;
 
-    public Enquiry(int e_id, Project project, User user, String status, String title, String text, User responder, String response) {
+    public Enquiry(int e_id, Project project, Applicant user, String status, String title, String text, User responder, String response) {
         this.e_id = e_id;
         if(e_id >= next_id)
         {
@@ -28,15 +28,21 @@ public class Enquiry {
         this.text = text;
         this.responder = responder;
         this.response = response;
+
+        project.addEnquiry(this);
+        user.addEnquiry(this);
     }
 
-    public Enquiry(Project project, User user, Status status, String title, String text) { //used for new enquiry
+    public Enquiry(Project project, Applicant user, Status status, String title, String text) { //used for new enquiry
         this.e_id = next_id++;
         this.project = project;
         this.user = user;
         this.status = status;
         this.title = title;
         this.text = text;
+
+        project.addEnquiry(this);
+        user.addEnquiry(this);
     }
 
     public void print()

@@ -27,7 +27,8 @@ enum FlatType {
 public class Project {
     public enum Status {
         VISIBLE,
-        INVISIBLE
+        INVISIBLE,
+        DELETED
     }
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
@@ -37,9 +38,11 @@ public class Project {
     private String neighborhood;
     private LocalDate openingDate;
     private LocalDate closingDate;
-    private Manager managerInCharge;
+    private Manager manager;
     private Status status;
     private int OfficerSlots;
+    private List<Application> applications = new ArrayList<>();
+    private List<Enquiry> enquiries = new ArrayList<>();
 
     private List<Officer> Officers; //list that store num of officers that handle this project
     private List<Flat> flats = new ArrayList<>();
@@ -52,24 +55,38 @@ public class Project {
         }
         this.projectName = projectName;
         this.neighborhood = neighborhood;
-        this.managerInCharge = manager;
+        this.manager = manager;
         this.openingDate = LocalDate.parse(OpeningDate, formatter);
         this.closingDate = LocalDate.parse(ClosingDate, formatter);
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
         this.status = status;
+
+        for(Officer officer : Officers) //give officer project.
+        {
+            officer.addProject(this);
+        }
+
+        manager.addProject(this);
     }
 
     public Project(String projectName, String neighborhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
         this.p_id = nextid++;
         this.projectName = projectName;
         this.neighborhood = neighborhood;
-        this.managerInCharge = manager;
+        this.manager = manager;
         this.openingDate = LocalDate.parse(OpeningDate, formatter);
         this.closingDate = LocalDate.parse(ClosingDate, formatter);
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
         this.status = status;
+
+        for(Officer officer : Officers) //give officer project.
+        {
+            officer.addProject(this);
+        }
+
+        manager.addProject(this);
     }
 
     public int getProjectID() {
@@ -107,7 +124,7 @@ public class Project {
         System.out.print("Application Window: ");
         System.out.println(project.getOpeningDate() + " to " + project.getClosingDate());
 
-        System.out.println("Manager: " + project.getManagerInCharge().getName());
+        System.out.println("Manager: " + project.getManager().getName());
 
         if(by_manager)
         {
@@ -144,7 +161,7 @@ public class Project {
         System.out.print("Application Window: ");
         System.out.println(this.getOpeningDate() + " to " + this.getClosingDate());
 
-        System.out.println("Manager: " + this.getManagerInCharge().getName());
+        System.out.println("Manager: " + this.getManager().getName());
     }
 
     public void printName()
@@ -194,7 +211,7 @@ public class Project {
     public String getNeighborhood() { return neighborhood; }
     public LocalDate getOpeningDate() { return openingDate; }
     public LocalDate getClosingDate() { return closingDate; }
-    public Manager getManagerInCharge() {  return managerInCharge; }
+    public Manager getManager() {  return manager; }
     public int getOfficerSlots() { return OfficerSlots; }
     public List<Officer> getOfficers() { return Officers; }
 
@@ -214,10 +231,22 @@ public class Project {
         this.closingDate = applicationClosingDate;
     }
 
-    public void setManagerInCharge(Manager managerInCharge) {
-        this.managerInCharge = managerInCharge;
+    public void setManager(Manager managerInCharge) {
+        this.manager = managerInCharge;
     }
 
+    public void toggleVisibility()
+    {
+        if(status == Status.INVISIBLE)
+        {
+            status = Status.VISIBLE;
+        }
+        else if(status == Status.VISIBLE)
+        {
+            status = Status.INVISIBLE;
+        }
+        return;
+    }
 
     public boolean isDateClash(Project project)
     {
@@ -237,4 +266,47 @@ public class Project {
         }
         return false;
     }
+
+    public boolean delete()
+    {
+        if(status != Status.DELETED)
+        {
+            status = Status.DELETED;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteFlat(Flat flat)
+    {
+        return flats.remove(flat);
+    }
+
+    public boolean removeOfficer(Officer officer)
+    {
+        officer.removeProject(this);
+        return Officers.remove(officer);
+    }
+
+    public boolean addApplication(Application application){
+        return applications.add(application);
+    }
+
+    public List<Application> getApplications() { return applications; }
+
+    public boolean removeApplication(Application application)
+    {
+        return applications.remove(application);
+    }
+
+    public boolean addEnquiry(Enquiry enquiry) {
+        return enquiries.add(enquiry);
+    }
+
+    public List<Enquiry> getEnquiries() { return enquiries; }
+
+    public boolean removeEnquiry(Enquiry enquiry) {
+        return enquiries.remove(enquiry);
+    }
+
 }
