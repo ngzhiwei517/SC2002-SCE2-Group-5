@@ -2,13 +2,14 @@ package entity;
 public class Enquiry {
     public enum Status {
         PENDING,
-        CLOSED
+        CLOSED,
+        DELETED
     }
 
     private static int next_id = 0;
     private int e_id;
     private Project project;
-    private User user;
+    private Applicant user;
     private Status status;
     private String title;
     private String text;
@@ -73,13 +74,24 @@ public class Enquiry {
         return false;
     }
 
+    public void setText(String text){ this.text = text; }
+    public void setTitle(String title){ this.title = title; }
+    public void setResponder(User responder){ this.responder = responder; }
+    public void setResponse(String response){ this.response = response; }
+
     public int getEnquiryId() { return e_id; }
     public Project getProject() { return project; }
-    public User getUser() { return user; }
+    public Applicant getUser() { return user; }
     public Status getStatus() { return status; }
     public String getTitle() { return title; }
     public String getText() { return text; }
     public User getResponder() { return responder; }
     public String getResponse() { return response; }
+
+    public void delete(){
+        this.user.removeEnquiry(this);
+        this.project.removeEnquiry(this);
+        this.status = Status.DELETED;
+    }
 
 }

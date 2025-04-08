@@ -63,6 +63,7 @@ public class ManagerBoundary {
                     waitForContinue(true);
                     break;
                 case 8:
+                    viewAllEnquiries();
                     exit = true;
                     waitForContinue(true);
                     break;
@@ -976,6 +977,56 @@ public class ManagerBoundary {
                 break;
                 default: //default case should never happen as its asserted beforehand.
                 break;
+            }
+        }
+    }
+
+    private static void viewAllEnquiries(){
+        List<Project> projects = ProjectController.getProjects();
+
+        if(projects.isEmpty()) {
+            return;
+        }
+
+        List<Project> filtered_projects = new ArrayList<>();
+        for(Project project : projects) {
+            if(!project.getEnquiries().isEmpty()) {
+                filtered_projects.add(project);
+            }
+        }
+
+        int index = 1;
+        for(Project project : filtered_projects) {
+            System.out.print(index + ": ");
+            System.out.print(project.getProjectName() + ", " + project.getManager().getName());
+            System.out.print(", Enquiries: " + project.getEnquiries().size() + "\n");
+            index++;
+        }
+
+        System.out.println("View Enquiries of Project (number to select, q to quit): ");
+        Scanner sc = new Scanner(System.in);
+
+        Map<String, Integer> options = new HashMap<>();
+        options.put("q", -2);
+
+        Project selectedProject = null;
+        while(true)
+        {
+            String input = sc.nextLine();
+            int choice = utils.getRange(options, 1, filtered_projects.size(), input);
+            if (choice == -2) {
+                return;
+            } else if (choice == -1) {
+                System.out.println("Invalid Option");
+            } else {
+                selectedProject = projects.get(choice - 1);
+                break;
+            }
+        }
+
+        if(selectedProject != null) { //sanity check, should never happen
+            for(Enquiry enquiry : selectedProject.getEnquiries()) {
+                enquiry.print();
             }
         }
     }

@@ -10,8 +10,8 @@ import java.util.List;
 public class ApplicationController {
     private final String applicantPath = "ApplicationList.csv";
     private List<Application> applications = new ArrayList<Application>();
-    private UserController userController;
-    private ProjectController projectController;
+    private static UserController userController;
+    private static ProjectController projectController;
 
     public void setControllers(UserController uController, ProjectController pController)
     {
@@ -109,24 +109,10 @@ public class ApplicationController {
         return new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
     }
 
-    public List<Application> getUserApplications(User user)
-    {
-        List<Application> retList = new ArrayList<>();
-        for(Application app : applications)
-        {
-            if(app.getUser() == user)
-            {
-                retList.add(app);
-            }
-            //System.out.println(app.getApplicant().getName() + " | " + app.getStatus() + " | " + app.getFlat().getType() + " | " + app.getProject().getProjectName());
-        }
-        return retList;
-    }
-
     public boolean tryWithdrawApplication(Application application)
     {
         if(applications.contains(application)) {
-            application.setStatus(Application.Status.WITHDRAWN);
+            application.setStatus(Application.Status.REQUESTED_WITHDRAW);
             return true;
         }
         return false;

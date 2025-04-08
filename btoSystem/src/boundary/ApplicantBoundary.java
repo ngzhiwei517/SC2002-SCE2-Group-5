@@ -3,9 +3,7 @@ import controller.*;
 import entity.*;
 import utils.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ApplicantBoundary {
 
@@ -21,7 +19,6 @@ public class ApplicantBoundary {
         applicationController = aController;
         enquiryController = eController;
     }
-
 
     public static void welcome(){
         int choice = -1;
@@ -39,21 +36,18 @@ public class ApplicantBoundary {
                     break;
                 case 2:
                     utils.clear();
+                    viewApplication();
                     break;
                 case 3:
                     utils.clear();
-                    withdrawApplication();
+                    viewAllEnquiries();
                     break;
                 case 4:
                     utils.clear();
-                    viewAllEnquiries();
-                    break;
-                case 5:
-                    utils.clear();
-                    if(!(userController.getLoggedUser() instanceof Officer))
+                    if(!(UserController.getLoggedUser() instanceof Officer))
                     {
-                        userController.clearLoggedUser();
-                        projectController.clearSelectedProject();
+                        UserController.clearLoggedUser();
+                        ProjectController.clearSelectedProject();
                         System.out.println("Logging Out");
                     }
                     exit = true;
@@ -69,15 +63,14 @@ public class ApplicantBoundary {
         System.out.println("Welcome "); //add applicant name here
         System.out.println("1. View & Apply for Projects");
         System.out.println("2. View All Applications");
-        System.out.println("3. Request for Application Withdrawal");
-        System.out.println("4. View Pending Enquiries");
+        System.out.println("3. View Pending Enquiries");
 
         if(userController.getLoggedUser() instanceof Officer)
         {
-            System.out.println("5. Return to Officer View");
+            System.out.println("4. Return to Officer View");
         }
         else {
-            System.out.println("5. Log Out");
+            System.out.println("4. Log Out");
         }
     }
 
@@ -243,63 +236,155 @@ public class ApplicantBoundary {
     }
 
 
-    private static void withdrawApplication()
+    private static void viewApplication()
     {
-        List<Application> appList = ((Applicant) UserController.getLoggedUser()).getApplications();//applicationController.getUserApplications(UserController.getLoggedUser()); //TODO: limit to just type == applciant in getuserapplications.
+        List<Application> applications = ((Applicant) UserController.getLoggedUser()).getApplications();//applicationController.getUserApplications(UserController.getLoggedUser()); //TODO: limit to just type == applciant in getuserapplications.
 
-        if(!appList.isEmpty()) {
+        if(!applications.isEmpty()) {
             int count = 1;
-            for(Application app : appList) {
-                System.out.println(count + ". " + app.getUser() + " | " + app.getProject() + " | " + app.getFlat() + " | " + app.getStatus());
+            for(Application app : applications) {
+                System.out.println(count + ". " + app.getProject().getProjectName() + " | " + app.getFlat().getType() + " | " + app.getStatus());
                 count++;
             }
             Scanner sc = new Scanner(System.in);
-            System.out.println("Selection: ");
+            System.out.println("Withdraw Application (number to withdraw, q to back): ");
+
+
+            Application selectedApplication;
+            int choice;
+            Map<String, Integer> options = new HashMap<>();
+            options.put("b", -2);
             while (true) {
                 String input = sc.nextLine();
-                if (!utils.isNumeric(input)) {
-                    if (input.equals("b")) {
-                        break;
-                    } else if (input.equals("q")) {
-                        break;
-                    } else {
-                        System.out.println("Invalid Input.");
-                    }
+                choice = utils.getRange(options, 1, applications.size(), input);
+                if (choice == -2) {
+                    return; //go back to options.
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
                 } else {
-                    int choice = Integer.parseInt(input);
-                    if (choice <= appList.size() && choice > 0) {
-                        applicationController.tryWithdrawApplication(appList.get(choice - 1));
-                        System.out.println("Withdraw Request Sent");
-                        break;
-                    } else {
-                        System.out.println("Index Out of Bounds");
-                    }
+
+                    break;
                 }
             }
+
+            selectedApplication = applications.get(choice-1);
+
+            selectedApplication.print();
+            System.out.println("Confirm Delete? (y/n)");
+            while(true){
+                String input = sc.nextLine();
+                if(input.equals("y")) {
+                    applicationController.tryWithdrawApplication(selectedApplication);
+                    break;
+                }
+                else if(input.equals("n")) {
+                    break;
+                }
+                else{
+                    System.out.println("Invalid Input.");
+                }
+            }
+
         }
         else {
             System.out.println("You have no pending applications");
         }
     }
 
-    private static void viewAllEnquiries()
-    {
+    private static void viewAllEnquiries() {
+        int index = 1;
         List<Enquiry> enquiries = ((Applicant) UserController.getLoggedUser()).getEnquiries();
-        for(Enquiry e : enquiries) {
+        if (enquiries.isEmpty()) {
+            System.out.println("No Enquiries Found");
+            return;
+        }
+
+        for (Enquiry e : enquiries) {
+            System.out.print(index + ". ");
             e.print();
         }
-    }
 
-    private static void waitForContinue(boolean refresh)
-    {
-        System.out.println("Press any key to continue");
         Scanner sc = new Scanner(System.in);
-        sc.nextLine();
-        if(refresh)
+        int choice;
+        Map<String, Integer> options = new HashMap<>();
+        options.put("b", -2);
+        while (true) {
+            String input = sc.nextLine();
+            choice = utils.getRange(options, 1, enquiries.size(), input);
+            if (choice == -2) {
+                return; //go back to options.
+            } else if (choice == -1) {
+                System.out.println("Invalid Option");
+            } else {
+                break;
+            }
+        }
+
+        Enquiry selectedEnquiry = enquiries.get(choice-1);
+
+
+        System.out.print("1. Edit Enquiry");
+        System.out.print("2. Delete Enquiry");
+        while(true)
         {
-            welcome();
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("1")) {
+                editEnquiry(selectedEnquiry);
+            }else if(input.equalsIgnoreCase("2")) {
+                deleteEnquiry(selectedEnquiry);
+            }
+            else if(input.equalsIgnoreCase("b")) {
+                return;
+            }
+            else{
+                System.out.println("Invalid Input.");
+            }
         }
     }
 
+    private static void editEnquiry(Enquiry enquiry) {
+        while(true) {
+            System.out.print("1. Edit Title");
+            System.out.print("2. Edit Body");
+            System.out.print("Input (b to back): ");
 
+            Scanner sc = new Scanner(System.in);
+            while (true) {
+                String input = sc.nextLine();
+                switch (input) {
+                    case "1":
+                        System.out.print("Previous Title: " + enquiry.getTitle());
+                        System.out.print("New Title: ");
+                        enquiry.setTitle(sc.nextLine());
+                        break;
+                    case "2":
+                        System.out.print("Previous Body: " + enquiry.getText());
+                        System.out.print("New Body: ");
+                        enquiry.setText(sc.nextLine());
+                        break;
+                    case "b":
+                        return;
+                    default:
+                        System.out.println("Invalid Input.");
+                        break;
+                }
+            }
+        }
+    }
+
+    private static void deleteEnquiry(Enquiry enquiry){
+        System.out.println("Confirm Delete Project? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        while(true) {
+            String input = sc.nextLine();
+            if (input.equalsIgnoreCase("y")) {
+                enquiry.delete();
+                return;
+            } else if (input.equalsIgnoreCase("n")) {
+                return;
+            } else {
+                System.out.println("Invalid Input.");
+            }
+        }
+    }
 }
