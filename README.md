@@ -2,6 +2,7 @@ Project Overview
 The Build-To-Order (BTO) Management System is a Java-based application developed as part of the SC/CE/CZ2002 Object-Oriented Design & Programming course at Nanyang Technological University. This system serves as a centralized hub for HDB BTO flat applications, enabling applicants to view and apply for BTO projects, while allowing HDB staff to manage applications and projects.
 
 System Architecture
+
 The application follows the Boundary-Control-Entity (BCE) architectural pattern:
 
 Boundary Classes: Manage user interactions through the command-line interface
