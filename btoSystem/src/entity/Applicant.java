@@ -25,7 +25,6 @@ public class Applicant extends User {
     }
 
     public boolean addApplication(Application app) {
-        System.out.println("Adding Application: " + app);
         return applications.add(app);
     }
 
@@ -43,6 +42,17 @@ public class Applicant extends User {
 }
 
     public boolean assertDateClash(LocalDate date, Project excluded)
+    {
+        return true;
+    }
+
+    public boolean canApplyForProject(Project project)
+    {
+        //skim through applicants.
+        return false;
+    }
+
+    public boolean assertDateClash(Project project)
     {
         return true;
     }

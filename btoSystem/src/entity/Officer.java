@@ -21,11 +21,32 @@ public class Officer extends Applicant {
         return projects.remove(project);
     }
 
+
+    public List<Project> getProjects(){
+        return projects;
+    }
+
+    public List<Project> getProjects(List<Project.Status> filter){
+        List<Project> projects = new ArrayList<>();
+        for(Project project : this.projects){
+            if(filter.contains(project.getStatus())){
+                projects.add(project);
+            }
+        }
+        return projects;
+    }
+
     public boolean assertDateClash(LocalDate date){
         return true;
     }
 
     public boolean canApply(){
+        return true;
+    }
+
+    public boolean canApplyForProject(Project project)
+    {
+        super.canApplyForProject(project);
         return true;
     }
 }

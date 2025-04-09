@@ -4,10 +4,7 @@ import controller.*;
 import entity.*;
 import utils.utils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class OfficerBoundary {
 
@@ -55,6 +52,103 @@ public class OfficerBoundary {
             }
         }
 
+    }
+
+    private static void viewBTOListings()
+    {
+        if(!(UserController.getLoggedUser() instanceof Officer)) //sanity check.
+        {
+            return;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
+        int exitcode = 0;
+        while(exitcode == 0) {
+            //view only manager's projects.
+            List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
+
+            //print out projects.
+            int index = 1;
+            for(Project project : projects){
+                System.out.println(index + ".");
+                project.print(true);
+                index++;
+            }
+
+            Map<String, Integer> options = new HashMap<>(); //allow user to choose project number, or a to view all projects.
+            options.put("q", -2);
+            options.put("v", -3);
+            options.put("a", -4);
+
+            if(filter.contains(Project.Status.INVISIBLE)) {
+                if(projects.isEmpty()) {
+                    System.out.print("q to quit, v to toggle visibility (ON), a to view ALL projects: ");
+                }
+                else {
+                    System.out.print("Select Project (number to select, q to quit, v to toggle visibility (ON), a to view ALL projects): ");
+                }
+            }
+            else if(projects.isEmpty()) {
+                System.out.print("q to quit, v to toggle visibility (OFF), a to view ALL projects: ");
+            }
+            else {
+                System.out.print("Select Project (number to select, q to quit, v to toggle visibility (OFF), a to view ALL projects): ");
+            }
+
+
+            while (true) {
+                String input = sc.nextLine();
+                int choice = utils.getRange(options, 1, projects.size(), input);
+                if (choice == -2) {
+                    return;
+                } else if (choice == -3) {
+                    if (filter.contains(Project.Status.INVISIBLE)) {
+                        filter.remove(Project.Status.INVISIBLE);
+                    } else {
+                        filter.add(Project.Status.INVISIBLE);
+                    }
+                    break;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                } else if (choice == -4) {
+                    projects = ProjectController.getProjects(filter, false);
+                    for(Project project : projects) {
+                        project.print(true);
+                    }
+                    //wait for next key;
+                    utils.waitForKey();
+                    break;
+                }else {
+                    ProjectController.selectProject(projects.get(choice - 1));
+
+                    //register code here.
+                    registerForProject(ProjectController.getSelectedProject());
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void registerForProject(Project project) {
+        //sanity check if can register for project to begin with
+
+        Scanner sc = new Scanner(System.in);
+        project.printBasicInformation();
+        System.out.println("Apply For This Project? (Y/N)");
+        String input = sc.nextLine();
+
+        while(true) {
+            if (input.equalsIgnoreCase("y")) {
+                break;
+            } else if (input.equalsIgnoreCase("n")) {
+                return;
+            } else {
+                System.out.println("Invalid Option");
+            }
+        }
+
+        System.out.println("Officer Application Request Sent.");
     }
 
     public static void viewProjects()
@@ -114,7 +208,55 @@ public class OfficerBoundary {
 
     public static void viewManagedProjects()
     {
-        //todo its just a filter.
+        List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
+        while(true) {
+
+            List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
+
+            if (filter.contains(Project.Status.INVISIBLE)) {
+                if (projects.isEmpty()) {
+                    System.out.print("q to quit, v to toggle visibility (ON), a to view ALL projects: ");
+                } else {
+                    System.out.print("Select Project (number to select, q to quit, v to toggle visibility (ON), a to view ALL projects): ");
+                }
+            } else if (projects.isEmpty()) {
+                System.out.print("q to quit, v to toggle visibility (OFF), a to view ALL projects: ");
+            } else {
+                System.out.print("Select Project (number to select, q to quit, v to toggle visibility (OFF), a to view ALL projects): ");
+            }
+
+            Map<String, Integer> options = new HashMap<>(); //allow user to choose project number, or a to view all projects.
+            options.put("q", -2);
+            options.put("v", -3);
+
+            Scanner sc = new Scanner(System.in);
+            while (true) {
+                String input = sc.nextLine();
+                int choice = utils.getRange(options, 1, projects.size(), input);
+                if (choice == -2) {
+                    return;
+                } else if (choice == -3) {
+                    if (filter.contains(Project.Status.INVISIBLE)) {
+                        filter.remove(Project.Status.INVISIBLE);
+                    } else {
+                        filter.add(Project.Status.INVISIBLE);
+                    }
+                    break;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                }else {
+                    ProjectController.selectProject(projects.get(choice - 1));
+                    //register code here.
+                    //registerForProject(ProjectController.getSelectedProject());
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void manageProject(Project project)
+    {
+
     }
 
     public static void viewEnquiries() //send in
