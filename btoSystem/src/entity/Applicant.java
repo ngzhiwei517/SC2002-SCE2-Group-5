@@ -39,7 +39,7 @@ public class Applicant extends User {
     public boolean canApply()
     {
         //if theres an application that has a pending/approved/booked status, return false
-        return false;
+        return true;
 }
 
     public boolean assertDateClash(LocalDate date, Project excluded)

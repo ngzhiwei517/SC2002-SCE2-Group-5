@@ -147,7 +147,7 @@ public class ApplicantBoundary {
                     }
                 }
                 case 3: {
-                    if (!((Applicant) UserController.getLoggedUser()).hasFlat() || !((Applicant) UserController.getLoggedUser()).hasPendingApplication()) {
+                    if (((Applicant) UserController.getLoggedUser()).canApply()) {
                         Scanner sc = new Scanner(System.in);
                         String input = sc.nextLine();
                         if (!utils.isNumeric(input)) {
