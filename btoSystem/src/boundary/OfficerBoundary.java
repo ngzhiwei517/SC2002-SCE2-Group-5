@@ -63,7 +63,7 @@ public class OfficerBoundary {
         List<Project.Status> filter = List.of(Project.Status.VISIBLE, Project.Status.INVISIBLE);
         List<Project> projects =  projectController.getProjects(filter, false);
         for (Project project : projects) {
-            Project.print(project, true);
+            project.print(true);
         }
         //get choice
         System.out.println("Select Project (number to select, q to quit)");

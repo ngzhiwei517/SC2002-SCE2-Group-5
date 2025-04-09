@@ -1,5 +1,6 @@
 package entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,5 +19,13 @@ public class Officer extends Applicant {
     public boolean removeProject(Project project)
     {
         return projects.remove(project);
+    }
+
+    public boolean assertDateClash(LocalDate date){
+        return true;
+    }
+
+    public boolean canApply(){
+        return true;
     }
 }

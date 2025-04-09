@@ -3,6 +3,7 @@ package utils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class utils {
 
@@ -32,7 +33,7 @@ public class utils {
         {
             return map.get(input);
         }
-        if(isNumeric(input))
+        if(assertInt(input))
         {
             if(Integer.parseInt(input) >= start && Integer.parseInt(input) <= end)
             {
@@ -76,6 +77,12 @@ public class utils {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    public static void waitForKey() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine();
     }
 
 }

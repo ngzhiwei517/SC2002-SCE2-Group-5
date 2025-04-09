@@ -11,10 +11,9 @@ public class Application  {
         SUCCESSFUL,     // Approved and eligible to book a flat
         UNSUCCESSFUL,   // Rejected, applicant may apply for another project
         REQUESTED_WITHDRAW,
+        REQUESTED_WITHDRAW_BOOKED,
         WITHDRAWN,
         BOOKED,          // Successfully booked a unit
-        APPROVED,
-        REJECTED,
     }
 
     //can store applicant id within the csv, as an index, this will never be wiped, and is sequential.
@@ -103,17 +102,30 @@ public class Application  {
         this.status = status;
     }
 
-    public void approve() { this.status = Status.APPROVED;
-    if (this.type == Type.Officer) {
-        this.project.addOfficer((Officer) user);
+    public void approve() {
+        if(this.status == Status.REQUESTED_WITHDRAW || this.status == Status.REQUESTED_WITHDRAW_BOOKED)
+        {
+            this.status = Status.WITHDRAWN;
+            //TODO: plus slots from project if the requested withdraw was booked.
+
+        }
+        else {
+            this.status = Status.SUCCESSFUL;
+            if (this.type == Type.Officer) {
+                //TODO: assert officer correct slots.
+                this.project.addOfficer((Officer) user);
+            }
         }
     }
 
-    public void reject() { this.status = Status.REJECTED; }
+    public void reject() { this.status = Status.UNSUCCESSFUL; }
 
     public void withdraw() { this.status = Status.WITHDRAWN; }
 
-    public void book() { this.status = Status.BOOKED; }
+    public void book() {
+        this.status = Status.BOOKED;
+        //TODO: minus slots from project if the requested withdraw was booked.
+    }
 
 
 

@@ -22,8 +22,7 @@ public class ManagerBoundary {
     }
 
     public static void welcome(){
-        System.out.println("Welcome "); //add applicant name here
-
+        System.out.println("Welcome " + UserController.getLoggedUser().getName()); //add applicant name here
         displayDashboard();
         int choice = 0;
         boolean exit = false;
@@ -42,32 +41,11 @@ public class ManagerBoundary {
                     exit = true;
                     break;
                 case 3:
-                    viewOfficerRegistrations();
-                    waitForContinue(true);
-                    exit = true;
-                    break;
-                case 4:
-                    viewApplicantApplications();
-                    exit = true;
-                    break;
-                case 5:
-                    exit = true;
-                    break;
-                case 6:
-                    viewApplicantWithdrawal();
-                    waitForContinue(true);
-                    exit = true;
-                    break;
-                case 7:
-                    exit = true;
-                    waitForContinue(true);
-                    break;
-                case 8:
                     viewAllEnquiries();
                     exit = true;
                     waitForContinue(true);
                     break;
-                case 9:
+                case 4:
                     exit = true;
                     System.out.println("Logging Out");
                     break;
@@ -76,72 +54,86 @@ public class ManagerBoundary {
             }
         }
         //log out of everything.
-        userController.clearLoggedUser();
-        projectController.clearSelectedProject();
+        UserController.clearLoggedUser();
+        ProjectController.clearSelectedProject();
     }
 
     public static void displayDashboard()
     {
+        //within dashboard just show outstanding stuff.
+
         System.out.println("1. View BTO Project Listings"); //contains, RUD functions. should be able to filter visibility
-        System.out.println("2. View My Projects");
-        System.out.println("3. Create BTO Project Listing");
-        System.out.println("4. View HDB Officer Registration");
-        System.out.println("5. View Applicant Application");
-        System.out.println("6. View Applicant Withdrawal Request");
-        System.out.println("7. Generate Report");
-        System.out.println("8. Enquiry Menu");
-        System.out.println("9. Log Out");
+        System.out.println("2. Create BTO Project Listing");
+        System.out.println("3. View All Enquiries");
+        System.out.println("4. Log Out");
     }
 
     private static void viewBTOListings()
     {
-        List<Project.Status> filter = List.of(Project.Status.VISIBLE);
+        if(!(UserController.getLoggedUser() instanceof Manager)) //sanity check.
+        {
+            return;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
         int exitcode = 0;
         while(exitcode == 0) {
-            List<Project> projects = ProjectController.getProjects(filter, false);
+            //view only manager's projects.
+            List<Project> projects = ((Manager) UserController.getLoggedUser()).getProjects(filter);
 
-            if(projects.isEmpty()) {
-                System.out.println("No projects found, q to quit, h to view hidden projects");
-                Scanner sc = new Scanner(System.in);
-                while(true) {
-                    String input = sc.nextLine();
-                    if (input.equalsIgnoreCase("h")) {
-                        filter = List.of(Project.Status.VISIBLE, Project.Status.INVISIBLE);
-                        projects = ProjectController.getProjects(filter, false);
-                        break;
-                    } else if (input.equalsIgnoreCase("q")) {
-                        return;
-                    } else {
-                        System.out.println("Invalid Input");
-                    }
+            //print out projects.
+            int index = 1;
+            for(Project project : projects){
+                System.out.println(index + ".");
+                project.print(true);
+                index++;
+            }
+
+            Map<String, Integer> options = new HashMap<>(); //allow user to choose project number, or a to view all projects.
+            options.put("q", -2);
+            options.put("v", -3);
+            options.put("a", -4);
+
+            if(filter.contains(Project.Status.INVISIBLE)) {
+                if(projects.isEmpty()) {
+                    System.out.print("q to quit, v to toggle visibility (ON), a to view ALL projects: ");
+                }
+                else {
+                    System.out.print("Select Project (number to select, q to quit, v to toggle visibility (ON), a to view ALL projects): ");
                 }
             }
-
-            for (Project project : projects) {
-                Project.print(project, true);
-            }
-
-            Map<String, Integer> options = new HashMap<>();
-            options.put("q", -2);
-            options.put("h", -3);
-            Scanner sc = new Scanner(System.in);
-            if(filter.contains(Project.Status.INVISIBLE)) {
-                System.out.print("Select Project (number to select, q to quit): ");
+            else if(projects.isEmpty()) {
+                System.out.print("q to quit, v to toggle visibility (OFF), a to view ALL projects: ");
             }
             else {
-                System.out.print("Select Project (number to select, q to quit, h to view hidden projects): ");
+                System.out.print("Select Project (number to select, q to quit, v to toggle visibility (OFF), a to view ALL projects): ");
             }
+
+
             while (true) {
                 String input = sc.nextLine();
                 int choice = utils.getRange(options, 1, projects.size(), input);
                 if (choice == -2) {
                     return;
                 } else if (choice == -3) {
-                    filter = List.of(Project.Status.VISIBLE, Project.Status.INVISIBLE);
+                    if (filter.contains(Project.Status.INVISIBLE)) {
+                        filter.remove(Project.Status.INVISIBLE);
+                    } else {
+                        filter.add(Project.Status.INVISIBLE);
+                    }
                     break;
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
-                } else {
+                } else if (choice == -4) {
+                    projects = ProjectController.getProjects(filter, false);
+                    for(Project project : projects) {
+                        project.print(true);
+                    }
+                    //wait for next key;
+                    utils.waitForKey();
+                    break;
+                }else {
                     ProjectController.selectProject(projects.get(choice - 1));
                     exitcode = optionsUpdateDelete();
                     break;
@@ -155,33 +147,56 @@ public class ManagerBoundary {
 
         int exitcode = 1;
         while(exitcode == 1) {
+            ProjectController.getSelectedProject().print(true);
+            Project selected_project = ProjectController.getSelectedProject();
             System.out.println("1. Update Selected Project");
             System.out.println("2. Delete Selected Project");
+            System.out.println("3. View Applicant Applications");
+            System.out.println("4. View Applicant Withdrawal Requests");
+            System.out.println("5. View Officer Applications");
+            System.out.println("6. View Enquiries");
+            System.out.println("7. Generate Report");
             Map<String, Integer> options = new HashMap<>();
             Scanner sc = new Scanner(System.in);
             options.put("b", -2);
             options.put("q", -3);
             while (true) {
                 String input = sc.nextLine();
-                int choice = utils.getRange(options, 1, 2, input);
+                int choice = utils.getRange(options, 1, 6, input);
                 if (choice == -2) {
                     return 0;
                 } else if (choice == 1) {
-                    exitcode = updateListing(ProjectController.getSelectedProject());
+                    exitcode = updateListing(selected_project);
                     break;
                 } else if (choice == 2) {
-                    exitcode = deleteListing(ProjectController.getSelectedProject());
+                    exitcode = deleteListing(selected_project);
+                    break;
+                } else if(choice == 3) {
+                    exitcode = viewProjectApplications(selected_project);
+                    break;
+                } else if(choice == 4) {
+                    exitcode = viewProjectWithdrawals(selected_project);
+                    break;
+                } else if(choice == 5) {
+                    exitcode = viewProjectOfficerApplications(selected_project);
+                    break;
+                } else if(choice == 6) {
+                    exitcode = viewProjectEnquiries(selected_project);
+                    break;
+                } else if(choice == 7) {
+                    exitcode = generateReport(selected_project);
                     break;
                 } else {
                     System.out.println("Invalid Option");
                 }
+
             }
         }
         return exitcode; //go back to main menu
     }
 
     private static int updateListing(Project project){
-        Project.print(project, true);
+        project.print(true);
 
         int exitcode = 2;
 
@@ -215,8 +230,14 @@ public class ManagerBoundary {
             switch (choice) {
                 case 1: {
                     System.out.println("Previous Name: " + project.getProjectName());
-                    System.out.println("New Name: ");
+                    System.out.println("New Name (b to back, q to quit): ");
                     String input = sc.nextLine();
+                    if(input.equalsIgnoreCase("q")) {
+                        return -1; //-1 brings back to main menu.
+                    }
+                    else if(input.equalsIgnoreCase("b")) {
+                        return 0; //0 brings back to view page.
+                    }
                     //data validation here
                     project.setProjectName(input);
                     exitcode = 1;
@@ -224,8 +245,14 @@ public class ManagerBoundary {
                 break;
                 case 2: {
                     System.out.println("Previous Neighbourhood: " + project.getNeighborhood());
-                    System.out.println("New Neighbourhood: ");
+                    System.out.println("New Neighbourhood (b to back, q to quit): ");
                     String input = sc.nextLine();
+                    if(input.equalsIgnoreCase("q")) {
+                        return -1; //-1 brings back to main menu.
+                    }
+                    else if(input.equalsIgnoreCase("b")) {
+                        return 0; //0 brings back to view page.
+                    }
                     //data validation here
                     project.setNeighborhood(input);
                     exitcode = 1;
@@ -234,22 +261,62 @@ public class ManagerBoundary {
                 break;
                 case 3: {
                     System.out.println("Previous Opening Date: " + project.getOpeningDate().toString());
-                    System.out.println("New Opening Date (M/D/YYYY): ");
-                    String input = sc.nextLine();
+                    System.out.println("New Opening Date (M/D/YYYY) (b to back, q to quit): ");
+
                     //data validation here
-                    LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                    project.setOpeningDate(date);
-                    exitcode = 1;
+                    while(true) {
+                        String input = sc.nextLine();
+                        if(input.equalsIgnoreCase("q")) {
+                            return -1; //-1 brings back to main menu.
+                        }
+                        else if(input.equalsIgnoreCase("b")) {
+                            return 0; //0 brings back to view page.
+                        }
+                        try {
+                            LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
+                            if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date))
+                            {
+                                project.setOpeningDate(date);
+                                exitcode = 1;
+                                break;
+                            }
+                            else {
+                                System.out.println("Date Assertion Failed");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid Date");
+                        }
+                    }
+
                 }
                 break;
                 case 4: {
                     System.out.println("Previous Closing Date: " + project.getClosingDate().toString());
-                    System.out.println("New Closing Date (M/D/YYYY): ");
-                    String input = sc.nextLine();
+                    System.out.println("New Closing Date (M/D/YYYY) (b to back, q to quit): ");
                     //data validation here
-                    LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                    project.setClosingDate(date);
-                    exitcode = 1;
+                    while(true) {
+                        String input = sc.nextLine();
+                        if(input.equalsIgnoreCase("q")) {
+                            return -1; //-1 brings back to main menu.
+                        }
+                        else if(input.equalsIgnoreCase("b")) {
+                            return 0; //0 brings back to view page.
+                        }
+                        try {
+                            LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
+                            if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date))
+                            {
+                                project.setClosingDate(date);
+                                exitcode = 1;
+                                break;
+                            }
+                            else {
+                                System.out.println("Date Assertion Failed, Enter new Date");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid Date");
+                        }
+                    }
                 }
                 break;
                 case 5: {
@@ -541,7 +608,7 @@ public class ManagerBoundary {
     }
 
     private static int deleteListing(Project project){
-        Project.print(project, true);
+        project.print(true);
         System.out.println("Confirm Delete?");
 
         Scanner sc = new Scanner(System.in);
@@ -566,29 +633,129 @@ public class ManagerBoundary {
     private static void createBTOListing()
     {
         Scanner sc = new Scanner(System.in);
-        //request projname
-        System.out.println("Project Name: ");
-        String projectName = sc.nextLine();
-        //request neighbourhood
+        String projectName;
+        String neighbourhood;
+        LocalDate openingDate = null;
+        LocalDate closingDate = null;
+        int officerSlots = -1;
+        Project.Status visibility;
+
+        reqName:
+        System.out.println("Project Name: ");  //do assertion checks here
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("q")) {
+                return;
+            } else if (input.equalsIgnoreCase("b")) {
+                return;
+            }
+            else {
+                projectName = input;
+                break;
+            }
+        }
+
         System.out.println("Neighbourhood: ");
-        String neighbourhood = sc.nextLine();
-        //rqeuest openingdate
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("q")) {
+                return;
+            } else if (input.equalsIgnoreCase("b")) {
+                return;
+            }
+            else{
+                neighbourhood = input;
+                break;
+            }
+        }
+
         System.out.println("Application Opening Date (MM/DD/YYYY): ");
-        String applicationOpeningDate = sc.nextLine();
-        //request closingdate
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("q")) {
+                return;
+            } else if (input.equalsIgnoreCase("b")) {
+                return;
+            }
+
+            try{ openingDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); } //assert date format
+            catch (Exception e){ System.out.println("Invalid Format"); }
+
+            if(UserController.getLoggedUser().assertDateClash(openingDate, null) && openingDate != null){ //assert date clashing
+                break;
+            }
+            else { System.out.println("Date Clashed with Managed Project"); }
+        }
+
         System.out.println("Application Closing Date (MM/DD/YYYY): ");
-        String applicationClosingDate = sc.nextLine();
-        //request officerslots
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("q")) {
+                return;
+            } else if (input.equalsIgnoreCase("b")) {
+                return;
+            }
+
+            try{ closingDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); } //assert date format
+            catch (Exception e){ System.out.println("Invalid Format"); }
+
+            if(UserController.getLoggedUser().assertDateClash(closingDate, null) && closingDate != null){ //assert date clashing
+                break;
+            }
+            else { System.out.println("Date Clashed with Managed Project"); }
+        }
+
         System.out.println("Officer Slots: ");
-        int officerSlots = sc.nextInt();
-        sc.nextLine();
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("q")) {
+                return;
+            } else if (input.equalsIgnoreCase("b")) {
+                return;
+            }
+
+            try{ officerSlots = Integer.parseInt(input); } //assert date format
+            catch (Exception e){ System.out.println("Invalid Format"); }
+
+            if(officerSlots >= 0) {
+                break;
+            }
+        }
+
+        System.out.println("Visibility (1: Visible, 2: Invisible): ");
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("q")) {
+                return;
+            } else if (input.equalsIgnoreCase("b")) {
+                return;
+            }
+            if(input.equalsIgnoreCase("1")) {
+                visibility = Project.Status.VISIBLE;
+                break;
+            }
+            else if(input.equalsIgnoreCase("2")) {
+                visibility = Project.Status.INVISIBLE;
+                break;
+            }
+            else {
+                System.out.println("Invalid Option");
+            }
+        }
+
         //request type1 details
         //skip line
 
         List<Flat> flats = requestFlats();
 
         //manager will be passed in as user.loggeduser.
-        Project project = projectController.addProject(projectName,neighbourhood, applicationOpeningDate, applicationClosingDate, (Manager) userController.getLoggedUser(), officerSlots);
+        Project project = ProjectController.addProject(projectName,neighbourhood, openingDate, closingDate, (Manager) userController.getLoggedUser(), officerSlots, visibility);
         for(Flat flat : flats) {
             project.addFlat(flat);
         }
@@ -761,6 +928,279 @@ public class ManagerBoundary {
         }
     }
 
+    private static int viewProjectApplications(Project project) {
+        while(true) {
+            project.printBasicInformation();
+            List<Application> applications = project.getApplications(List.of(Application.Status.PENDING), Application.Type.Applicant);
+            int index = 1;
+            for (Application app : applications) {
+                System.out.println(index++ + ": ");
+                app.print();
+            }
+
+            Map<String, Integer> options = new HashMap<>();
+            options.put("b", -2);
+            options.put("q", -3);
+            options.put("a", -4);
+            Application selected_application = null;
+            //selection code here. a to view all, number to select, b to back, q to quit.
+            Scanner sc = new Scanner(System.in);
+            int choice;
+            while (true) {
+                String input = sc.nextLine();
+                choice = utils.getRange(options, 1, applications.size(), input);
+                if (choice == -2) {
+                    return 1; //go back to options.
+                } else if (choice == -3) {
+                    return -1;
+                } else if (choice == -4) {
+                    applications = project.getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED), Application.Type.Applicant);
+                    for (Application app : applications) {
+                        app.print();
+                    }
+                    utils.waitForKey();
+                    break;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                } else {
+                    selected_application = applications.get(choice - 1);
+                    break;
+                }
+
+            }
+
+            if (selected_application != null) {
+                //ask for approve/reject
+                System.out.println("Approve/Reject Application (y/n, b to back) : ");
+                while (true) {
+                    String input = sc.nextLine();
+                    if (input.equals("y")) {
+                        selected_application.approve();
+                        return 1;
+                    } else if (input.equals("n")) {
+                        selected_application.reject();
+                        return 1;
+                    } else if (input.equals("b")) {
+                        return 1;
+                    } else {
+                        System.out.println("Invalid Option");
+                    }
+                }
+            }
+        }
+    }
+
+    private static int viewProjectWithdrawals(Project project) {
+        while(true) {
+            project.printBasicInformation();
+            List<Application> applications = project.getApplications(List.of(Application.Status.REQUESTED_WITHDRAW, Application.Status.REQUESTED_WITHDRAW_BOOKED), Application.Type.Applicant);
+            int index = 1;
+            for (Application app : applications) {
+                System.out.println(index++ + ": ");
+                app.print();
+            }
+
+            Map<String, Integer> options = new HashMap<>();
+            options.put("b", -2);
+            options.put("q", -3);
+            options.put("a", -4);
+            Application selected_application = null;
+            //selection code here. a to view all, number to select, b to back, q to quit.
+            Scanner sc = new Scanner(System.in);
+            int choice;
+            while (true) {
+                String input = sc.nextLine();
+                choice = utils.getRange(options, 1, applications.size(), input);
+                if (choice == -2) {
+                    return 1; //go back to options.
+                } else if (choice == -3) {
+                    return -1;
+                } else if (choice == -4) {
+                    applications = project.getApplications(List.of(Application.Status.REQUESTED_WITHDRAW, Application.Status.REQUESTED_WITHDRAW_BOOKED, Application.Status.WITHDRAWN), Application.Type.Applicant);
+                    for (Application app : applications) {
+                        app.print();
+                    }
+                    utils.waitForKey();
+                    break;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                } else {
+                    selected_application = applications.get(choice - 1);
+                    break;
+                }
+            }
+
+            if (selected_application != null) {
+                //ask for approve/reject
+                System.out.println("Approve/Reject Withdrawal (y/n, b to back) : ");
+                while(true) {
+                    String input = sc.nextLine();
+                    if (input.equals("y")) {
+                        selected_application.approve();
+                        return 1;
+                    } else if (input.equals("n")) {
+                        selected_application.reject();
+                        return 1;
+                    } else if (input.equals("b")) {
+                        return 1;
+                    } else {
+                        System.out.println("Invalid Option");
+                    }
+                }
+            }
+        }
+    }
+
+
+    private static int viewProjectEnquiries(Project project)
+    {
+        List<Enquiry.Status> filter = new ArrayList<>(List.of(Enquiry.Status.PENDING));
+        while(true) {
+            List<Enquiry> enquiries = project.getEnquiries(filter);
+
+            int index = 1;
+            for (Enquiry enq : enquiries) {
+                System.out.println(index++ + ": ");
+                enq.print();
+            }
+
+            if (!enquiries.isEmpty()) { //add visibility option here.
+                if(filter.contains(Enquiry.Status.CLOSED)) {
+                    System.out.println("Select Enquiry to Respond (number to select, q to quit, b to back, c: toggle closed enquiries (ON) ): ");
+                }
+                else {
+                    System.out.println("Select Enquiry to Respond (number to select, q to quit, b to back, c: toggle closed enquiries (OFF) ): ");
+                }
+            } else {
+                if(filter.contains(Enquiry.Status.CLOSED)) {
+                    System.out.println("No Enquiries (q to quit, b to back, c: toggle closed enquiries (ON))");
+                }
+                else {
+                    System.out.println("No Enquiries (q to quit, b to back, c: toggle closed enquiries (OFF))");
+                }
+            }
+
+            Map<String, Integer> options = new HashMap<>();
+            options.put("b", -2);
+            options.put("q", -3);
+            options.put("c", -4);
+            Enquiry selected_enquiry = null;
+            //selection code here. a to view all, number to select, b to back, q to quit.
+            Scanner sc = new Scanner(System.in);
+            int choice;
+            while (true) {
+                String input = sc.nextLine();
+                choice = utils.getRange(options, 1, enquiries.size(), input);
+                if (choice == -2) {
+                    return 1; //go back to options.
+                } else if (choice == -3) {
+                    return -1;
+                } else if (choice == -4) { //allow for editing of all things.
+                    if (filter.contains(Enquiry.Status.CLOSED)) {
+                        filter.remove(Enquiry.Status.CLOSED);
+                    }
+                    else {
+                        filter.add(Enquiry.Status.CLOSED);
+                    }
+                    break;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                } else {
+                    selected_enquiry = enquiries.get(choice - 1);
+                    break;
+                }
+            }
+
+            if (selected_enquiry != null) { //user has selected an enquiry.
+                System.out.print("Response: ");
+                String response = sc.nextLine();
+                if(response.equalsIgnoreCase("q") || response.equalsIgnoreCase("b") )
+                {
+                    return 0;
+                }
+                if(!selected_enquiry.respond(userController.getLoggedUser(), response))
+                {
+                    System.out.println("Response Failed");
+                }
+            }
+        }
+    }
+
+    private static int viewProjectOfficerApplications(Project project)
+    {
+        while(true) {
+            project.printBasicInformation();
+            List<Application.Status> filter = List.of(Application.Status.PENDING);
+            List<Application> applications = project.getApplications(filter, Application.Type.Officer);
+            int index = 1;
+            for (Application app : applications) {
+                System.out.println(index++ + ": ");
+                app.print();
+            }
+
+            if (!applications.isEmpty()) {
+                System.out.println("Select Application (number to select, q to quit, b to back, a to view all): ");
+            } else {
+                System.out.println(" q to quit, a to view all: ");
+            }
+
+            Map<String, Integer> options = new HashMap<>();
+            options.put("b", -2);
+            options.put("q", -3);
+            options.put("a", -4);
+            Application selected_application = null;
+            //selection code here. a to view all, number to select, b to back, q to quit.
+            Scanner sc = new Scanner(System.in);
+            int choice;
+            while (true) {
+                String input = sc.nextLine();
+                choice = utils.getRange(options, 1, applications.size(), input);
+                if (choice == -2) {
+                    return 1; //go back to options.
+                } else if (choice == -3) {
+                    return -1;
+                } else if (choice == -4) {
+                    applications = project.getApplications(Application.Type.Officer);
+                    for (Application app : applications) {
+                        app.print();
+                    }
+                    utils.waitForKey();
+                    break;
+                } else if (choice == -1) {
+                    System.out.println("Invalid Option");
+                } else {
+                    selected_application = applications.get(choice - 1);
+                    break;
+                }
+            }
+
+            if (selected_application != null) {
+                //ask for approve/reject
+                System.out.println("Approve/Reject Application (y/n, b to back) : ");
+                while (true) {
+                    String input = sc.nextLine();
+                    if (input.equals("y")) {
+                        selected_application.approve();
+                        return 1;
+                    } else if (input.equals("n")) {
+                        selected_application.reject();
+                        return 1;
+                    } else if (input.equals("b")) {
+                        return 1;
+                    } else {
+                        System.out.println("Invalid Option");
+                    }
+                }
+            }
+        }
+    }
+
+    private static int generateReport(Project project)
+    {
+        return -1;
+    }
+
+
     private static void viewApplicantWithdrawal()
     {
         List<Application> applications = applicationController.getApplications(List.of(Application.Status.REQUESTED_WITHDRAW), Application.Type.Applicant);
@@ -866,7 +1306,7 @@ public class ManagerBoundary {
                 }
                 break;
                 default: //default case should never happen as its asserted beforehand.
-                    break;
+                break;
             }
         }
     }

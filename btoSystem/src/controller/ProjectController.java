@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ public class ProjectController {
     private static UserController userController;
     private final String projectPath = "ProjectList.csv";
     private final String flatPath = "FlatList.csv";
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
     public static void setUserController(UserController controller) {
         userController = controller;
@@ -40,12 +43,15 @@ public class ProjectController {
                 int project_id = Integer.parseInt(values[0]);
                 String projectName = values[1];
                 String neighbourhood = values[2];
-                String openingDate = values[3];
-                String closingDate = values[4];
+                String openingDateStr = values[3];
+                String closingDateStr = values[4];
                 int managerID = Integer.parseInt(values[5]);
                 int officerSlots = Integer.parseInt(values[6]);
                 String officerArr = values[7];
                 Project.Status status = Project.Status.valueOf(values[8]);
+
+                LocalDate openingDate = LocalDate.parse(openingDateStr, formatter);
+                LocalDate closingDate = LocalDate.parse(closingDateStr, formatter);
 
                 Manager assignedManager = null;
                 if (userController.getManager(managerID) != null) {
@@ -103,7 +109,7 @@ public class ProjectController {
         return false;
     }
 
-    public static Project addProject(String projectName, String neighbourhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots)
+    public static Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblitly)
     {
         //get length of project + 1 as projectid
         Project new_project = new Project(projectName, neighbourhood,
@@ -141,7 +147,6 @@ public class ProjectController {
         else
             return null;
     }
-
 
     public static List<Project> getProjects(List<Project.Status> filter, boolean rejectFilter)
     {
@@ -192,5 +197,4 @@ public class ProjectController {
         }
         return remapped;
     }
-
 }

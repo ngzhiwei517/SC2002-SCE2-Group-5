@@ -1,5 +1,6 @@
 package entity;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,5 +64,7 @@ public abstract class User {
         }
         return false;
     }
+
+    public abstract boolean assertDateClash(LocalDate date, Project excluded);
 
 }

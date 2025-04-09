@@ -1,7 +1,7 @@
 package entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Applicant extends User {
@@ -35,16 +35,16 @@ public class Applicant extends User {
         return applications.remove(app);
     }
 
-    public boolean hasFlat()
-    {
-        //if theres an application that has a pending/approved/booked status, return false
-        return false;
-    }
 
-    public boolean hasPendingApplication()
+    public boolean canApply()
     {
         //if theres an application that has a pending/approved/booked status, return false
         return false;
+}
+
+    public boolean assertDateClash(LocalDate date, Project excluded)
+    {
+        return true;
     }
 }
 

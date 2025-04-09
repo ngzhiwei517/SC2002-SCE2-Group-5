@@ -10,3 +10,4 @@ u.id,name,nric,age,marital_status,password,account_type
 9,marriedapplicant,mapplicant,99,Married,1234,Applicant
 10,singleyoungapplicant,syapplicant,21,Single,1234,Applicant
 11,singleoldapplicant,soapplicant,35,Single,1234,Applicant
+12,defaultmanager2,manager2,99,Married,1234,Manager

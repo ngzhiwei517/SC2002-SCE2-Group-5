@@ -1,3 +1,4 @@
-p_id,Project Name,Neighborhood,Application opening date,application closing date,Manager,Officer Slot,officer list,status
+p_id,Project Name,Neighborhood,Application opening date,application closing date,manager_id,Officer Slot,officer list,status
 1,Acacia Breeze,Yishun,2/15/2025,3/20/2025,6,3,"7,8",VISIBLE
 2,ntu ns or someshit,middle of nowhere,2/15/2025,3/20/2025,6,3,"7,8",INVISIBLE
+3,nowhere,even middler of nowhere,2/15/2025,3/20/2025,12,3,"7,8",INVISIBLE

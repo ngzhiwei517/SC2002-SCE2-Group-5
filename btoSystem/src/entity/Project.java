@@ -23,7 +23,6 @@ enum FlatType {
     }
 }
 
-
 public class Project {
     public enum Status {
         VISIBLE,
@@ -47,7 +46,7 @@ public class Project {
     private List<Officer> Officers; //list that store num of officers that handle this project
     private List<Flat> flats = new ArrayList<>();
 
-    public Project(int p_id, String projectName, String neighborhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
+    public Project(int p_id, String projectName, String neighborhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
         this.p_id = p_id;
         if(p_id >= nextid)
         {
@@ -56,8 +55,8 @@ public class Project {
         this.projectName = projectName;
         this.neighborhood = neighborhood;
         this.manager = manager;
-        this.openingDate = LocalDate.parse(OpeningDate, formatter);
-        this.closingDate = LocalDate.parse(ClosingDate, formatter);
+        this.openingDate = OpeningDate;
+        this.closingDate = ClosingDate;
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
         this.status = status;
@@ -67,16 +66,16 @@ public class Project {
             officer.addProject(this);
         }
 
-        manager.addProject(this);
+        manager.addProjects(this);
     }
 
-    public Project(String projectName, String neighborhood, String OpeningDate, String ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
+    public Project(String projectName, String neighborhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
         this.p_id = nextid++;
         this.projectName = projectName;
         this.neighborhood = neighborhood;
         this.manager = manager;
-        this.openingDate = LocalDate.parse(OpeningDate, formatter);
-        this.closingDate = LocalDate.parse(ClosingDate, formatter);
+        this.openingDate = OpeningDate;
+        this.closingDate = ClosingDate;
         this.OfficerSlots = officerSlots;
         this.Officers = officers;
         this.status = status;
@@ -86,7 +85,7 @@ public class Project {
             officer.addProject(this);
         }
 
-        manager.addProject(this);
+        manager.addProjects(this);
     }
 
     public int getProjectID() {
@@ -113,36 +112,34 @@ public class Project {
         return null;
     }
 
-    public static void print(Project project, boolean by_manager)
+    public void print(boolean by_manager)
     {
         System.out.print("Project: ");
-        System.out.print(project.getProjectName());
+        System.out.print(this.getProjectName());
         System.out.print(", ");
-        System.out.println(project.getNeighborhood());
+        System.out.println(this.getNeighborhood());
 
         //separated for easier reading.
         System.out.print("Application Window: ");
-        System.out.println(project.getOpeningDate() + " to " + project.getClosingDate());
+        System.out.println(this.getOpeningDate() + " to " + this.getClosingDate());
 
-        System.out.println("Manager: " + project.getManager().getName());
+        System.out.println("Manager: " + this.getManager().getName());
 
         if(by_manager)
         {
-            System.out.println("Officer Slots: " + project.getOfficerSlots());
+            System.out.println("Officer Slots: " + this.getOfficerSlots());
 
             System.out.print("Officers: ");
-            for (Officer officer : project.getOfficers()) {
+            for (Officer officer : this.getOfficers()) {
                 System.out.print(officer.getName());
-                if(officer != project.getOfficers().get(project.getOfficers().lastIndexOf(officer)))
-                {
+                if(officer != this.getOfficers().get(this.getOfficers().size() - 1))
                     System.out.print(", ");
-                }
             }
             System.out.print("\n");
         }
 
         System.out.println("Flats: ");
-        for(Flat flat : project.getFlats())
+        for(Flat flat : this.getFlats())
         {
             flat.print();
         }
@@ -294,6 +291,28 @@ public class Project {
 
     public List<Application> getApplications() { return applications; }
 
+    public List<Application> getApplications(Application.Type type) {
+        List<Application> filtered = new ArrayList<>();
+        for(Application application : applications) {
+            if(type.equals(application.getType()))
+            {
+                filtered.add(application);
+            }
+        }
+        return filtered;
+    }
+
+    public List<Application> getApplications(List<Application.Status> filter, Application.Type type) {
+        List<Application> filtered = new ArrayList<>(); //filter here
+        for(Application application : applications) {
+            if(filter.contains(application.getStatus()) && type.equals(application.getType()))
+            {
+                filtered.add(application);
+            }
+        }
+        return filtered;
+    }
+
     public boolean removeApplication(Application application)
     {
         return applications.remove(application);
@@ -304,9 +323,33 @@ public class Project {
     }
 
     public List<Enquiry> getEnquiries() { return enquiries; }
+    public List<Enquiry> getEnquiries(List<Enquiry.Status> filter) {
+
+        List<Enquiry> filtered = new ArrayList<>();
+        for(Enquiry enquiry : enquiries) {
+            if (filter.contains(enquiry.getStatus()))
+            {
+                filtered.add(enquiry);
+            }
+        }
+        return filtered;
+    }
 
     public boolean removeEnquiry(Enquiry enquiry) {
         return enquiries.remove(enquiry);
+    }
+
+    public boolean assertDateClash(LocalDate date)
+    {
+        if(date.isEqual(getOpeningDate()) || date.isEqual(getClosingDate()))
+        {
+            return false;
+        }
+        else if(date.isAfter(getOpeningDate()) && date.isBefore(getClosingDate()))
+        {
+            return false;
+        }
+        return true;
     }
 
 }
