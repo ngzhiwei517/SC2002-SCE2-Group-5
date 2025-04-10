@@ -285,9 +285,7 @@ public class Project {
         return Officers.remove(officer);
     }
 
-    public boolean addApplication(Application application){
-        return applications.add(application);
-    }
+
 
     public List<Application> getApplications() { return applications; }
 
@@ -318,11 +316,12 @@ public class Project {
         return applications.remove(application);
     }
 
-    public boolean addEnquiry(Enquiry enquiry) {
-        return enquiries.add(enquiry);
+    public boolean addApplication(Application application){
+        return applications.add(application);
     }
 
     public List<Enquiry> getEnquiries() { return enquiries; }
+
     public List<Enquiry> getEnquiries(List<Enquiry.Status> filter) {
 
         List<Enquiry> filtered = new ArrayList<>();
@@ -338,6 +337,14 @@ public class Project {
     public boolean removeEnquiry(Enquiry enquiry) {
         return enquiries.remove(enquiry);
     }
+
+    public boolean addEnquiry(Enquiry enquiry) {
+        return enquiries.add(enquiry);
+    }
+
+
+
+
 
     public boolean assertDateClash(LocalDate date)
     {

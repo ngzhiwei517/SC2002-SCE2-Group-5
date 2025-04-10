@@ -54,6 +54,14 @@ public class OfficerBoundary {
 
     }
 
+    public static void displayDashboard() {
+        System.out.println("Welcome "); //add applicant name here
+        System.out.println("1. View & Register Projects");
+        System.out.println("2. View Managed Projects");
+        System.out.println("4. Login as Applicant");
+        System.out.println("5. Log Out");
+    }
+
     private static void viewBTOListings()
     {
         if(!(UserController.getLoggedUser() instanceof Officer)) //sanity check.
@@ -193,17 +201,10 @@ public class OfficerBoundary {
             }
         }
 
-        applicationController.tryApplyOfficer((Officer) UserController.getLoggedUser(), ProjectController.getSelectedProject());
+        ApplicationController.tryApplyOfficer((Officer) UserController.getLoggedUser(), ProjectController.getSelectedProject());
     }
 
-    public static void displayDashboard() {
-        System.out.println("Welcome "); //add applicant name here
-        System.out.println("1. View & Register Projects");
-        System.out.println("2. View Managed Projects");
-        System.out.println("3. View & Reply Enquiries"); //should be able to view enquiries of project registered.
-        System.out.println("4. Login as Applicant");
-        System.out.println("5. Log Out");
-    }
+
 
 
     public static void viewManagedProjects()
@@ -212,6 +213,12 @@ public class OfficerBoundary {
         while(true) {
 
             List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
+            int index = 1;
+            for(Project project : projects) {
+                System.out.println(index++ + ".");
+                project.printBasicInformation();
+
+            }
 
             if (filter.contains(Project.Status.INVISIBLE)) {
                 if (projects.isEmpty()) {
@@ -247,7 +254,7 @@ public class OfficerBoundary {
                 }else {
                     ProjectController.selectProject(projects.get(choice - 1));
                     //register code here.
-                    //registerForProject(ProjectController.getSelectedProject());
+                    manageProject(ProjectController.getSelectedProject());
                     break;
                 }
             }
@@ -256,7 +263,121 @@ public class OfficerBoundary {
 
     public static void manageProject(Project project)
     {
+        int remainingApplications = project.getApplications(List.of(Application.Status.SUCCESSFUL), Application.Type.Applicant).size();
+        int remainingEnquiries = project.getEnquiries(List.of(Enquiry.Status.PENDING)).size();
+        //get enquiries
 
+        System.out.println("1. View Applications (Remaining: " + remainingApplications + ")" );
+        //get applications
+        System.out.println("2. View Enquiries (Remaining: " + remainingEnquiries + ")" );
+
+        Scanner sc = new Scanner(System.in);
+        while(true)
+        {
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("b")) {
+                return;
+            }
+            else if(input.equalsIgnoreCase("1")) {
+                manageApplications(project);
+                break;
+            }
+            else if(input.equalsIgnoreCase("2")) {
+                manageEnquiries(project);
+                break;
+            }
+        }
+    }
+
+    public static void manageApplications(Project project){
+        List<Application> applications = project.getApplications(List.of(Application.Status.SUCCESSFUL), Application.Type.Applicant);
+
+        int index = 1;
+        for(Application application : applications) {
+            System.out.println(index++ + ".");
+            application.print();
+        }
+
+        Map<String, Integer> options = new HashMap<>();
+        options.put("q", -2);
+        options.put("v", -3);
+        Scanner sc = new Scanner(System.in);
+        int choice = -1;
+        while(true) {
+            choice = utils.getRange(options, 1, applications.size(), sc.nextLine());
+            if (choice == -2) {
+                return;
+            }
+            else if (choice == -3) {
+                //print out all applications to the project, get back.
+            }
+            else if (choice == -1) {
+                System.out.println("Invalid Option");
+            }
+            else {
+                break;
+            }
+        }
+
+        Application selectedApplication = applications.get(choice - 1);
+
+        System.out.println("Book for Applicant? (y/n)");
+        String input = sc.nextLine();
+
+        while(true) {
+            if (input.equalsIgnoreCase("y")) {
+                selectedApplication.book();
+            }
+            else if (input.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
+    }
+
+    public static void manageEnquiries(Project project) {
+        List<Enquiry> enquiries = project.getEnquiries(List.of(Enquiry.Status.PENDING));
+
+        int index = 1;
+        for(Enquiry enquiry : enquiries) {
+            System.out.println(index++ + ".");
+            enquiry.print();
+        }
+
+        Map<String, Integer> options = new HashMap<>();
+        options.put("q", -2);
+        options.put("v", -3);
+        Scanner sc = new Scanner(System.in);
+        int choice = -1;
+        while(true) {
+            choice = utils.getRange(options, 1, enquiries.size(), sc.nextLine());
+            if (choice == -2) {
+                return;
+            }
+            else if (choice == -3) {
+                //print out all applications to the project, get back.
+            }
+            else if (choice == -1) {
+                System.out.println("Invalid Option");
+            }
+            else {
+                break;
+            }
+        }
+
+        Enquiry selectedEnquiry = enquiries.get(choice - 1);
+
+        System.out.println("Reply (b to back): ");
+        String response = sc.nextLine();
+
+        while(true) {
+            if (response.equalsIgnoreCase("b")) {
+               break;
+            }
+            else {
+                selectedEnquiry.respond(UserController.getLoggedUser(), response);
+                break;
+            }
+        }
     }
 
     public static void viewEnquiries() //send in

@@ -95,7 +95,7 @@ public class ApplicationController {
         //return false;
     }
 
-    public Application tryApplyOfficer(Officer officer, Project project)
+    public static Application tryApplyOfficer(Officer officer, Project project)
     {
         //get all projects officer is applied to.
         //TODO: CHECK AGAINST SELF (APPLICANT)
