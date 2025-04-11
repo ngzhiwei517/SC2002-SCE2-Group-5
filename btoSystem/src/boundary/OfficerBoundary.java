@@ -62,7 +62,7 @@ public class OfficerBoundary {
         System.out.println("5. Log Out");
     }
 
-    private static void viewBTOListings()
+    private static void viewProjects()
     {
         if(!(UserController.getLoggedUser() instanceof Officer)) //sanity check.
         {
@@ -158,54 +158,6 @@ public class OfficerBoundary {
 
         System.out.println("Officer Application Request Sent.");
     }
-
-    public static void viewProjects()
-    {
-        //get all the projects first
-        List<Project.Status> filter = List.of(Project.Status.VISIBLE, Project.Status.INVISIBLE);
-        List<Project> projects =  projectController.getProjects(filter, false);
-        for (Project project : projects) {
-            project.print(true);
-        }
-        //get choice
-        System.out.println("Select Project (number to select, q to quit)");
-        Scanner sc = new Scanner(System.in);
-        Map<String, Integer> options = new HashMap<>(); //automatically clamps between 1 (first option) & maximum length of projects.
-        options.put("q", -2);
-        while(true) {
-            String input = sc.nextLine();
-            int choice = utils.getRange(options, 1, projects.size(), input);
-            if (choice == -2) {
-                return;
-            } else if (choice == -1) {
-                System.out.println("Invalid Option");
-            } else {
-                ProjectController.selectProject(projects.get(choice - 1));
-                break;
-            }
-        }
-
-        //ask officer to double check if can apply for this project.
-        utils.clear();
-        projectController.getSelectedProject().printBasicInformation();
-        System.out.println("Apply For This Project? (Y/N)");
-        String input = sc.nextLine();
-
-        while(true) {
-            if (input.equalsIgnoreCase("y")) {
-                break;
-            } else if (input.equalsIgnoreCase("n")) {
-                break;
-            } else {
-                System.out.println("Invalid Option");
-            }
-        }
-
-        ApplicationController.tryApplyOfficer((Officer) UserController.getLoggedUser(), ProjectController.getSelectedProject());
-    }
-
-
-
 
     public static void viewManagedProjects()
     {
