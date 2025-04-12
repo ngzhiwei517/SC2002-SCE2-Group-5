@@ -37,7 +37,7 @@ public class OfficerBoundary {
                     viewManagedProjects();
                     break;
                 case 3:
-                    viewEnquiries();
+                    viewOutstandingApplications();
                 case 4:
                     ApplicantBoundary.welcome();
                     break;
@@ -86,22 +86,21 @@ public class OfficerBoundary {
 
             Map<String, Integer> options = new HashMap<>(); //allow user to choose project number, or a to view all projects.
             options.put("q", -2);
-            options.put("v", -3);
             options.put("a", -4);
 
             if(filter.contains(Project.Status.INVISIBLE)) {
                 if(projects.isEmpty()) {
-                    System.out.print("q to quit, v to toggle visibility (ON), a to view ALL projects: ");
+                    System.out.print("q to quit, a to view ALL projects: ");
                 }
                 else {
-                    System.out.print("Select Project (number to select, q to quit, v to toggle visibility (ON), a to view ALL projects): ");
+                    System.out.print("Select Project (number to select, a to view ALL projects): ");
                 }
             }
             else if(projects.isEmpty()) {
-                System.out.print("q to quit, v to toggle visibility (OFF), a to view ALL projects: ");
+                System.out.print("q to quit, a to view ALL projects: ");
             }
             else {
-                System.out.print("Select Project (number to select, q to quit, v to toggle visibility (OFF), a to view ALL projects): ");
+                System.out.print("Select Project (number to select, a to view ALL projects): ");
             }
 
 
@@ -110,13 +109,6 @@ public class OfficerBoundary {
                 int choice = utils.getRange(options, 1, projects.size(), input);
                 if (choice == -2) {
                     return;
-                } else if (choice == -3) {
-                    if (filter.contains(Project.Status.INVISIBLE)) {
-                        filter.remove(Project.Status.INVISIBLE);
-                    } else {
-                        filter.add(Project.Status.INVISIBLE);
-                    }
-                    break;
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
@@ -139,7 +131,7 @@ public class OfficerBoundary {
     }
 
     public static void registerForProject(Project project) {
-        //sanity check if can register for project to begin with
+        //TODO: sanity check if can register for project to begin with
 
         Scanner sc = new Scanner(System.in);
         project.printBasicInformation();
@@ -148,7 +140,13 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                break;
+                if(ProjectController.tryApplyForProject(project, (Officer) UserController.getLoggedUser()))
+                {
+                    break;
+                }
+                else {
+                    System.out.println("Officer Application Failed.");
+                }
             } else if (input.equalsIgnoreCase("n")) {
                 return;
             } else {
@@ -332,76 +330,12 @@ public class OfficerBoundary {
         }
     }
 
-    public static void viewEnquiries() //send in
+
+    public static void viewOutstandingApplications()
     {
-
-        //get all projects under this dude.
-        List<Enquiry.Status> filter = List.of(Enquiry.Status.PENDING);
-        List<Project> projects =  ProjectController.getProjects((Officer) UserController.getLoggedUser());
-        int index = 1;
-        for (Project project : projects) {
-            System.out.print(index + ": ");
-            project.printName();
-            System.out.print(" Enquiries: ");
-            System.out.print(EnquiryController.getEnquiries(filter, project).size());
-            System.out.print("\n");
-            index++;
-        }
-
-        Scanner sc = new Scanner(System.in);
-
-        //declare option map.
-        Map<String, Integer> options = new HashMap<>(); //automatically clamps between 1 (first option) & maximum length of projects.
-        options.put("q", -2);
-
-        System.out.print("Select Project (number to select, q to quit): ");
-        while(true) {
-            String input = sc.nextLine();
-            int choice = utils.getRange(options, 1, projects.size(), input);
-            if (choice == -2) {
-                return;
-            } else if (choice == -1) {
-                System.out.println("Invalid Option");
-            } else {
-                ProjectController.selectProject(projects.get(choice - 1));
-                break;
-            }
-        }
-
-        List<Enquiry> enquiries = EnquiryController.getEnquiries(filter, ProjectController.getSelectedProject());
-        for (Enquiry enquiry : enquiries) {
-            enquiry.print();
-        }
-
-        Enquiry selectedEnquiry = null;
-        options = new HashMap<>();
-        options.put("q", -2);
-        options.put("b", -3);
-        System.out.print("Select an Enquiry to Respond To (number to select, b or q to quit): ");
-        while(true) {
-            String input = sc.nextLine();
-            int choice = utils.getRange(options, 1, enquiries.size(), input);
-            if (choice == -2 || choice == -3) {
-                return;
-            } else if(choice == -1) {
-                System.out.println("Invalid Option");
-            }
-            else {
-                selectedEnquiry = enquiries.get(choice - 1);
-                break;
-            }
-        }
-
-
-        System.out.print("Response: ");
-        String response = sc.nextLine();
-        if(response.equalsIgnoreCase("q") || response.equalsIgnoreCase("b") )
-        {
-            return;
-        }
-        if(!selectedEnquiry.respond(userController.getLoggedUser(), response))
-        {
-            System.out.println("Response Failed");
+        List<Application> applications = ((Officer) UserController.getLoggedUser()).getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL), Application.Type.Officer);
+        for (Application application : applications) {
+            application.print();
         }
     }
 

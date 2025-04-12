@@ -21,7 +21,6 @@ public class Officer extends Applicant {
         return projects.remove(project);
     }
 
-
     public List<Project> getProjects(){
         return projects;
     }

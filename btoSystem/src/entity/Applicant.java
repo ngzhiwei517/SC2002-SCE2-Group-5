@@ -30,6 +30,18 @@ public class Applicant extends User {
 
     public List<Application> getApplications() { return applications; }
 
+    public List<Application> getApplications(List<Application.Status> filter, Application.Type type) {
+        List<Application> filtered = new ArrayList<>(); //filter here
+        for(Application application : applications) {
+            if(filter.contains(application.getStatus()) && type.equals(application.getType()))
+            {
+                filtered.add(application);
+            }
+        }
+        return filtered;
+    }
+
+
     public boolean removeApplication(Application app) {
         return applications.remove(app);
     }

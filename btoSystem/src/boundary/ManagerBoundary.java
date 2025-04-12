@@ -144,7 +144,6 @@ public class ManagerBoundary {
 
     private static int optionsUpdateDelete()
     {
-
         int exitcode = 1;
         while(exitcode == 1) {
             ProjectController.getSelectedProject().print(true);
@@ -156,6 +155,7 @@ public class ManagerBoundary {
             System.out.println("5. View Officer Applications");
             System.out.println("6. View Enquiries");
             System.out.println("7. Generate Report");
+            System.out.println("q or to quit, b to back.");
             Map<String, Integer> options = new HashMap<>();
             Scanner sc = new Scanner(System.in);
             options.put("b", -2);
@@ -165,6 +165,10 @@ public class ManagerBoundary {
                 int choice = utils.getRange(options, 1, 6, input);
                 if (choice == -2) {
                     return 0;
+                }
+                else if (choice == -3)
+                {
+                    return -1;
                 } else if (choice == 1) {
                     exitcode = updateListing(selected_project);
                     break;
@@ -483,8 +487,8 @@ public class ManagerBoundary {
                 System.out.println("Previous Flat Type: ");
                 System.out.println("New Flat Type: ");
 
-                System.out.println("1. 2-Room: ");
-                System.out.println("2. 3-Room: ");
+                System.out.println("1. 2-Room");
+                System.out.println("2. 3-Room");
 
                 while(true) {
                     String input = sc.nextLine();
@@ -769,8 +773,31 @@ public class ManagerBoundary {
         Scanner sc = new Scanner(System.in);
         List<Flat> flats = new ArrayList<Flat>();
         while(true) {
-            System.out.println("Flat Type: ");
-            String flatType = sc.nextLine();
+            System.out.println("1. 2-Room");
+            System.out.println("2. 3-Room");
+            System.out.print("Flat Type: ");
+            Flat.Type type = null;
+            while(true)
+            {
+
+                String input = sc.nextLine();
+                if(input.equalsIgnoreCase("q")) {
+                    return flats;
+                }
+                else if(input.equalsIgnoreCase("1") || input.equalsIgnoreCase("2")) {
+                    if(input.equalsIgnoreCase("1")) {
+                        type = Flat.Type.TwoRoom;
+                    }
+                    if(input.equalsIgnoreCase("2")) {
+                        type = Flat.Type.ThreeRoom;
+                    }
+                    break;
+                }
+                else {
+                    System.out.println("Invalid Option");
+                }
+
+            }
 
             System.out.println("Flat Price: ");
             float flatPrice = -1;
@@ -800,7 +827,7 @@ public class ManagerBoundary {
             }
 
             if(flatPrice >= 0 && units >= 0) { //assert that both are above 0
-                Flat flat = new Flat(flatType, flatPrice, units);
+                Flat flat = new Flat(type, flatPrice, units);
                 flats.add(flat);
             }
 

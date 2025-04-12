@@ -37,6 +37,13 @@ public class Flat {
         this.price = price;
     }
 
+    public Flat(Type type, float price, int units) {
+        this.id = next_id++;
+        this.type = type;
+        this.units = units;
+        this.price = price;
+    }
+
     public void print()
     {
         System.out.println(this.getType() + ", " + this.getPrice() + ", " + this.getUnits());

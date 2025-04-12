@@ -197,4 +197,16 @@ public class ProjectController {
         }
         return remapped;
     }
+
+    public static boolean tryApplyForProject(Project project, Officer officer){
+        if(project.addOfficer(officer))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean tryApplyForProject(Project project, Applicant applicant){
+        return false;
+    }
 }
