@@ -342,12 +342,12 @@ public class Project {
         return enquiries.add(enquiry);
     }
 
-
-
-
-
     public boolean assertDateClash(LocalDate date)
     {
+        if(date == null)
+        {
+            return false;
+        }
         if(date.isEqual(getOpeningDate()) || date.isEqual(getClosingDate()))
         {
             return false;

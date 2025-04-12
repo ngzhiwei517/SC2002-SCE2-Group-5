@@ -199,6 +199,8 @@ public class ProjectController {
     }
 
     public static boolean tryApplyForProject(Project project, Officer officer){
+        //TODO: sanity check if officer can apply again, this should be redundant, as its already checked previously
+
         if(project.addOfficer(officer))
         {
             return true;

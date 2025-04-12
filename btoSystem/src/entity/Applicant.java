@@ -50,6 +50,7 @@ public class Applicant extends User {
     public boolean canApply()
     {
         //if theres an application that has a pending/approved/booked status, return false
+
         return true;
 }
 
@@ -60,7 +61,11 @@ public class Applicant extends User {
 
     public boolean canApplyForProject(Project project)
     {
-        //skim through applicants.
+        List<Application> filtered = getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED), Application.Type.Applicant);
+        if(filtered.isEmpty()) //check if has any outstanding applications.
+        {
+            return true;
+        }
         return false;
     }
 

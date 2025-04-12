@@ -131,7 +131,12 @@ public class OfficerBoundary {
     }
 
     public static void registerForProject(Project project) {
-        //TODO: sanity check if can register for project to begin with
+        //sanity check if can register for project to begin with
+        if(!(UserController.getLoggedUser() instanceof Officer))
+        {
+            return;
+        }
+        if(!((Officer) UserController.getLoggedUser()).canApplyProject(project)) {}
 
         Scanner sc = new Scanner(System.in);
         project.printBasicInformation();
