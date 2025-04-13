@@ -4,9 +4,8 @@ package controller;
 import entity.*;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +33,11 @@ public class EnquiryController {
             e.printStackTrace();
         }
 
+    }
+
+    public void exit()
+    {
+        writeData();
     }
 
     public boolean readData() throws IOException
@@ -74,37 +78,29 @@ public class EnquiryController {
         return false;
     }
 
-    public boolean writeData()
-    {
+    public boolean writeData() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(enquiryPath))){
+            bw.write("e.id,p.id,u.id,status,title,body,responder_id,response");
+            bw.newLine();
+            for(int key : enquiries.keySet()) {
+                Enquiry enq = enquiries.get(key);
+                String enquiryString = "";
+                enquiryString += enq.getEnquiryId() + ",";
+                enquiryString += enq.getProject().getProjectID() + ",";
+                enquiryString += enq.getUser().getID() + ",";
+                enquiryString += enq.getStatus().toString() + ",";
+                enquiryString += enq.getTitle() + ",";
+                enquiryString += enq.getText() + ",";
+                enquiryString += (enq.getResponder() != null ? enq.getResponder().getID() : "null") + ",";
+                enquiryString += (enq.getResponse() != null || !enq.getResponse().equals("null") ? enq.getResponse() : "null") + ",";
+                bw.write(enquiryString);
+                bw.newLine();
+                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
-    }
-
-    public List<Enquiry> getEnquiries(User user, Project project)
-    {
-        List<Enquiry> filtered = new ArrayList<Enquiry>();
-        for(int key : enquiries.keySet())
-        {
-            if(enquiries.get(key).getUser().equals(user))
-            {
-                if(project == enquiries.get(key).getProject() || project == null) {
-                    filtered.add(enquiries.get(key));
-                }
-            }
-        }
-        return filtered;
-    }
-
-    public static List<Enquiry> getEnquiries(List<Enquiry.Status> filter ,Project project)
-    {
-        List<Enquiry> filtered = new ArrayList<Enquiry>();
-        for(int key : enquiries.keySet())
-        {
-            if(project == enquiries.get(key).getProject() && filter.contains(enquiries.get(key).getStatus()))
-            {
-                filtered.add(enquiries.get(key));
-            }
-        }
-        return filtered;
     }
 
 

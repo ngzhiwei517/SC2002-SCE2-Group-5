@@ -30,8 +30,14 @@ public class Main {
         applicationController.init();
         enquiryController.init();
 
-        MainBoundary.welcome();
+        boolean exit = true;
+        while (exit){
+            exit = MainBoundary.welcome();
+        }
 
+        applicationController.exit();
+        projectController.exit();
+        enquiryController.exit();
 
     }
 }

@@ -87,6 +87,7 @@ public class Application  {
             System.out.println();
         }
     }
+    public int getId() { return id; }
 
     public User getUser() { return user; }
 

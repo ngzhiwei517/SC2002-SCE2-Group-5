@@ -5,11 +5,14 @@ import controller.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ApplicationController {
-    private final String applicantPath = "ApplicationList.csv";
-    private List<Application> applications = new ArrayList<Application>();
+    private final String applicationPath = "ApplicationList.csv";
+    private Map<Integer, Application> applications = new HashMap<Integer, Application>();
+    //private List<Application> applications = new ArrayList<Application>();
     private static UserController userController;
     private static ProjectController projectController;
 
@@ -32,7 +35,7 @@ public class ApplicationController {
 
     public boolean readData() throws IOException
     {
-        try (BufferedReader br = new BufferedReader(new FileReader(applicantPath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(applicationPath))) {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
@@ -50,22 +53,35 @@ public class ApplicationController {
                 Flat flat = flat_id != -1 ? project.getFlat(flat_id) : null;
 
                 Application application = new Application(id, user, project,flat,status,type);
-                applications.add(application);
+                applications.put(id, application);
+                System.out.println("Reading");
             }
         }
         return false;
     }
 
+    public void exit()
+    {
+        writeData();
+    }
     public boolean writeData()
     {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(applicantPath))){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(applicationPath))){
+            bw.write("a.id,u.id,p.id,f.id,type,status");
+            bw.newLine();
             //form the line application string here
-            for(Application app: applications) {
-                String applicationString = app.getUser().getNric() + "," +
-                                        app.getProject().getProjectName() + "," +
-                                        app.getFlat().getType() + "," +
-                                        app.getStatus();
+            for(int key : applications.keySet()) {
+                Application app = applications.get(key);
+                String applicationString = "";
+                applicationString += app.getId() + ",";
+                applicationString += app.getUser().getID() + ",";
+                applicationString += app.getProject().getProjectID() + ",";
+                applicationString += (app.getFlat() != null ? app.getFlat().getId() : "-1") + ",";
+                applicationString += app.getType().toString() + ",";
+                applicationString += app.getStatus().toString() + ",";
                 bw.write(applicationString);
+                bw.newLine();
+                System.out.println("Writing");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,7 +92,8 @@ public class ApplicationController {
     public List<Application> getApplications(List<Application.Status> filter, Application.Type type)
     {
         List<Application> filteredApplications = new ArrayList<>();
-        for(Application app: applications) {
+        for(int key: applications.keySet()) {
+            Application app = applications.get(key);
             if(filter.contains(app.getStatus()) && app.getType().equals(type))
                 filteredApplications.add(app);
         }
@@ -90,7 +107,7 @@ public class ApplicationController {
         //assertion check that user does not already have an application for this flat.
 
         Application application = new Application((Applicant) user, flat.getProject(), flat, Application.Status.PENDING, Application.Type.Applicant);
-        applications.add(application);
+        applications.put(application.getId(), application);
         return application;
         //return false;
     }
@@ -111,7 +128,7 @@ public class ApplicationController {
 
     public boolean tryWithdrawApplication(Application application)
     {
-        if(applications.contains(application)) {
+        if(applications.containsValue(application)) {
             application.setStatus(Application.Status.REQUESTED_WITHDRAW);
             return true;
         }

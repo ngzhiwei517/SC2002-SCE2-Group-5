@@ -16,7 +16,7 @@ public class MainBoundary {
     }
 
     //login will be here, dashboards will be here
-    public static void welcome() {
+    public static boolean welcome() {
         displayDashboard();
 
         int choice = 0;
@@ -39,14 +39,13 @@ public class MainBoundary {
                     // go to forgot password ui
                     break;
                 case 4:
-                    displayDashboard();
-                    // break out of loop.
                     break;
                 default:
                     System.out.println("Invalid choice");
                     break;
             }
         }
+        return false;
     }
 
     public static void displayDashboard() //displayed on logout and on login.
@@ -68,6 +67,9 @@ public class MainBoundary {
             String username = sc.nextLine();
             System.out.println("Password: ");
             String password = sc.nextLine();
+
+            //do assertion check.
+            //assert with this pattern ^[TS]\d{7}[A-Z]$
 
             if(userController.login(username, password))
             {

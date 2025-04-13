@@ -839,6 +839,7 @@ public class ManagerBoundary {
         return flats;
     }
 
+    /*
     private static void viewApplicantApplications()
     {
         //get all applications where applications are pending
@@ -954,6 +955,8 @@ public class ManagerBoundary {
             }
         }
     }
+    */
+
 
     private static int viewProjectApplications(Project project) {
         while(true) {

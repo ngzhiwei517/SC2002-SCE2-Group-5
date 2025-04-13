@@ -2,10 +2,8 @@ package controller;
 
 import entity.*;
 
-import java.io.BufferedReader;
+import java.io.*;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +29,10 @@ public class ProjectController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void exit() {
+        writeData();
     }
 
     public boolean readData() throws IOException {
@@ -106,6 +108,36 @@ public class ProjectController {
     }
 
     public boolean writeData() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(projectPath))){
+            bw.write("p_id,Project Name,Neighborhood,opening_date,closing_date,manager_id,officer_slot,officer_list,status");
+            bw.newLine();
+            for(int key : projects.keySet()) {
+                Project proj = projects.get(key);
+                String projectString = "";
+                projectString += proj.getProjectID() + ",";
+                projectString += proj.getProjectName() + ",";
+                projectString += proj.getNeighborhood() + ",";
+                projectString += proj.getOpeningDate().format(DateTimeFormatter.ofPattern("M/d/yyyy")) + ",";
+                projectString += proj.getClosingDate().format(DateTimeFormatter.ofPattern("M/d/yyyy")) + ",";
+                projectString += proj.getManager().getID() + ",";
+                projectString += proj.getOfficerSlots() + ",";
+                StringBuilder officerSubstring = new StringBuilder();
+                List<Officer> officerList = proj.getOfficers();
+                for (Officer officer : officerList) {
+                    officerSubstring.append(officer.getID()).append(",");
+                }
+                if (!officerSubstring.isEmpty()) {
+                    officerSubstring.setLength(officerSubstring.length() - 1); // remove last comma
+                }
+                projectString += "\"" + officerSubstring.toString() + "\"";
+                projectString += proj.getStatus().toString();
+                bw.write(projectString);
+                bw.newLine();
+                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
