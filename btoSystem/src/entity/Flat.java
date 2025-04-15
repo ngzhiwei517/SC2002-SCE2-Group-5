@@ -64,6 +64,13 @@ public class Flat {
     public int getUnits() { return units; }
     public float getPrice() { return price; }
     public Project getProject() { return project; }
+    public String getStringType() {
+        if(type == Type.TwoRoom)
+            return "2-Room";
+        else if(type == Type.ThreeRoom)
+            return "3-Room";
+        return null;
+    }
 
     public void setType(Type type) { this.type = type; }
     public void setPrice(float price) { this.price = price; }

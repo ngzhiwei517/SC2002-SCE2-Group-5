@@ -349,12 +349,19 @@ public class Project {
         {
             return false;
         }
+
+        System.out.println(date.toString());
+        System.out.println(getOpeningDate());
+        System.out.println(getClosingDate());
+
         if(date.isEqual(getOpeningDate()) || date.isEqual(getClosingDate()))
         {
+            System.out.println("equal");
             return false;
         }
         else if(date.isAfter(getOpeningDate()) && date.isBefore(getClosingDate()))
         {
+            System.out.println("between");
             return false;
         }
         return true;

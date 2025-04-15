@@ -138,6 +138,28 @@ public class ProjectController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(flatPath))){
+            bw.write("f.id,p.id,type,cost,units");
+            bw.newLine();
+            for(int key : projects.keySet()) {
+                Project proj = projects.get(key);
+                for(Flat flat : proj.getFlats()) {
+                    String flatString = "";
+                    flatString += flat.getId() + ",";
+                    flatString += proj.getProjectID() + ",";
+                    flatString += flat.getStringType() + ",";
+                    flatString += flat.getPrice() + ",";
+                    flatString += flat.getUnits();
+                    bw.write(flatString);
+                    bw.newLine();
+                    System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

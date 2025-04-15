@@ -41,7 +41,7 @@ public class Manager extends User {
             {
                 continue;
             }
-            System.out.println("Checking if project " + project + " is a date clash");
+            System.out.println("Checking if project " + project.getProjectName() + " is a date clash");
             if(!project.assertDateClash(date)){ //fail to assert date clash.
                 System.out.println("Clashed");
                 return false;
