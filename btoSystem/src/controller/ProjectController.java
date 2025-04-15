@@ -163,13 +163,13 @@ public class ProjectController {
         return false;
     }
 
-    public static Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblitly)
+    public static Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblity)
     {
         //get length of project + 1 as projectid
         Project new_project = new Project(projectName, neighbourhood,
                 OpeningDate, ClosingDate, manager,
                 officerSlots, new ArrayList<Officer>() {
-        }, Project.Status.VISIBLE) ;
+        }, visiblity) ;
 
         if(!projects.containsKey(new_project.getProjectID())) {
             projects.put(new_project.getProjectID(), new_project);
