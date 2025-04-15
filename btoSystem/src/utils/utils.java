@@ -79,7 +79,7 @@ public class utils {
         }
     }
 
-    public static void waitForKey() {
+    public static void waitKey() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Press Enter to continue...");
         scanner.nextLine();

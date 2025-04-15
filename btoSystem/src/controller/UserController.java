@@ -1,22 +1,18 @@
 package controller;
 
-import entity.Applicant;
-import entity.Manager;
-import entity.Officer;
-import entity.User;
+import entity.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserController {
     private static User loggedUser = null;
 
     private static Map<String, User> Users = new HashMap<>();;
-    private final String applicantPath = "ApplicantList.csv";
+    private final String userPath = "ApplicantList.csv";
 
     public void init()
     {
@@ -25,6 +21,11 @@ public class UserController {
         {
             e.printStackTrace();
         }
+    }
+
+    public void exit()
+    {
+        writeData();
     }
 
     public static User getLoggedUser()
@@ -37,7 +38,7 @@ public class UserController {
     public boolean readData() throws IOException
     {
         //process applicants
-        try (BufferedReader br = new BufferedReader(new FileReader(applicantPath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(userPath))) {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
@@ -78,6 +79,26 @@ public class UserController {
 
     public boolean writeData()
     {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(userPath))){
+            bw.write("u.id,name,nric,age,marital_status,password,account_type");
+            bw.newLine();
+            for(String key : Users.keySet()) {
+                User user = Users.get(key);
+                String userString = "";
+                userString += user.getID() + ",";
+                userString += user.getName() + ",";
+                userString += user.getNric() + ",";
+                userString += user.getAge() + ",";
+                userString += (user.isMarried() ? "Married" : "Single") + ",";
+                userString += user.getPassword() + ",";
+                userString += user.getAccountType();
+                bw.write(userString);
+                bw.newLine();
+                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

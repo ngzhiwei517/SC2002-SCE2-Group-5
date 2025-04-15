@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ApplicationController {
     private final String applicationPath = "ApplicationList.csv";
-    private Map<Integer, Application> applications = new HashMap<Integer, Application>();
+    private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
     //private List<Application> applications = new ArrayList<Application>();
     private static UserController userController;
     private static ProjectController projectController;
@@ -123,7 +123,9 @@ public class ApplicationController {
                 return null;
             }
         }
-        return new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
+        Application app = new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
+        applications.put(app.getId(), app);
+        return app;
     }
 
     public boolean tryWithdrawApplication(Application application)

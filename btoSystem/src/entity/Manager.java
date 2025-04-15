@@ -49,4 +49,8 @@ public class Manager extends User {
         }
         return true;
     }
+
+    public String getAccountType(){
+        return "Manager";
+    }
 }

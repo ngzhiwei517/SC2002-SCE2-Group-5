@@ -129,7 +129,7 @@ public class ProjectController {
                 if (!officerSubstring.isEmpty()) {
                     officerSubstring.setLength(officerSubstring.length() - 1); // remove last comma
                 }
-                projectString += "\"" + officerSubstring.toString() + "\"";
+                projectString += "\"" + officerSubstring.toString() + "\",";
                 projectString += proj.getStatus().toString();
                 bw.write(projectString);
                 bw.newLine();
@@ -233,11 +233,7 @@ public class ProjectController {
     public static boolean tryApplyForProject(Project project, Officer officer){
         //TODO: sanity check if officer can apply again, this should be redundant, as its already checked previously
 
-        if(project.addOfficer(officer))
-        {
-            return true;
-        }
-        return false;
+        return project.addOfficer(officer);
     }
 
     public boolean tryApplyForProject(Project project, Applicant applicant){

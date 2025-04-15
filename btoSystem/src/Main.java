@@ -38,6 +38,7 @@ public class Main {
         applicationController.exit();
         projectController.exit();
         enquiryController.exit();
+        userController.exit();
 
     }
 }

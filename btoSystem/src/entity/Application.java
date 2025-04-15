@@ -107,8 +107,10 @@ public class Application  {
         if(this.status == Status.REQUESTED_WITHDRAW || this.status == Status.REQUESTED_WITHDRAW_BOOKED)
         {
             this.status = Status.WITHDRAWN;
-            //TODO: plus slots from project if the requested withdraw was booked.
-
+            if(this.status == Status.REQUESTED_WITHDRAW_BOOKED) //TODO:CHECK WHETHER AFTER APPLYING - SLOTS OR AFTER BOOKING THEN - SLOTS.
+            {
+                this.flat.withdraw();
+            }
         }
         else {
             this.status = Status.SUCCESSFUL;
@@ -126,6 +128,7 @@ public class Application  {
     public void book() {
         this.status = Status.BOOKED;
         //TODO: minus slots from project if the requested withdraw was booked.
+        this.flat.book();
     }
 
 

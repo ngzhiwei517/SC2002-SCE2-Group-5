@@ -30,13 +30,6 @@ public class Flat {
         this.price = price;
     }
 
-    public Flat(String type, float price, int units) {
-        this.id = next_id++;
-        this.type = stringToType(type);
-        this.units = units;
-        this.price = price;
-    }
-
     public Flat(Type type, float price, int units) {
         this.id = next_id++;
         this.type = type;
@@ -77,5 +70,14 @@ public class Flat {
     public void setUnits(int units) { this.units = units; }
     public void setProject(Project project) { this.project = project; }
 
+    public void book()
+    {
+        units++;
+    }
+
+    public void withdraw()
+    {
+        units--;
+    }
 
 }

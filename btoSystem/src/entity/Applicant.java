@@ -50,7 +50,16 @@ public class Applicant extends User {
     public boolean canApply()
     {
         //if theres an application that has a pending/approved/booked status, return false
-
+        for(Application app : applications)
+        {
+            if(app.getType() != Application.Type.Officer)
+            {
+                if(app.getStatus() == Application.Status.BOOKED || app.getStatus() == Application.Status.PENDING || app.getStatus() == Application.Status.REQUESTED_WITHDRAW)
+                {
+                    return false;
+                }
+            }
+        }
         return true;
 }
 
@@ -72,6 +81,10 @@ public class Applicant extends User {
     public boolean assertDateClash(Project project)
     {
         return true;
+    }
+
+    public String getAccountType(){
+        return "Applicant";
     }
 }
 

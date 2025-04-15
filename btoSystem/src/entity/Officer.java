@@ -78,4 +78,8 @@ public class Officer extends Applicant {
         super.canApplyForProject(project);
         return true;
     }
+
+    public String getAccountType() {
+        return "Officer";
+    }
 }

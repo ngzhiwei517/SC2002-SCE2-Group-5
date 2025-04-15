@@ -148,11 +148,12 @@ public class ApplicantBoundary {
                 }
                 case 3: {
                     if (((Applicant) UserController.getLoggedUser()).canApply()) {
+                        System.out.print("Input: number to select, b to back, q to exit, e to write enquiry");
                         Scanner sc = new Scanner(System.in);
                         String input = sc.nextLine();
                         if (!utils.isNumeric(input)) {
                             if (input.equals("b")) {
-                                state = 1;
+                                state = 0;
                             } else if (input.equals("q")) {
                                 exit = true;
                             }
@@ -247,7 +248,7 @@ public class ApplicantBoundary {
                 count++;
             }
             Scanner sc = new Scanner(System.in);
-            System.out.println("Withdraw Application (number to withdraw, q to back): ");
+            System.out.println("Withdraw Application (number to withdraw, b to back): ");
 
 
             Application selectedApplication;
@@ -323,15 +324,17 @@ public class ApplicantBoundary {
         Enquiry selectedEnquiry = enquiries.get(choice-1);
 
 
-        System.out.print("1. Edit Enquiry");
-        System.out.print("2. Delete Enquiry");
+        System.out.print("1. Edit Enquiry\n2. Delete Enquiry\n");
+        System.out.print("Input: ");
         while(true)
         {
             String input = sc.nextLine();
             if(input.equalsIgnoreCase("1")) {
                 editEnquiry(selectedEnquiry);
+                break;
             }else if(input.equalsIgnoreCase("2")) {
                 deleteEnquiry(selectedEnquiry);
+                break;
             }
             else if(input.equalsIgnoreCase("b")) {
                 return;
@@ -373,7 +376,7 @@ public class ApplicantBoundary {
     }
 
     private static void deleteEnquiry(Enquiry enquiry){
-        System.out.println("Confirm Delete Project? (y/n)");
+        System.out.println("Confirm Delete Enquiry? (y/n)");
         Scanner sc = new Scanner(System.in);
         while(true) {
             String input = sc.nextLine();

@@ -131,7 +131,7 @@ public class ManagerBoundary {
                         project.print(true);
                     }
                     //wait for next key;
-                    utils.waitForKey();
+                    utils.waitKey();
                     break;
                 }else {
                     ProjectController.selectProject(projects.get(choice - 1));
@@ -839,125 +839,6 @@ public class ManagerBoundary {
         return flats;
     }
 
-    /*
-    private static void viewApplicantApplications()
-    {
-        //get all applications where applications are pending
-        List<Application> applications = applicationController.getApplications(List.of(Application.Status.PENDING), Application.Type.Applicant);
-        Map<Project, List<Application>> map = new HashMap<>();
-
-        //add all filtered applications to a map
-        for(Application app :applications) {
-            if(map.containsKey(app.getProject())) {
-                map.get(app.getProject()).add(app);
-            }
-            else {
-                map.put(app.getProject(), new ArrayList<>());
-                map.get(app.getProject()).add(app);
-            }
-        }
-
-        int index = 1;
-        List<Project> projects =  new ArrayList<>();
-        //assign index to each project item.
-        for(Project key : map.keySet() ) {
-            System.out.println(index + ": ");
-            projects.add(key);
-            key.printBasicInformation();
-            System.out.println("Pending Applications: " + map.get(key).size());
-            index++;
-        }
-
-        //allow for selection here
-        Map<String, Integer> options = new HashMap<>();
-        options.put("q", -2);
-
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Select Project (number to select, q to quit): ");
-        while(true)
-        {
-            String input = sc.nextLine();
-            int choice = utils.getRange(options, 1, projects.size(), input);
-            if (choice == -2) {
-                return;
-            } else if (choice == -1) {
-                System.out.println("Invalid Option");
-            } else {
-                ProjectController.selectProject(projects.get(choice - 1)); //saves selected project inside the project controller.
-                break;
-            }
-        }
-
-        //after selecting project, display all project applications.
-        List<Application> project_applications = map.get(ProjectController.getSelectedProject());
-
-        index = 1;
-        for(Application app : project_applications) {
-            System.out.println(index + ": ");
-            app.print();
-            index++;
-        }
-
-        Application selected_app = null;
-        //allow user to select application here
-        System.out.print("Select application (number to select, q to quit): ");
-        while(true)
-        {
-            String input = sc.nextLine();
-            int choice = utils.getRange(options, 1, applications.size(), input);
-            if (choice == -2) {
-                return;
-            } else if (choice == -1) {
-                System.out.println("Invalid Option");
-            } else {
-                selected_app = project_applications.get(choice-1); //saves selected project inside the project controller.
-                break;
-            }
-        }
-
-        //let manager approve, reject or back/quit here
-        int status = -1;
-        if(selected_app != null) { //null case should never happen, there is just a sanity check here.
-
-            selected_app.print(); //print the application details itself
-
-            options.put("a", 1);
-            options.put("r", 2);
-
-            //request user if want to approve or reject or back
-            while(true) {
-                String input = sc.nextLine();
-                int choice = utils.getRange(options, 0, 0, input);
-                if (choice == -2) {
-                    return;
-                } else if (choice == -1) {
-                    System.out.println("Invalid Option");
-                } else {
-                    status = choice;
-                    break;
-                }
-            }
-        }
-
-        if(status != -1) //another sanity check here
-        {
-            switch(status) {
-                case 1:{
-                    selected_app.approve();
-                }
-                break;
-                case 2: {
-                    selected_app.reject();
-                }
-                break;
-                default: //default case should never happen as its asserted beforehand.
-                    break;
-            }
-        }
-    }
-    */
-
-
     private static int viewProjectApplications(Project project) {
         while(true) {
             project.printBasicInformation();
@@ -994,7 +875,7 @@ public class ManagerBoundary {
                     for (Application app : applications) {
                         app.print();
                     }
-                    utils.waitForKey();
+                    utils.waitKey();
                     break;
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
@@ -1062,7 +943,7 @@ public class ManagerBoundary {
                     for (Application app : applications) {
                         app.print();
                     }
-                    utils.waitForKey();
+                    utils.waitKey();
                     break;
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
@@ -1092,7 +973,6 @@ public class ManagerBoundary {
             }
         }
     }
-
 
     private static int viewProjectEnquiries(Project project)
     {
@@ -1206,7 +1086,7 @@ public class ManagerBoundary {
                     for (Application app : applications) {
                         app.print();
                     }
-                    utils.waitForKey();
+                    utils.waitKey();
                     break;
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");

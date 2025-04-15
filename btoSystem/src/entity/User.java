@@ -43,6 +43,10 @@ public abstract class User {
 
     public boolean isMarried() { return isMarried; }
 
+    public String getPassword() { return password; }
+
+    public abstract String getAccountType();
+
     // Setters
     public void setName(String name) { this.name = name; }
 

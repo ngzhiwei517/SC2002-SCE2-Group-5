@@ -74,7 +74,8 @@ public class OfficerBoundary {
         int exitcode = 0;
         while(exitcode == 0) {
             //view only manager's projects.
-            List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
+            //List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
+            List<Project> projects = projectController.getProjects(); //TODO: Add filter
 
             //print out projects.
             int index = 1;
@@ -117,26 +118,27 @@ public class OfficerBoundary {
                         project.print(true);
                     }
                     //wait for next key;
-                    utils.waitForKey();
+                    utils.waitKey();
                     break;
                 }else {
                     ProjectController.selectProject(projects.get(choice - 1));
-
                     //register code here.
-                    registerForProject(ProjectController.getSelectedProject());
+                    exitcode = registerForProject(ProjectController.getSelectedProject());
                     break;
                 }
             }
         }
     }
 
-    public static void registerForProject(Project project) {
+    public static int registerForProject(Project project) {
         //sanity check if can register for project to begin with
         if(!(UserController.getLoggedUser() instanceof Officer))
         {
-            return;
+            return -1;
         }
-        if(!((Officer) UserController.getLoggedUser()).canApplyProject(project)) {}
+        if(!((Officer) UserController.getLoggedUser()).canApplyProject(project)) { //should never happen
+            return 0;
+        }
 
         Scanner sc = new Scanner(System.in);
         project.printBasicInformation();
@@ -145,21 +147,25 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                if(ProjectController.tryApplyForProject(project, (Officer) UserController.getLoggedUser()))
+                Application application = ApplicationController.tryApplyOfficer((Officer) UserController.getLoggedUser(), project);
+                if(application != null)
                 {
+                    System.out.println("Application Number " + application.getId() + " sent");
                     break;
                 }
                 else {
                     System.out.println("Officer Application Failed.");
+                    return 0;
                 }
             } else if (input.equalsIgnoreCase("n")) {
-                return;
+                return 0;
             } else {
                 System.out.println("Invalid Option");
             }
         }
 
         System.out.println("Officer Application Request Sent.");
+        return 0;
     }
 
     public static void viewManagedProjects()
@@ -253,6 +259,7 @@ public class OfficerBoundary {
             application.print();
         }
 
+        System.out.println("number to select? q to quit");
         Map<String, Integer> options = new HashMap<>();
         options.put("q", -2);
         options.put("v", -3);
@@ -264,7 +271,13 @@ public class OfficerBoundary {
                 return;
             }
             else if (choice == -3) {
-                //print out all applications to the project, get back.
+                applications = project.getApplications(List.of(Application.Status.SUCCESSFUL, Application.Status.PENDING, Application.Status.BOOKED), Application.Type.Applicant);
+                for(Application application : applications) {
+                    System.out.println(index++ + ".");
+                    application.print();
+                }
+                utils.waitKey();
+                return;
             }
             else if (choice == -1) {
                 System.out.println("Invalid Option");
@@ -282,6 +295,7 @@ public class OfficerBoundary {
         while(true) {
             if (input.equalsIgnoreCase("y")) {
                 selectedApplication.book();
+                break;
             }
             else if (input.equalsIgnoreCase("n")) {
                 break;

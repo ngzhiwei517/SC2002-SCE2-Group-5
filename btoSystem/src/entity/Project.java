@@ -259,6 +259,7 @@ public class Project {
         if(!Officers.contains(officer))
         {
             Officers.add(officer);
+            OfficerSlots--;
             return true;
         }
         return false;
