@@ -117,7 +117,7 @@ public class ApplicationController {
         //get all projects officer is applied to.
         //TODO: CHECK AGAINST SELF (APPLICANT)
 
-        List<Project> projects = ProjectController.getProjects(officer);
+        List<Project> projects = officer.getProjects();
         for(Project p: projects) {
             if(!p.isDateClash(project)) {  //check stuff here.
                 return null;

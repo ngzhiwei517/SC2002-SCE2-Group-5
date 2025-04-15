@@ -247,11 +247,37 @@ public class Project {
 
     public boolean isDateClash(Project project)
     {
-        if(project != this)
+        LocalDate opdate = project.getOpeningDate();
+        LocalDate cldate = project.getClosingDate();
+        if(opdate == null || cldate == null)
         {
-            return (project.getOpeningDate().isAfter(this.getOpeningDate()) && project.getOpeningDate().isBefore(this.getClosingDate())) || (project.getClosingDate().isAfter(this.getOpeningDate()) && project.getClosingDate().isBefore(this.getClosingDate()));
+            return false;
         }
-        return false;
+        //TODO: remove debug statements here
+        System.out.println(getOpeningDate());
+        System.out.println(getClosingDate());
+
+        if(opdate.isEqual(getOpeningDate()) || opdate.isEqual(getClosingDate()))
+        {
+            System.out.println("equal");
+            return false;
+        }
+        if(cldate.isEqual(getOpeningDate()) || cldate.isEqual(getClosingDate()))
+        {
+            System.out.println("equal");
+            return false;
+        }
+        else if(opdate.isAfter(getOpeningDate()) && opdate.isBefore(getClosingDate()))
+        {
+            System.out.println("between");
+            return false;
+        }
+        else if(cldate.isAfter(getOpeningDate()) && cldate.isBefore(getClosingDate()))
+        {
+            System.out.println("between");
+            return false;
+        }
+        return true;
     }
 
     public boolean addOfficer(Officer officer)

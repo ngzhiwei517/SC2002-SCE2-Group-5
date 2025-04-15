@@ -6,10 +6,7 @@ import java.io.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProjectController {
     private static Project selectedProject = null;
@@ -59,12 +56,15 @@ public class ProjectController {
                 if (userController.getManager(managerID) != null) {
                     assignedManager = userController.getManager(managerID);
                 }
-                officerArr = officerArr.replaceAll("[\"']", "");
-                String[] officerStrings = officerArr.split(",");
+
                 List<Officer> officerList = new ArrayList<Officer>();
-                for (String officerString : officerStrings) {
-                    if (userController.getOfficer(Integer.parseInt(officerString)) != null) {
-                        officerList.add(userController.getOfficer(Integer.parseInt(officerString)));
+                if(!officerArr.equalsIgnoreCase("\"\"")) { //TODO:: FIX band-aid fix on empty list issue.
+                    officerArr = officerArr.replaceAll("[\"']", "");
+                    String[] officerStrings = officerArr.split(",");
+                    for (String officerString : officerStrings) {
+                        if (userController.getOfficer(Integer.parseInt(officerString)) != null) {
+                            officerList.add(userController.getOfficer(Integer.parseInt(officerString)));
+                        }
                     }
                 }
 
