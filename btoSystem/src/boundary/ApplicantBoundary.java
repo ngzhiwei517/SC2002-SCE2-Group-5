@@ -147,7 +147,7 @@ public class ApplicantBoundary {
                     }
                 }
                 case 3: {
-                    if (((Applicant) UserController.getLoggedUser()).canApply()) {
+                    if (((Applicant) UserController.getLoggedUser()).canApply(ProjectController.getSelectedProject())) {
                         System.out.print("Input: number to select, b to back, q to exit, e to write enquiry");
                         Scanner sc = new Scanner(System.in);
                         String input = sc.nextLine();

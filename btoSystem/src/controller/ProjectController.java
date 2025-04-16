@@ -236,11 +236,20 @@ public class ProjectController {
     public List<Project> getEligibleProjects(User user) {
         List<Project> remapped = new ArrayList<Project>();
         for (int key : projects.keySet()) {
-            if(projects.get(key).isEligible(user)) {
+            if(projects.get(key).isEligible(user) && projects.get(key).getStatus() == Project.Status.VISIBLE) {
                 remapped.add(projects.get(key));
             }
         }
         return remapped;
+    }
+
+    public static boolean crossAssignFlat(Project project, List<Flat> flats)
+    {
+        for (Flat flat : flats) {
+            project.addFlat(flat);
+            flat.setProject(project);
+        }
+        return true;
     }
 
     public static boolean tryApplyForProject(Project project, Officer officer){

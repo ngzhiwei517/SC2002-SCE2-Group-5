@@ -425,9 +425,7 @@ public class ManagerBoundary {
         while(true) {
             String input = sc.nextLine();
             if (input.equals("y")) {
-                for (Flat flat : flats) {
-                    project.addFlat(flat);
-                }
+                ProjectController.crossAssignFlat(project, flats);
             } else if (input.equals("n")) {
                 return;
             } else {

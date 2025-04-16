@@ -153,19 +153,26 @@ public class Project {
 
     public boolean isEligible(User user)
     {
-        if(user instanceof Officer)
+        /*
+        if(user instanceof Officer) //TODO:: do eligibiliy check
         {
             if(Officers.contains((Officer)user))
             {
                 return false;
             }
         }
+        */
+
+
         for(Flat f : flats) {
             if (user.isMarried()) {
-                return true;
+                if(f.getUnits() != 0)
+                {
+                    return true;
+                }
             } else if (user.getAge() >= 35)
             {
-                if(f.getType() == Flat.Type.TwoRoom)
+                if(f.getType() == Flat.Type.TwoRoom && f.getUnits() != 0)
                     return true;
             }
         }
