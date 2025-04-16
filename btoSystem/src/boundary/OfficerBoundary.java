@@ -147,7 +147,8 @@ public class OfficerBoundary {
         {
             return -1;
         }
-        if(!((Officer) UserController.getLoggedUser()).canApplyProject(project)) { //should never happen
+        if(!((Officer) UserController.getLoggedUser()).canApplyProject(project)) {  //should never happen
+            System.out.println("CannotApplyProject REG");
             return 0;
         }
 
@@ -359,6 +360,8 @@ public class OfficerBoundary {
             }
         }
     }
+
+
 
 
     public static void viewOutstandingApplications()

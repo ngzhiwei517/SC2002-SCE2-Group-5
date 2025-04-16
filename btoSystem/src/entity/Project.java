@@ -7,22 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-
-enum FlatType {
-    TWO_ROOM("2-Room"),
-    THREE_ROOM("3-Room");
-
-    private final String displayName;
-
-    FlatType(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-}
-
 public class Project {
     public enum Status {
         VISIBLE,
@@ -373,6 +357,7 @@ public class Project {
     {
         if(date == null)
         {
+            System.out.println("null date");
             return false;
         }
 

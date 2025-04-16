@@ -239,7 +239,7 @@ public class ApplicantBoundary {
 
     private static void viewApplication()
     {
-        List<Application> applications = ((Applicant) UserController.getLoggedUser()).getApplications();//applicationController.getUserApplications(UserController.getLoggedUser()); //TODO: limit to just type == applciant in getuserapplications.
+        List<Application> applications = ((Applicant) UserController.getLoggedUser()).getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED, Application.Status.REQUESTED_WITHDRAW, Application.Status.UNSUCCESSFUL, Application.Status.REQUESTED_WITHDRAW_BOOKED, Application.Status.WITHDRAWN), Application.Type.Applicant);
 
         if(!applications.isEmpty()) {
             int count = 1;
