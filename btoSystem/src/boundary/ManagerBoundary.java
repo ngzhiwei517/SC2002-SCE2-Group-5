@@ -126,7 +126,7 @@ public class ManagerBoundary {
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
-                    projects = ProjectController.getProjects(filter, false);
+                    projects = ProjectController.getProjects(filter);
                     for(Project project : projects) {
                         project.print(true);
                     }
@@ -446,7 +446,7 @@ public class ManagerBoundary {
         {
             String input = sc.nextLine();
             if(input.equals("y")) {
-                flat.deleteSelf();
+                flat.deleteSelf(); //TODO:: SHIFT INTO CONTROLLER.
                 break;
             }
             else if(input.equals("n")) {
@@ -521,7 +521,7 @@ public class ManagerBoundary {
                     }
                     if(utils.assertFloat(input))
                     {
-                        flat.setPrice(Float.parseFloat(input));
+                        flat.setPrice(Float.parseFloat(input)); //TODO:: SHIFT INTO CONTROLLER
                         break;
                     }
                     else {
@@ -598,7 +598,7 @@ public class ManagerBoundary {
             {
                 while(true) {
                     if (sc.nextLine().equals("y")) {
-                        project.removeOfficer(selectedOfficer);
+                        project.removeOfficer(selectedOfficer); //TODO:: SHIFT INTO CONTROLLER
                         break;
                     } else if (sc.nextLine().equals("n")) {
                         break;

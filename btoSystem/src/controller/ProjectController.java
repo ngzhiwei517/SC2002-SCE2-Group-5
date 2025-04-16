@@ -202,22 +202,13 @@ public class ProjectController {
             return null;
     }
 
-    public static List<Project> getProjects(List<Project.Status> filter, boolean rejectFilter)
+    public static List<Project> getProjects(List<Project.Status> filter)
     {
         List<Project> filteredList = new ArrayList<>();
-        if(rejectFilter) {
-            for (int key : projects.keySet()) {
-                if(!filter.contains(projects.get(key).getStatus())) {
-                    filteredList.add(projects.get(key));
-                }
-            }
-        }
-        else {
             for (int key : projects.keySet()) {
                 if(filter.contains(projects.get(key).getStatus())) {
                     filteredList.add(projects.get(key));
                 }
-            }
         }
         return filteredList;
     }
@@ -254,7 +245,6 @@ public class ProjectController {
 
     public static boolean tryApplyForProject(Project project, Officer officer){
         //TODO: sanity check if officer can apply again, this should be redundant, as its already checked previously
-
         return project.addOfficer(officer);
     }
 

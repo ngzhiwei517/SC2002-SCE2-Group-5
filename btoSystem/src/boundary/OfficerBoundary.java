@@ -73,9 +73,28 @@ public class OfficerBoundary {
         List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
         int exitcode = 0;
         while(exitcode == 0) {
-            //view only manager's projects.
-            //List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
-            List<Project> projects = projectController.getProjects(); //TODO: Add filter
+            List<Project> projects = ProjectController.getProjects(filter); //TODO: Add filter
+
+            for(Project p: ((Officer) ((Officer) UserController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
+                if(projects.contains(p))
+                {
+                    projects.remove(p);
+                }
+            }
+
+            for(Application a : ((Officer) ((Officer) UserController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Applicant)) {
+                if(projects.contains(a.getProject()))
+                {
+                    projects.remove(a.getProject());
+                }
+            }
+
+            for(Application a : ((Officer) ((Officer) UserController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Officer)) {
+                if(projects.contains(a.getProject()))
+                {
+                    projects.remove(a.getProject());
+                }
+            }
 
             //print out projects.
             int index = 1;
@@ -89,15 +108,7 @@ public class OfficerBoundary {
             options.put("q", -2);
             options.put("a", -4);
 
-            if(filter.contains(Project.Status.INVISIBLE)) {
-                if(projects.isEmpty()) {
-                    System.out.print("q to quit: ");
-                }
-                else {
-                    System.out.print("Select Project (number to select,q to quit): ");
-                }
-            }
-            else if(projects.isEmpty()) {
+            if(projects.isEmpty()) {
                 System.out.print("q to quit: ");
             }
             else {
@@ -113,7 +124,7 @@ public class OfficerBoundary {
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
-                    projects = ProjectController.getProjects(filter, false);
+                    projects = ProjectController.getProjects(filter);
                     for(Project project : projects) {
                         project.print(true);
                     }
