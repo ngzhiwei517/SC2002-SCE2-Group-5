@@ -91,17 +91,17 @@ public class OfficerBoundary {
 
             if(filter.contains(Project.Status.INVISIBLE)) {
                 if(projects.isEmpty()) {
-                    System.out.print("q to quit, a to view ALL projects: ");
+                    System.out.print("q to quit: ");
                 }
                 else {
-                    System.out.print("Select Project (number to select, a to view ALL projects): ");
+                    System.out.print("Select Project (number to select,q to quit): ");
                 }
             }
             else if(projects.isEmpty()) {
-                System.out.print("q to quit, a to view ALL projects: ");
+                System.out.print("q to quit: ");
             }
             else {
-                System.out.print("Select Project (number to select, a to view ALL projects): ");
+                System.out.print("Select Project (number to select): ");
             }
 
 
@@ -165,7 +165,7 @@ public class OfficerBoundary {
         }
 
         System.out.println("Officer Application Request Sent.");
-        return 0;
+        return -1;
     }
 
     public static void viewManagedProjects()
