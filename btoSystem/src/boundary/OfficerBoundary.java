@@ -38,6 +38,7 @@ public class OfficerBoundary {
                     break;
                 case 3:
                     viewOutstandingApplications();
+                    break;
                 case 4:
                     ApplicantBoundary.welcome();
                     break;
