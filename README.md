@@ -112,6 +112,8 @@ We’ve tested the system for several key functionalities. Below are some of the
 - **Test Case 2**: Single Applicant tries to apply for a 3-Room flat.
 - **Expected Result**: System prevents application with an appropriate error message.
 
+-complete test cases can be found in our report
+
 # UML Diagrams
 You can view the UML Diagrams for the project in this [GitHub repository](https://github.com/ngzhiwei517/SC2002/tree/master/UML%20Diagram).
 
