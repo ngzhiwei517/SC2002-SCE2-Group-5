@@ -108,6 +108,7 @@ public class ManagerBoundary {
                     System.out.print("q to quit, v to toggle visibility (ON), a to view ALL projects: ");
                 }
                 else {
+                    System.out.println();
                     System.out.print("Select Project (number to select, q to quit, v to toggle visibility (ON), a to view ALL projects): ");
                 }
             }
