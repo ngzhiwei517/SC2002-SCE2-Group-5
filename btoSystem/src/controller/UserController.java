@@ -39,7 +39,7 @@ public class UserController implements InitRequired, ExitRequired {
         auditDAO = SessionController.getAuditDAO();
 
         try {
-            System.out.println("READ DAO");
+            //System.out.println("READ DAO");
             userDAO.read();
             //readData();
         }

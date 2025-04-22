@@ -24,7 +24,7 @@ public class UserCSVDAO implements UserDAO {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line); //TODO: REMOVE DEBUG LINE
                 String[] values = line.split(",");
                 int id = Integer.parseInt(values[0]);
                 String name = values[1];
@@ -80,7 +80,7 @@ public class UserCSVDAO implements UserDAO {
                 userString += user.getAccountType();
                 bw.write(userString);
                 bw.newLine();
-                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+                //System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
             }
         } catch (IOException e) {
             e.printStackTrace();

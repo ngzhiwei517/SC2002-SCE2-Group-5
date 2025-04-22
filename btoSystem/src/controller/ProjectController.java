@@ -66,6 +66,12 @@ public class ProjectController  implements InitRequired, ExitRequired {
         }, visiblity) ;
 
         if(!projects.containsKey(new_project.getProjectID())) {
+
+            AuditLog aud = new AuditLog(manager.getName(), "Created new project" + new_project.getProjectName());
+            auditDAO.append(aud);
+            auditDAO.write();
+
+
             projectDAO.add(new_project);
             projectDAO.write();
         }

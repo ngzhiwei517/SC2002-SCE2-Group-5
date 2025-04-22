@@ -29,7 +29,7 @@ public class Manager extends User implements ProjectContainer {
     }
 
     public boolean addProject(Project project){
-        System.out.println("Adding project " + project);
+        //System.out.println("Adding project " + project);
         return projects.add(project);
     }
 
@@ -43,7 +43,7 @@ public class Manager extends User implements ProjectContainer {
             {
                 continue;
             }
-            System.out.println("Checking if project " + project.getProjectName() + " is a date clash");
+            //System.out.println("Checking if project " + project.getProjectName() + " is a date clash");
             if(!project.assertDateClash(date)){ //fail to assert date clash.
                 System.out.println("Clashed");
                 return false;

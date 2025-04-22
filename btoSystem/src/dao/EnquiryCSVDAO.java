@@ -60,7 +60,7 @@ public class EnquiryCSVDAO implements EnquiryDAO {
                 Enquiry enquiry = new Enquiry(e_id,project,user,status,title,body,responder, response);
                 enquiries.put(e_id, enquiry);
 
-                System.out.println("Reading Enq"); //TODO: REMOVE DEBUG IDENTIFIER.
+                //System.out.println("Reading Enq"); //TODO: REMOVE DEBUG IDENTIFIER.
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +88,7 @@ public class EnquiryCSVDAO implements EnquiryDAO {
                 enquiryString += (response != null && !response.equals("null") ? response : "null") + ",";
                 bw.write(enquiryString);
                 bw.newLine();
-                System.out.println("Writing Enq"); //TODO: REMOVE DEBUG IDENTIFIER.
+                //System.out.println("Writing Enq"); //TODO: REMOVE DEBUG IDENTIFIER.
             }
         } catch (IOException e) {
             e.printStackTrace();

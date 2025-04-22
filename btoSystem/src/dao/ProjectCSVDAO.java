@@ -139,7 +139,7 @@ public class ProjectCSVDAO implements ProjectDAO {
                 projectString += proj.getStatus().toString();
                 bw.write(projectString);
                 bw.newLine();
-                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+                //System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,7 +160,7 @@ public class ProjectCSVDAO implements ProjectDAO {
                     flatString += flat.getUnits();
                     bw.write(flatString);
                     bw.newLine();
-                    System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
+                    //System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
                 }
 
             }

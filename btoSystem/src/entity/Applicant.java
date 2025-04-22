@@ -14,7 +14,7 @@ public class Applicant extends User {
     }
 
     public boolean addEnquiry(Enquiry enquiry) {
-        System.out.println("Adding Enquiry: " + enquiry);
+        //System.out.println("Adding Enquiry: " + enquiry);
         return enquiries.add(enquiry);
     }
 

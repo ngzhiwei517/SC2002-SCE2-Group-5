@@ -44,7 +44,7 @@ public class ApplicationCSVDAO implements ApplicationDAO {
 
                 Application application = new Application(id, user, project,flat,status,type);
                 applications.put(id, application);
-                System.out.println("Reading");
+                //System.out.println("Reading");
             }
         }
         catch (IOException ex)
@@ -72,7 +72,7 @@ public class ApplicationCSVDAO implements ApplicationDAO {
                 applicationString += app.getStatus().toString() + ",";
                 bw.write(applicationString);
                 bw.newLine();
-                System.out.println("Writing");
+                //System.out.println("Writing");
             }
         } catch (IOException e) {
             e.printStackTrace();
