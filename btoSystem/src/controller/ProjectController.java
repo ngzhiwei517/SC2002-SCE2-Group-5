@@ -1,8 +1,8 @@
 package controller;
 
 import entity.*;
-import interfaces.CSVReader;
-import interfaces.CSVWriter;
+import interfaces.Reader;
+import interfaces.Writer;
 import interfaces.ExitRequired;
 import interfaces.InitRequired;
 
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class ProjectController  implements CSVReader, CSVWriter, InitRequired, ExitRequired {
+public class ProjectController  implements Reader, Writer, InitRequired, ExitRequired {
     private Map<Integer, Project> projects = new HashMap<Integer, Project>();
     private final String projectPath = "ProjectList.csv";
     private final String flatPath = "FlatList.csv";

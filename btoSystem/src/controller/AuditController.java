@@ -1,14 +1,14 @@
 package controller;
 
 import entity.AuditLog;
-import interfaces.CSVReader;
-import interfaces.CSVWriter;
+import interfaces.Reader;
+import interfaces.Writer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AuditController  implements CSVReader, CSVWriter {
+public class AuditController  implements Reader, Writer {
     private HashMap<Integer, AuditLog> auditlogs = new HashMap<>();
 
     @Override

@@ -1,6 +1,6 @@
 package interfaces;
 
-public interface CSVReader {
+public interface Reader {
     public boolean readData() throws Exception;
     public boolean writeData() throws Exception;
 }

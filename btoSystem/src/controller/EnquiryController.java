@@ -2,8 +2,8 @@ package controller;
 
 
 import entity.*;
-import interfaces.CSVReader;
-import interfaces.CSVWriter;
+import interfaces.Reader;
+import interfaces.Writer;
 import interfaces.ExitRequired;
 import interfaces.InitRequired;
 
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnquiryController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
+public class EnquiryController implements Reader, Writer, InitRequired, ExitRequired {
     private static Map<Integer, Enquiry> enquiries = new HashMap<Integer, Enquiry>();
     private final String enquiryPath = "EnquiryList.csv";
     private static UserController userController;

@@ -2,8 +2,8 @@ package controller;
 
 import entity.*;
 import controller.*;
-import interfaces.CSVReader;
-import interfaces.CSVWriter;
+import interfaces.Reader;
+import interfaces.Writer;
 import interfaces.ExitRequired;
 import interfaces.InitRequired;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ApplicationController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
+public class ApplicationController implements Reader, Writer, InitRequired, ExitRequired {
     private final String applicationPath = "ApplicationList.csv";
     private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
 

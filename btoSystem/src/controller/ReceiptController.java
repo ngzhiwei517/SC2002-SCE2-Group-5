@@ -1,8 +1,8 @@
 package controller;
 
 import entity.*;
-import interfaces.CSVReader;
-import interfaces.CSVWriter;
+import interfaces.Reader;
+import interfaces.Writer;
 import interfaces.ExitRequired;
 import interfaces.InitRequired;
 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ReceiptController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
+public class ReceiptController implements Reader, Writer, InitRequired, ExitRequired {
     private final static String receiptPath = "receiptList.csv";
     private static HashMap<Integer, Receipt> receipts = new HashMap<>();
 
