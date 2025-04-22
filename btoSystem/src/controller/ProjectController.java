@@ -14,8 +14,8 @@ import java.util.*;
 
 public class ProjectController  implements CSVReader, CSVWriter, InitRequired, ExitRequired {
     private Map<Integer, Project> projects = new HashMap<Integer, Project>();
-    private final String projectPath = "btoSystem/data/ProjectList.csv";
-    private final String flatPath = "btoSystem/data/FlatList.csv";
+    private final String projectPath = "ProjectList.csv";
+    private final String flatPath = "FlatList.csv";
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
     private static UserController userController;
