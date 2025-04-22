@@ -74,7 +74,7 @@ public class OfficerBoundary {
         List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
         int exitcode = 0;
         while(exitcode == 0) {
-            List<Project> projects = ProjectController.getProjects(filter); //TODO: Add filter
+            List<Project> projects = ProjectController.getProjects(filter);
 
             for(Project p: ((Officer) ((Officer) UserController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
                 if(projects.contains(p))
@@ -84,14 +84,14 @@ public class OfficerBoundary {
             }
 
             for(Application a : ((Officer) ((Officer) UserController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Applicant)) {
-                if(projects.contains(a.getProject()))
+                if(projects.contains(a.getProject())) //remove all projects that officer has applied for
                 {
                     projects.remove(a.getProject());
                 }
             }
 
             for(Application a : ((Officer) ((Officer) UserController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Officer)) {
-                if(projects.contains(a.getProject()))
+                if(projects.contains(a.getProject())) //TODO: remove all projects that clashes with all existing applications
                 {
                     projects.remove(a.getProject());
                 }

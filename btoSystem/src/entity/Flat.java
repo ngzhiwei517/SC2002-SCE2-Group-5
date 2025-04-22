@@ -79,12 +79,12 @@ public class Flat {
 
     public void book()
     {
-        units++;
+        units--;
     }
 
     public void withdraw()
     {
-        units--;
+        units++;
     }
 
 }

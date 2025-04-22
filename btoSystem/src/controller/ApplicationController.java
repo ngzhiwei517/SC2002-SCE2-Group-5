@@ -102,7 +102,7 @@ public class ApplicationController {
 
     public Application tryApply(User user, Flat flat)
     {
-        //if() //assertion check to check if user can actually apply for project, by default this should be true, as it is asserted previously within the boundary.
+        //TODO: if() //assertion check to check if user can actually apply for project, by default this should be true, as it is asserted previously within the boundary.
 
         //assertion check that user does not already have an application for this flat.
 
@@ -122,6 +122,13 @@ public class ApplicationController {
             if(!p.isDateClash(project)) {  //check stuff here.
                 return null;
             }
+        }
+        //TODO:: CHECK AGAINST OFFICER'S APPLICATIONS TOO.
+
+        //CHECK AGAINST PROJECT'S OFFICERSLOTS
+        if(project.getOfficerSlots() == 0)
+        {
+            return null;
         }
         Application app = new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
         applications.put(app.getId(), app);

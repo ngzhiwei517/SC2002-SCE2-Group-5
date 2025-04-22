@@ -5,7 +5,7 @@ u.id,name,nric,age,marital_status,password,account_type
 2,Mary Wong,S7654321B,22,Married,password,Applicant
 5,David Chen,S2468135E,30,Married,password,Applicant
 9,Robert Tan,S5647382I,28,Married,password,Applicant
-10,Cindy Koh,S3948576J,39,Single,password,Applicant
+10,Cindy Koh,S3948576J,21,Single,password,Applicant
 6,Michael Liu,S1357924F,45,Married,password,Manager
 11,Peter Ong,S2839405K,27,Married,password,Applicant
 3,Alex Lee,S9876543C,36,Single,password,Applicant

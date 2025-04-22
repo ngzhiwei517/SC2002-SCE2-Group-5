@@ -38,6 +38,7 @@ public class Receipt {
 
     // Save receipt as a text file (optional)
     public void saveReceiptToFile() {
+
         // Implementation can be added to save as a .txt file
     }
 
