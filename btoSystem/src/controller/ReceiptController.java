@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ReceiptController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
-    private final static String receiptPath = "btoSystem/data/receiptList.csv";
+    private final static String receiptPath = "receiptList.csv";
     private static HashMap<Integer, Receipt> receipts = new HashMap<>();
 
     private static UserController userController;
