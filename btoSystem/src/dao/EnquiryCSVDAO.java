@@ -23,7 +23,7 @@ public class EnquiryCSVDAO implements EnquiryDAO {
 
     @Override
     public HashMap<Integer, Enquiry> get() {
-        return null;
+        return enquiries;
     }
 
     @Override
