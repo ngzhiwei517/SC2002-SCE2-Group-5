@@ -1,10 +1,12 @@
 package entity;
 
+import interfaces.ProjectContainer;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Officer extends Applicant {
+public class Officer extends Applicant implements ProjectContainer {
 
     private List<Project> projects = new ArrayList<Project>();
 

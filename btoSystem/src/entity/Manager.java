@@ -1,10 +1,12 @@
 package entity;
 
+import interfaces.ProjectContainer;
+
 import java.time.LocalDate;
 import java.util.*;
 
 
-public class Manager extends User {
+public class Manager extends User implements ProjectContainer {
 
     private List<Project> projects = new ArrayList<>();
 
@@ -26,7 +28,7 @@ public class Manager extends User {
         return projects;
     }
 
-    public boolean addProjects(Project project){
+    public boolean addProject(Project project){
         System.out.println("Adding project " + project);
         return projects.add(project);
     }

@@ -50,7 +50,7 @@ public class Project {
             officer.addProject(this);
         }
 
-        manager.addProjects(this);
+        manager.addProject(this);
     }
 
     public Project(String projectName, String neighborhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, List<Officer> officers, Status status) {
@@ -69,7 +69,7 @@ public class Project {
             officer.addProject(this);
         }
 
-        manager.addProjects(this);
+        manager.addProject(this);
     }
 
     public int getProjectID() {

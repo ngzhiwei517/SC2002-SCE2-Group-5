@@ -24,7 +24,7 @@ public class ApplicantBoundary {
         int choice = -1;
         boolean exit = false;
         while(!exit){
-            if(choice == -1 || (choice >= 1 && choice <= 4)){
+            if(choice == -1 || (choice >= 1 && choice <= 5)){
                 displayDashboard();
             }
             Scanner sc = new Scanner(System.in);
@@ -44,6 +44,10 @@ public class ApplicantBoundary {
                     break;
                 case 4:
                     utils.clear();
+                    showReceipt();
+                    break;
+                case 5:
+                    utils.clear();
                     if(!(SessionController.getLoggedUser() instanceof Officer))
                     {
                         SessionController.logOut();
@@ -59,18 +63,40 @@ public class ApplicantBoundary {
 
     }
 
+    public static void showReceipt()
+    {
+        if(!(SessionController.getLoggedUser() instanceof Applicant))
+        {
+            System.out.println("Something Went Wrong, Session User Data is not of Class Applicant");
+            return;
+        }
+        List<Receipt> receipts = ReceiptController.getReceipt((Applicant) SessionController.getLoggedUser());
+
+        if(receipts.isEmpty())
+        {
+            System.out.println("No receipts found");
+            return;
+        }
+
+        for(Receipt receipt : receipts){
+            receipt.printReceipt();
+        }
+
+    }
+
     public static void displayDashboard() {
         System.out.println("Welcome "); //add applicant name here
         System.out.println("1. View & Apply for Projects");
         System.out.println("2. View All Applications");
-        System.out.println("3. View Pending Enquiries");
+        System.out.println("3. View All Enquiries");
+        System.out.println("4. Show Receipts");
 
         if(SessionController.getLoggedUser() instanceof Officer)
         {
-            System.out.println("4. Return to Officer View");
+            System.out.println("5. Return to Officer View");
         }
         else {
-            System.out.println("4. Log Out");
+            System.out.println("5. Log Out");
         }
     }
 
