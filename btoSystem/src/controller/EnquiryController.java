@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class EnquiryController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
     private static Map<Integer, Enquiry> enquiries = new HashMap<Integer, Enquiry>();
-    private final String enquiryPath = "btoSystem/data/EnquiryList.csv";
+    private final String enquiryPath = "EnquiryList.csv";
     private static UserController userController;
     private static ProjectController projectController;
     private static ApplicationController applicationController;
