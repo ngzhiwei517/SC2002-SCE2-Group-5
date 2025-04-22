@@ -136,6 +136,7 @@ public class ManagerBoundary {
                     }
                     break;
                 } else if (choice == -1) {
+                    System.out.println();
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
                     projects = projectController.getProjects(filter);
