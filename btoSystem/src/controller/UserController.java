@@ -1,5 +1,6 @@
 package controller;
 
+import dao.AuditDAO;
 import dao.UserDAO;
 import entity.*;
 import interfaces.Reader;
@@ -18,6 +19,7 @@ public class UserController implements InitRequired, ExitRequired {
     //private final String userPath = "ApplicantList.csv";
 
     private UserDAO userDAO;
+    private AuditDAO auditDAO;
 
     private static UserController userController;
     private static ProjectController projectController;
@@ -34,6 +36,7 @@ public class UserController implements InitRequired, ExitRequired {
         receiptController = SessionController.getReceiptController();
 
         userDAO = SessionController.getUserDAO();
+        auditDAO = SessionController.getAuditDAO();
 
         try {
             System.out.println("READ DAO");
@@ -50,74 +53,6 @@ public class UserController implements InitRequired, ExitRequired {
         userDAO.write();
         //writeData();
     }
-
-    /*
-    public boolean readData() throws IOException
-    {
-        //process applicants
-        try (BufferedReader br = new BufferedReader(new FileReader(userPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-                String[] values = line.split(",");
-                int id = Integer.parseInt(values[0]);
-                String name = values[1];
-                String nric = values[2];
-                int age = Integer.parseInt(values[3]);
-                boolean isMarried = values[4].equals("Married");
-                String password = values[5];
-                String type = values[6];
-                switch(type)
-                {
-                    case "Applicant":
-                    {
-                        User newUser = new Applicant(id, name, nric, age, isMarried, password);
-                        Users.put(nric, newUser);
-                    }
-                    break;
-                    case "Officer":
-                    {
-                        User newUser = new Officer(id, name, nric, age, isMarried, password);
-                        Users.put(nric, newUser);
-                    }
-                    break;
-                    case "Manager":
-                    {
-                        User newUser = new Manager(id, name, nric, age, isMarried, password);
-                        Users.put(nric, newUser);
-                    }
-                    break;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean writeData()
-    {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(userPath))){
-            bw.write("u.id,name,nric,age,marital_status,password,account_type");
-            bw.newLine();
-            for(String key : Users.keySet()) {
-                User user = Users.get(key);
-                String userString = "";
-                userString += user.getID() + ",";
-                userString += user.getName() + ",";
-                userString += user.getNric() + ",";
-                userString += user.getAge() + ",";
-                userString += (user.isMarried() ? "Married" : "Single") + ",";
-                userString += user.getPassword() + ",";
-                userString += user.getAccountType();
-                bw.write(userString);
-                bw.newLine();
-                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }*/
 
     public User getUser(int id)
     {
@@ -172,6 +107,13 @@ public class UserController implements InitRequired, ExitRequired {
         }
         User user = users.get(username);
         if(user.changePassword(currentPassword, newPassword)){
+
+            userDAO.write();
+
+            AuditLog aud = new AuditLog(username, "password changed");
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return true;
         }
         return false;

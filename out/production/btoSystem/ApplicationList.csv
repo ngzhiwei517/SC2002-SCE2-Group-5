@@ -1,4 +1,9 @@
 a.id,u.id,p.id,f.id,type,status
+1,1,1,-1,Applicant,PENDING,
+2,2,1,-1,Applicant,SUCCESSFUL,
+3,3,1,-1,Applicant,UNSUCCESSFUL,
 4,4,2,3,Applicant,PENDING,
+5,5,1,-1,Applicant,REQUESTED_WITHDRAW,
 6,9,2,3,Applicant,SUCCESSFUL,
-9,19,3,-1,Officer,PENDING,
+7,10,1,-1,Applicant,BOOKED,
+8,7,1,-1,Officer,PENDING,

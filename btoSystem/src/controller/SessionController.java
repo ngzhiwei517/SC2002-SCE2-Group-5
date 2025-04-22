@@ -1,9 +1,6 @@
 package controller;
 
-import dao.ApplicationDAO;
-import dao.EnquiryDAO;
-import dao.ProjectDAO;
-import dao.UserDAO;
+import dao.*;
 import entity.User;
 
 public class SessionController {
@@ -18,6 +15,8 @@ public class SessionController {
     private static ProjectDAO projectDAO;
     private static EnquiryDAO enquiryDAO;
     private static ApplicationDAO applicationDAO;
+    private static ReceiptDAO receiptDAO;
+    private static AuditDAO auditDAO;
 
 
     private static User loggedUser = null;
@@ -26,6 +25,21 @@ public class SessionController {
         return loggedUser;
     }
     public static void clearLoggedUser() { loggedUser = null; }
+
+    public static void setAuditDAO(AuditDAO auditDAO) {
+        SessionController.auditDAO = auditDAO;
+    }
+    public static AuditDAO getAuditDAO() {
+        return auditDAO;
+    }
+
+    public static void setReceiptDAO(ReceiptDAO receiptDAO) {
+        SessionController.receiptDAO = receiptDAO;
+    }
+
+    public static ReceiptDAO getReceiptDAO() {
+        return receiptDAO;
+    }
 
     public static void setApplicationDAO(ApplicationDAO applicationDAO)
     {

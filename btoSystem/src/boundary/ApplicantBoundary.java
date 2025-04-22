@@ -191,7 +191,7 @@ public class ApplicantBoundary {
                                 System.out.println("Invalid Input.");
                             }
                         } else {
-                            if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= projectList.size()) //SUCCESS CONDITION
+                            if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= selectedProject.getEligibleFlats( (Applicant) SessionController.getLoggedUser()).size()) //SUCCESS CONDITION
                             {
                                 selectedFlat = selectedProject.getEligibleFlats( (Applicant) SessionController.getLoggedUser()).get(Integer.parseInt(input) - 1);
                                 state = 4;

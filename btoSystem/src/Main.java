@@ -33,11 +33,15 @@ public class Main {
         ProjectDAO projectDAO = new ProjectCSVDAO();
         EnquiryDAO enquiryDAO = new EnquiryCSVDAO();
         ApplicationDAO applicationDAO = new ApplicationCSVDAO();
+        AuditDAO auditDAO = new AuditCSVDAO();
+        ReceiptDAO receiptDAO = new ReceiptCSVDAO();
 
         SessionController.setUserDAO(userDAO);
         SessionController.setProjectDAO(projectDAO);
         SessionController.setEnquiryDAO(enquiryDAO);
         SessionController.setApplicationDAO(applicationDAO);
+        SessionController.setAuditDAO(auditDAO);
+        SessionController.setReceiptDAO(receiptDAO);
 
         MainBoundary.init();
         ApplicantBoundary.init();

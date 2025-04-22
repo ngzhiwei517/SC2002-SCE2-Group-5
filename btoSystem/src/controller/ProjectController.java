@@ -1,5 +1,6 @@
 package controller;
 
+import dao.AuditDAO;
 import dao.ProjectDAO;
 import entity.*;
 import interfaces.Reader;
@@ -20,6 +21,7 @@ public class ProjectController  implements InitRequired, ExitRequired {
     //private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
     private ProjectDAO projectDAO;
+    private AuditDAO auditDAO;
 
     private static UserController userController;
     private static ProjectController projectController;
@@ -37,6 +39,7 @@ public class ProjectController  implements InitRequired, ExitRequired {
 
         projectDAO = SessionController.getProjectDAO();
         projectDAO.injectDAO(SessionController.getUserDAO());
+        auditDAO = SessionController.getAuditDAO();
 
         try {
             projectDAO.read();
@@ -52,139 +55,6 @@ public class ProjectController  implements InitRequired, ExitRequired {
         //writeData();
     }
 
-    /*
-    public boolean readData() throws IOException {
-        //process applicants
-        try (BufferedReader br = new BufferedReader(new FileReader(projectPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                int project_id = Integer.parseInt(values[0]);
-                String projectName = values[1];
-                String neighbourhood = values[2];
-                String openingDateStr = values[3];
-                String closingDateStr = values[4];
-                int managerID = Integer.parseInt(values[5]);
-                int officerSlots = Integer.parseInt(values[6]);
-                String officerArr = values[7];
-                Project.Status status = Project.Status.valueOf(values[8]);
-
-                LocalDate openingDate = LocalDate.parse(openingDateStr, formatter);
-                LocalDate closingDate = LocalDate.parse(closingDateStr, formatter);
-
-                Manager assignedManager = null;
-                if (userController.getManager(managerID) != null) {
-                    assignedManager = userController.getManager(managerID);
-                }
-
-                List<Officer> officerList = new ArrayList<Officer>();
-                if(!officerArr.equalsIgnoreCase("\"\"")) { //TODO:: FIX band-aid fix on empty list issue.
-                    officerArr = officerArr.replaceAll("[\"']", "");
-                    String[] officerStrings = officerArr.split(",");
-                    for (String officerString : officerStrings) {
-                        if (userController.getOfficer(Integer.parseInt(officerString)) != null) {
-                            officerList.add(userController.getOfficer(Integer.parseInt(officerString)));
-                        }
-                    }
-                }
-
-                if(!projects.containsKey(project_id)) {
-                    projects.put(project_id, new Project(project_id,
-                            projectName,
-                            neighbourhood,
-                            openingDate,
-                            closingDate,
-                            assignedManager,
-                            officerSlots,
-                            officerList, status));
-                }
-                else {
-                    System.out.println("Duplicate Project ID" + project_id);
-                }
-            }
-
-        }
-        try (BufferedReader br = new BufferedReader(new FileReader(flatPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                int f_id = Integer.parseInt(values[0]);
-                int p_id = Integer.parseInt(values[1]);
-                String type = values[2];
-                float cost = Float.parseFloat(values[3]);
-                int units = Integer.parseInt(values[4]);
-
-                Project project = projects.get(p_id);
-                if (project != null) {
-                    Flat flat = new Flat(f_id, project, type, cost, units);
-                    project.addFlat(flat);
-                } else {
-                    System.out.println("Invalid Project ID: " + p_id);
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean writeData() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(projectPath))){
-            bw.write("p_id,Project Name,Neighborhood,opening_date,closing_date,manager_id,officer_slot,officer_list,status");
-            bw.newLine();
-            for(int key : projects.keySet()) {
-                Project proj = projects.get(key);
-                String projectString = "";
-                projectString += proj.getProjectID() + ",";
-                projectString += proj.getProjectName() + ",";
-                projectString += proj.getNeighborhood() + ",";
-                projectString += proj.getOpeningDate().format(DateTimeFormatter.ofPattern("M/d/yyyy")) + ",";
-                projectString += proj.getClosingDate().format(DateTimeFormatter.ofPattern("M/d/yyyy")) + ",";
-                projectString += proj.getManager().getID() + ",";
-                projectString += proj.getOfficerSlots() + ",";
-                StringBuilder officerSubstring = new StringBuilder();
-                List<Officer> officerList = proj.getOfficers();
-                for (Officer officer : officerList) {
-                    officerSubstring.append(officer.getID()).append(",");
-                }
-                if (!officerSubstring.isEmpty()) {
-                    officerSubstring.setLength(officerSubstring.length() - 1); // remove last comma
-                }
-                projectString += "\"" + officerSubstring.toString() + "\",";
-                projectString += proj.getStatus().toString();
-                bw.write(projectString);
-                bw.newLine();
-                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(flatPath))){
-            bw.write("f.id,p.id,type,cost,units");
-            bw.newLine();
-            for(int key : projects.keySet()) {
-                Project proj = projects.get(key);
-                for(Flat flat : proj.getFlats()) {
-                    String flatString = "";
-                    flatString += flat.getId() + ",";
-                    flatString += proj.getProjectID() + ",";
-                    flatString += flat.getStringType() + ",";
-                    flatString += flat.getPrice() + ",";
-                    flatString += flat.getUnits();
-                    bw.write(flatString);
-                    bw.newLine();
-                    System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
-                }
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    */
 
     public Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblity)
     {
@@ -270,13 +140,24 @@ public class ProjectController  implements InitRequired, ExitRequired {
 
     public void setProjectName(Manager manager, Project project, String name)
     {
+        String prevProjectName = project.getProjectName();
         project.setProjectName(name);
+
+        AuditLog aud = new AuditLog(manager.getName(), "project " + prevProjectName + " name set to " + project.getProjectName());
+        auditDAO.append(aud);
+        auditDAO.write();
+
         projectDAO.write();
     }
 
     public void setNeighborhood(Manager manager, Project project, String neighbourhood)
     {
         project.setNeighborhood(neighbourhood);
+
+        AuditLog aud = new AuditLog(manager.getName(), "project " + project.getProjectName() + " neighbourhood set to " + project.getNeighborhood());
+        auditDAO.append(aud);
+        auditDAO.write();
+
         projectDAO.write();
     }
 
@@ -284,6 +165,11 @@ public class ProjectController  implements InitRequired, ExitRequired {
         if (SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
             project.setOpeningDate(date);
             projectDAO.write();
+
+            AuditLog aud = new AuditLog(manager.getName(), "project " + project.getProjectName() + " opening date set to " + project.getOpeningDate());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return true;
         }
         return false;
@@ -293,12 +179,22 @@ public class ProjectController  implements InitRequired, ExitRequired {
         if(SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
             project.setClosingDate(date);
             projectDAO.write();
+
+            AuditLog aud = new AuditLog(manager.getName(), "project " + project.getProjectName() + " closing date set to " + project.getClosingDate());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return true;
         }
         return false;
     }
 
     public boolean toggleVisibility(Manager manager, Project project) {
+
+        AuditLog aud = new AuditLog(manager.getName(), "project " + project.getProjectName() + " visibility toggled to " + project.getStatus().toString());
+        auditDAO.append(aud);
+        auditDAO.write();
+
         project.toggleVisibility();
         projectDAO.write();
         return true;
@@ -312,6 +208,10 @@ public class ProjectController  implements InitRequired, ExitRequired {
                 System.out.println("tried to delete non-existent application");
             }
         }
+
+        AuditLog aud = new AuditLog(manager.getName(), "flat removed " + flat.getId() + " from " + flat.getProject().getProjectName());
+        auditDAO.append(aud);
+        auditDAO.write();
 
         flat.deleteSelf(); //once removed from project, GC will handle.
         projectDAO.write();
@@ -341,6 +241,10 @@ public class ProjectController  implements InitRequired, ExitRequired {
 
         if(projectDAO.remove(project))
         {
+            AuditLog aud = new AuditLog(manager.getName(), "project removed" + project.getProjectID() + "," + project.getProjectName());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             System.out.println("Project deleted successfully");
         }
         else {

@@ -6,10 +6,7 @@ import java.util.HashMap;
 import interfaces.Reader;
 import interfaces.Writer;
 
-public interface AuditDAO extends Reader, Writer{
-    HashMap<Integer, AuditLog> get();
-    boolean read(String path);
+public interface AuditDAO extends Writer{
     boolean write();
-    boolean add(AuditLog log);
-    boolean remove(AuditLog log);
+    boolean append(AuditLog auditLog);
 }

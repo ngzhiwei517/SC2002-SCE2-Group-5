@@ -1,6 +1,7 @@
 package controller;
 
 import dao.ApplicationDAO;
+import dao.AuditDAO;
 import entity.*;
 import controller.*;
 import interfaces.Reader;
@@ -25,6 +26,7 @@ public class ApplicationController implements InitRequired, ExitRequired {
     private static ReceiptController receiptController;
 
     private ApplicationDAO applicationDAO;
+    private AuditDAO auditDAO;
 
     public void init()
     {
@@ -36,6 +38,7 @@ public class ApplicationController implements InitRequired, ExitRequired {
 
         applicationDAO = SessionController.getApplicationDAO();
         applicationDAO.injectDAO(SessionController.getUserDAO(), SessionController.getProjectDAO());
+        auditDAO = SessionController.getAuditDAO();
 
 
         try {
@@ -75,6 +78,11 @@ public class ApplicationController implements InitRequired, ExitRequired {
         if(applicationDAO.add(application))
         {
             applicationDAO.write();
+
+            AuditLog aud = new AuditLog(user.getName(), "application created id " + application.getId());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return application;
         }
         return null;
@@ -105,6 +113,11 @@ public class ApplicationController implements InitRequired, ExitRequired {
         if(applicationDAO.add(app))
         {
             applicationDAO.write();
+
+            AuditLog aud = new AuditLog(officer.getName(), "application created id " + app.getId());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return app;
         }
         return null;
@@ -116,6 +129,11 @@ public class ApplicationController implements InitRequired, ExitRequired {
         if(applications.containsValue(application)) {
             application.setStatus(Application.Status.REQUESTED_WITHDRAW);
             applicationDAO.write();
+
+            AuditLog aud = new AuditLog(application.getUser().getName(), "application withdrew " + application.getId());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return true;
         }
         return false;
@@ -126,6 +144,11 @@ public class ApplicationController implements InitRequired, ExitRequired {
         application.book();
         receiptController.generateReceipt(application);
         applicationDAO.write();
+
+        AuditLog aud = new AuditLog(application.getUser().getName(), "application booked " + application.getId());
+        auditDAO.append(aud);
+        auditDAO.write();
+
         return true;
     }
 
@@ -158,6 +181,11 @@ public class ApplicationController implements InitRequired, ExitRequired {
     public boolean deleteApplication(Application application)
     {
         if(applicationDAO.remove(application)) {
+
+            AuditLog aud = new AuditLog(application.getUser().getName(), "application deleted " + application.getId());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return true;
         }
         return false;

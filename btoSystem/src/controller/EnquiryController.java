@@ -1,6 +1,7 @@
 package controller;
 
 
+import dao.AuditDAO;
 import dao.EnquiryCSVDAO;
 import dao.EnquiryDAO;
 import entity.*;
@@ -27,6 +28,7 @@ public class EnquiryController implements InitRequired, ExitRequired {
     private static ReceiptController receiptController;
 
     private EnquiryDAO enquiryDAO;
+    private AuditDAO auditDAO;
 
     public void init()
     {
@@ -38,10 +40,10 @@ public class EnquiryController implements InitRequired, ExitRequired {
 
         enquiryDAO = SessionController.getEnquiryDAO();
         enquiryDAO.injectDAO(SessionController.getUserDAO(), SessionController.getProjectDAO());
+        auditDAO = SessionController.getAuditDAO();
 
         try {
             enquiryDAO.read();
-            //readData();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +52,6 @@ public class EnquiryController implements InitRequired, ExitRequired {
     public void exit()
     {
         enquiryDAO.write();
-        //writeData();
     }
 
 
@@ -59,6 +60,11 @@ public class EnquiryController implements InitRequired, ExitRequired {
         Enquiry enquiry = new Enquiry(project, user, Enquiry.Status.PENDING, title, body);
         enquiryDAO.add(enquiry);
         enquiryDAO.write();
+
+        AuditLog aud = new AuditLog(user.getName(), "new enquiry added " + enquiry.getEnquiryId());
+        auditDAO.append(aud);
+        auditDAO.write();
+
         return true;
     }
 
@@ -79,6 +85,13 @@ public class EnquiryController implements InitRequired, ExitRequired {
     {
         if(enquiryDAO.remove(enquiry))
         {
+            //remove enq from project as well.
+            enquiry.getProject().removeEnquiry(enquiry);
+
+            AuditLog aud = new AuditLog(enquiry.getUser().getName(), "enquiry removed " + enquiry.getEnquiryId());
+            auditDAO.append(aud);
+            auditDAO.write();
+
             return true;
         }
         return false;
