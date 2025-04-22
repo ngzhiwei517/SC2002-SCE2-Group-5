@@ -95,18 +95,6 @@ public class UserController implements CSVReader, CSVWriter {
         return false;
     }
 
-    public boolean login(String username, String password)
-    {
-        if (Users.containsKey(username)) {
-            if(Users.get(username).verifyPassword(password))
-            {
-                loggedUser = Users.get(username);
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static User getUser(int id)
     {
         for(User user: Users.values())
@@ -116,6 +104,14 @@ public class UserController implements CSVReader, CSVWriter {
         }
         return null;
     }
+
+    public static User getUser(String username)
+    {
+        if(Users.containsKey(username))
+            return Users.get(username);
+        return null;
+    }
+
 
     public Manager getManager(int id)
     {

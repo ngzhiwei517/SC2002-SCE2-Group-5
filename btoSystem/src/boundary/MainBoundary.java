@@ -83,7 +83,7 @@ public class MainBoundary {
             //do assertion check.
             //assert with this pattern ^[TS]\d{7}[A-Z]$
 
-            if(userController.login(username, password))
+            if(SessionController.login(username, password))
             {
                 System.out.println("Login Successful");
                 login = true;
