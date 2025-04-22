@@ -13,13 +13,18 @@ public class ManagerBoundary {
     private static UserController userController;
     private static ProjectController projectController;
     private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
-    public static void setControllers(UserController uController, ProjectController pController, ApplicationController aController)
+    public static void init()
     {
-        userController = uController;
-        projectController = pController;
-        applicationController = aController;
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
     }
+
 
     public static void welcome(){
         System.out.println("Welcome " + SessionController.getLoggedUser().getName()); //add applicant name here
@@ -55,7 +60,6 @@ public class ManagerBoundary {
         }
         //log out of everything.
         SessionController.logOut();
-        ProjectController.clearSelectedProject();
     }
 
     public static void displayDashboard()
@@ -111,6 +115,8 @@ public class ManagerBoundary {
             }
 
 
+            Project selectedProject = null;
+
             while (true) {
                 String input = sc.nextLine();
                 int choice = utils.getRange(options, 1, projects.size(), input);
@@ -126,7 +132,7 @@ public class ManagerBoundary {
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
-                    projects = ProjectController.getProjects(filter);
+                    projects = projectController.getProjects(filter);
                     for(Project project : projects) {
                         project.print(true);
                     }
@@ -134,20 +140,19 @@ public class ManagerBoundary {
                     utils.waitKey();
                     break;
                 }else {
-                    ProjectController.selectProject(projects.get(choice - 1));
-                    exitcode = optionsUpdateDelete();
+                    selectedProject = projects.get(choice - 1);
+                    exitcode = optionsUpdateDelete(selectedProject);
                     break;
                 }
             }
         }
     }
 
-    private static int optionsUpdateDelete()
+    private static int optionsUpdateDelete(Project project)
     {
         int exitcode = 1;
         while(exitcode == 1) {
-            ProjectController.getSelectedProject().print(true);
-            Project selected_project = ProjectController.getSelectedProject();
+            project.print(true);
             System.out.println("1. Update Selected Project");
             System.out.println("2. Delete Selected Project");
             System.out.println("3. View Applicant Applications");
@@ -170,25 +175,25 @@ public class ManagerBoundary {
                 {
                     return -1;
                 } else if (choice == 1) {
-                    exitcode = updateListing(selected_project);
+                    exitcode = updateListing(project);
                     break;
                 } else if (choice == 2) {
-                    exitcode = deleteListing(selected_project);
+                    exitcode = deleteListing(project);
                     break;
                 } else if(choice == 3) {
-                    exitcode = viewProjectApplications(selected_project);
+                    exitcode = viewProjectApplications(project);
                     break;
                 } else if(choice == 4) {
-                    exitcode = viewProjectWithdrawals(selected_project);
+                    exitcode = viewProjectWithdrawals(project);
                     break;
                 } else if(choice == 5) {
-                    exitcode = viewProjectOfficerApplications(selected_project);
+                    exitcode = viewProjectOfficerApplications(project);
                     break;
                 } else if(choice == 6) {
-                    exitcode = viewProjectEnquiries(selected_project);
+                    exitcode = viewProjectEnquiries(project);
                     break;
                 } else if(choice == 7) {
-                    exitcode = generateReport(selected_project);
+                    exitcode = generateReport(project);
                     break;
                 } else {
                     System.out.println("Invalid Option");
@@ -243,7 +248,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    ProjectController.setProjectName((Manager) SessionController.getLoggedUser(), project , input);
+                    projectController.setProjectName((Manager) SessionController.getLoggedUser(), project , input);
                     exitcode = 1;
                 }
                 break;
@@ -258,7 +263,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    ProjectController.setNeighborhood((Manager) SessionController.getLoggedUser(), project, input);
+                    projectController.setNeighborhood((Manager) SessionController.getLoggedUser(), project, input);
                     exitcode = 1;
 
                 }
@@ -278,7 +283,7 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); //check correct pattern.
-                            if(ProjectController.setOpeningDate((Manager) SessionController.getLoggedUser(), project, date))
+                            if(projectController.setOpeningDate((Manager) SessionController.getLoggedUser(), project, date))
                             {
                                 exitcode = 1;
                                 break;
@@ -308,7 +313,7 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                            if(ProjectController.setClosingDate((Manager) SessionController.getLoggedUser(), project, date))
+                            if(projectController.setClosingDate((Manager) SessionController.getLoggedUser(), project, date))
                             {
                                 exitcode = 1;
                                 break;
@@ -324,7 +329,7 @@ public class ManagerBoundary {
                 break;
                 case 5: {
                     //just toggle visibility from here
-                    ProjectController.toggleVisibility((Manager) SessionController.getLoggedUser(), project);
+                    projectController.toggleVisibility((Manager) SessionController.getLoggedUser(), project);
                     System.out.println("Project is now " + project.getStatus().toString());
                     exitcode = 1;
                 }
@@ -409,7 +414,6 @@ public class ManagerBoundary {
     private static void addFlats(Project project)
     {
         List<Flat> flats = requestFlats();
-
         if(flats.isEmpty())
         {
             return;
@@ -756,7 +760,7 @@ public class ManagerBoundary {
         List<Flat> flats = requestFlats();
 
         //manager will be passed in as user.loggeduser.
-        Project project = ProjectController.addProject(projectName,neighbourhood, openingDate, closingDate, (Manager) SessionController.getLoggedUser(), officerSlots, visibility);
+        Project project = projectController.addProject(projectName,neighbourhood, openingDate, closingDate, (Manager) SessionController.getLoggedUser(), officerSlots, visibility);
         for(Flat flat : flats) {
             project.addFlat(flat);
         }
@@ -1198,7 +1202,7 @@ public class ManagerBoundary {
     }
 
     private static void viewAllEnquiries(){
-        List<Project> projects = ProjectController.getProjects();
+        List<Project> projects = projectController.getProjects();
 
         if(projects.isEmpty()) {
             return;

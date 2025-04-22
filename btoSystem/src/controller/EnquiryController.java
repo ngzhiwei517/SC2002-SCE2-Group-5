@@ -4,6 +4,8 @@ package controller;
 import entity.*;
 import interfaces.CSVReader;
 import interfaces.CSVWriter;
+import interfaces.ExitRequired;
+import interfaces.InitRequired;
 
 import javax.swing.*;
 import java.io.*;
@@ -13,30 +15,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnquiryController implements CSVReader, CSVWriter {
+public class EnquiryController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
     private static Map<Integer, Enquiry> enquiries = new HashMap<Integer, Enquiry>();
     private final String enquiryPath = "EnquiryList.csv";
-    private UserController userController;
-    private ProjectController projectController;
-
-    public void setControllers(UserController uController, ProjectController pController)
-    {
-        userController = uController;
-        projectController = pController;
-    }
+    private static UserController userController;
+    private static ProjectController projectController;
+    private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
     public void init()
     {
-        try{
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
+        try {
             readData();
         }
-        catch (IOException e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
     public void exit()
     {
         writeData();
@@ -58,8 +59,8 @@ public class EnquiryController implements CSVReader, CSVWriter {
                 String str_responder_id = data[6];
                 String response = data[7];
 
-                Project project = ProjectController.getProject(p_id);
-                Applicant user = (Applicant) UserController.getUser(u_id);
+                Project project = projectController.getProject(p_id);
+                Applicant user = (Applicant) userController.getUser(u_id);
 
                 User responder = null;
                 if(!str_responder_id.equalsIgnoreCase("null"))
@@ -110,6 +111,7 @@ public class EnquiryController implements CSVReader, CSVWriter {
     {
         Enquiry enquiry = new Enquiry(project, user, Enquiry.Status.PENDING, title, body);
         enquiries.put(enquiry.getEnquiryId(), enquiry);
+        writeData();
         return true;
     }
 

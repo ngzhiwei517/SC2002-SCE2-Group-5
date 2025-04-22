@@ -1,7 +1,6 @@
 package boundary;
 
-import controller.SessionController;
-import controller.UserController;
+import controller.*;
 import entity.*;
 import utils.utils;
 
@@ -10,11 +9,20 @@ import java.util.Scanner;
 public class MainBoundary {
 
     private static UserController userController;
+    private static ProjectController projectController;
+    private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
-    public static void setUserController(UserController controller)
+    public static void init()
     {
-        userController = controller;
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
     }
+
 
     //login will be here, dashboards will be here
     public static boolean welcome() {

@@ -3,6 +3,8 @@ package controller;
 import entity.*;
 import interfaces.CSVReader;
 import interfaces.CSVWriter;
+import interfaces.ExitRequired;
+import interfaces.InitRequired;
 
 import java.io.*;
 import java.time.format.DateTimeFormatter;
@@ -10,15 +12,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserController implements CSVReader, CSVWriter {
+public class UserController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
     private static Map<String, User> Users = new HashMap<>();;
     private final String userPath = "ApplicantList.csv";
 
+    private static UserController userController;
+    private static ProjectController projectController;
+    private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
+
     public void init()
     {
-        try{readData();}
-        catch (IOException e)
-        {
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
+
+        try {
+            readData();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -143,6 +158,7 @@ public class UserController implements CSVReader, CSVWriter {
         }
         User user = Users.get(username);
         if(user.changePassword(currentPassword, newPassword)){
+            writeData();
             return true;
         }
         return false;

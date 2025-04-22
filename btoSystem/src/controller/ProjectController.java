@@ -3,6 +3,8 @@ package controller;
 import entity.*;
 import interfaces.CSVReader;
 import interfaces.CSVWriter;
+import interfaces.ExitRequired;
+import interfaces.InitRequired;
 
 import java.io.*;
 
@@ -10,22 +12,30 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class ProjectController  implements CSVReader, CSVWriter{
-    private static Project selectedProject = null;
-    private static Map<Integer, Project> projects = new HashMap<Integer, Project>();
-    private static UserController userController;
+public class ProjectController  implements CSVReader, CSVWriter, InitRequired, ExitRequired {
+    private Map<Integer, Project> projects = new HashMap<Integer, Project>();
     private final String projectPath = "ProjectList.csv";
     private final String flatPath = "FlatList.csv";
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
-    public static void setUserController(UserController controller) {
-        userController = controller;
-    }
+    private static UserController userController;
+    private static ProjectController projectController;
+    private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
-    public void init() {
+    public void init()
+    {
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
+
         try {
             readData();
-        } catch (IOException e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -165,9 +175,8 @@ public class ProjectController  implements CSVReader, CSVWriter{
         return false;
     }
 
-    public static Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblity)
+    public Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblity)
     {
-        //get length of project + 1 as projectid
         Project new_project = new Project(projectName, neighbourhood,
                 OpeningDate, ClosingDate, manager,
                 officerSlots, new ArrayList<Officer>() {
@@ -175,26 +184,12 @@ public class ProjectController  implements CSVReader, CSVWriter{
 
         if(!projects.containsKey(new_project.getProjectID())) {
             projects.put(new_project.getProjectID(), new_project);
+            writeData();
         }
         return new_project;
     }
 
-    public static void selectProject(Project project)
-    {
-        selectedProject = project;
-    }
-
-    public static Project getSelectedProject()
-    {
-        return selectedProject;
-    }
-
-    public static void clearSelectedProject()
-    {
-        selectedProject = null;
-    }
-
-    public static Project getProject(int id)
+    public Project getProject(int id)
     {
         if(projects.containsKey(id))
         {
@@ -204,7 +199,7 @@ public class ProjectController  implements CSVReader, CSVWriter{
             return null;
     }
 
-    public static List<Project> getProjects(List<Project.Status> filter)
+    public List<Project> getProjects(List<Project.Status> filter)
     {
         List<Project> filteredList = new ArrayList<>();
             for (int key : projects.keySet()) {
@@ -215,7 +210,7 @@ public class ProjectController  implements CSVReader, CSVWriter{
         return filteredList;
     }
 
-    public static List<Project> getProjects(Officer officer)
+    public List<Project> getProjects(Officer officer)
     {
         List<Project> filtered = new ArrayList<Project>();
         for(int key : projects.keySet()) {
@@ -226,7 +221,7 @@ public class ProjectController  implements CSVReader, CSVWriter{
         return filtered;
     }
 
-    public static List<Project> getProjects()
+    public List<Project> getProjects()
     {
         List<Project> ret = new ArrayList<Project>();
         for(int key : projects.keySet()) {
@@ -254,35 +249,40 @@ public class ProjectController  implements CSVReader, CSVWriter{
         return true;
     }
 
-    public static void setProjectName(Manager manager, Project project, String name)
+    public void setProjectName(Manager manager, Project project, String name)
     {
         project.setProjectName(name);
+        writeData();
     }
 
-    public static void setNeighborhood(Manager manager, Project project, String neighbourhood)
+    public void setNeighborhood(Manager manager, Project project, String neighbourhood)
     {
         project.setNeighborhood(neighbourhood);
+        writeData();
     }
 
-    public static boolean setOpeningDate(Manager manager, Project project, LocalDate date) {
+    public boolean setOpeningDate(Manager manager, Project project, LocalDate date) {
         if (SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
             project.setOpeningDate(date);
+            writeData();
             return true;
         }
         return false;
     }
 
-    public static boolean setClosingDate(Manager manager, Project project, LocalDate date) {
+    public boolean setClosingDate(Manager manager, Project project, LocalDate date) {
         if(SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
             project.setClosingDate(date);
+            writeData();
             return true;
         }
         return false;
     }
 
-    public static boolean toggleVisibility(Manager manager, Project project)
+    public boolean toggleVisibility(Manager manager, Project project)
     {
         project.toggleVisibility();
+        writeData();
         return true;
     }
 

@@ -11,14 +11,18 @@ public class OfficerBoundary {
     private static UserController userController;
     private static ProjectController projectController;
     private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
-
-    public static void setControllers(UserController uController, ProjectController pController, ApplicationController aController)
+    public static void init()
     {
-        userController = uController;
-        projectController = pController;
-        applicationController = aController;
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
     }
+
 
     public static void welcome(){
         int choice = -1;
@@ -44,7 +48,6 @@ public class OfficerBoundary {
                     break;
                 case 5:
                     SessionController.logOut();
-                    projectController.clearSelectedProject();
                     System.out.println("Logging Out");
                     exit = true;
                     break;
@@ -74,7 +77,7 @@ public class OfficerBoundary {
         List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
         int exitcode = 0;
         while(exitcode == 0) {
-            List<Project> projects = ProjectController.getProjects(filter);
+            List<Project> projects = projectController.getProjects(filter);
 
             for(Project p: ((Officer) ((Officer) SessionController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
                 if(projects.contains(p))
@@ -116,6 +119,7 @@ public class OfficerBoundary {
                 System.out.print("Select Project (number to select): ");
             }
 
+            Project selectedProject = null;
 
             while (true) {
                 String input = sc.nextLine();
@@ -125,7 +129,7 @@ public class OfficerBoundary {
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
-                    projects = ProjectController.getProjects(filter);
+                    projects = projectController.getProjects(filter);
                     for(Project project : projects) {
                         project.print(true);
                     }
@@ -133,9 +137,9 @@ public class OfficerBoundary {
                     utils.waitKey();
                     break;
                 }else {
-                    ProjectController.selectProject(projects.get(choice - 1));
+                    selectedProject = projects.get(choice - 1);
                     //register code here.
-                    exitcode = registerForProject(ProjectController.getSelectedProject());
+                    exitcode = registerForProject(selectedProject);
                     break;
                 }
             }
@@ -160,7 +164,7 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                Application application = ApplicationController.tryApplyOfficer((Officer) SessionController.getLoggedUser(), project);
+                Application application = applicationController.tryApplyOfficer((Officer) SessionController.getLoggedUser(), project);
                 if(application != null)
                 {
                     System.out.println("Application Number " + application.getId() + " sent");
@@ -210,6 +214,8 @@ public class OfficerBoundary {
             options.put("q", -2);
             options.put("v", -3);
 
+            Project selectedProject = null;
+
             Scanner sc = new Scanner(System.in);
             while (true) {
                 String input = sc.nextLine();
@@ -226,9 +232,9 @@ public class OfficerBoundary {
                 } else if (choice == -1) {
                     System.out.println("Invalid Option");
                 }else {
-                    ProjectController.selectProject(projects.get(choice - 1));
+                    selectedProject = projects.get(choice - 1);
                     //register code here.
-                    manageProject(ProjectController.getSelectedProject());
+                    manageProject(selectedProject);
                     break;
                 }
             }
@@ -307,7 +313,7 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                ApplicationController.tryBookApplication(selectedApplication);
+                applicationController.tryBookApplication(selectedApplication);
                 break;
             }
             else if (input.equalsIgnoreCase("n")) {

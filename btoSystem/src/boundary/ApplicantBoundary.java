@@ -11,13 +11,15 @@ public class ApplicantBoundary {
     private static ProjectController projectController;
     private static ApplicationController applicationController;
     private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
-    public static void setControllers(UserController uController, ProjectController pController, ApplicationController aController, EnquiryController eController)
+    public static void init()
     {
-        userController = uController;
-        projectController = pController;
-        applicationController = aController;
-        enquiryController = eController;
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
     }
 
     public static void welcome(){
@@ -51,7 +53,6 @@ public class ApplicantBoundary {
                     if(!(SessionController.getLoggedUser() instanceof Officer))
                     {
                         SessionController.logOut();
-                        ProjectController.clearSelectedProject();
                         System.out.println("Logging Out");
                     }
                     exit = true;
@@ -104,6 +105,7 @@ public class ApplicantBoundary {
     {
         //boolean early_exit = false;
         int state = 0;
+        Project selectedProject = null;
         Flat selectedFlat = null;
         //get project list, based on variables & visibility
         List<Project> projectList = projectController.getEligibleProjects(SessionController.getLoggedUser());
@@ -143,7 +145,7 @@ public class ApplicantBoundary {
                     else {
                         if(Integer.parseInt(input) > 0 && Integer.parseInt(input) <= projectList.size())
                         {
-                            projectController.selectProject(projectList.get(Integer.parseInt(input)-1));
+                            selectedProject = projectList.get(Integer.parseInt(input) - 1);
                             utils.clear();
                             state = 2;
                         }
@@ -156,8 +158,8 @@ public class ApplicantBoundary {
                 break;
                 //after entering project allow users to view all flat options
                 case 2: {
-                    ProjectController.getSelectedProject().printBasicInformation();
-                    List<Flat> flats = ProjectController.getSelectedProject().getEligibleFlats((Applicant) SessionController.getLoggedUser());
+                    selectedProject.printBasicInformation();
+                    List<Flat> flats = selectedProject.getEligibleFlats((Applicant) SessionController.getLoggedUser());
                     if(!flats.isEmpty()) {
                         System.out.println("Flat Options: (number to select, b to back, q to exit, e to write enquiry)");
                         int index = 1;
@@ -173,7 +175,7 @@ public class ApplicantBoundary {
                     }
                 }
                 case 3: {
-                    if (((Applicant) SessionController.getLoggedUser()).canApply(ProjectController.getSelectedProject())) {
+                    if (((Applicant) SessionController.getLoggedUser()).canApply(selectedProject)) {
                         System.out.print("Input: number to select, b to back, q to exit, e to write enquiry");
                         Scanner sc = new Scanner(System.in);
                         String input = sc.nextLine();
@@ -191,7 +193,7 @@ public class ApplicantBoundary {
                         } else {
                             if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= projectList.size()) //SUCCESS CONDITION
                             {
-                                selectedFlat = ProjectController.getSelectedProject().getEligibleFlats( (Applicant) SessionController.getLoggedUser()).get(Integer.parseInt(input) - 1);
+                                selectedFlat = selectedProject.getEligibleFlats( (Applicant) SessionController.getLoggedUser()).get(Integer.parseInt(input) - 1);
                                 state = 4;
                                 utils.clear();
                             } else {
@@ -218,7 +220,7 @@ public class ApplicantBoundary {
                 }
                 break;
                 case 4: {
-                    projectController.getSelectedProject().printBasicInformation();
+                    selectedProject.printBasicInformation();
                     selectedFlat.print();
                     System.out.println("Apply for Project? (Y/N)");
                     Scanner sc = new Scanner(System.in);
@@ -226,9 +228,15 @@ public class ApplicantBoundary {
                         String input = sc.nextLine();
                         if(input.equalsIgnoreCase("y"))
                         {
-                            applicationController.tryApply(SessionController.getLoggedUser(), selectedFlat);
-                            exit = true;
-                            break;
+                            Application app = applicationController.tryApply(SessionController.getLoggedUser(), selectedFlat);
+                            if(app != null)
+                            {
+                                exit = true;
+                                break;
+                            }
+                            else {
+                                return;
+                            }
                         }
                         else if(input.equalsIgnoreCase("n")) {
                             System.out.println("exiting");
@@ -255,13 +263,12 @@ public class ApplicantBoundary {
                         exit = true;
                         break;
                     }
-                    enquiryController.newEnquiry((Applicant) SessionController.getLoggedUser(), ProjectController.getSelectedProject(), title, body);
+                    enquiryController.newEnquiry((Applicant) SessionController.getLoggedUser(), selectedProject, title, body);
                     exit = true;
                 break;
             }
         }
     }
-
 
     private static void viewApplication()
     {

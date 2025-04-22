@@ -3,6 +3,8 @@ package controller;
 import entity.*;
 import interfaces.CSVReader;
 import interfaces.CSVWriter;
+import interfaces.ExitRequired;
+import interfaces.InitRequired;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -12,11 +14,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ReceiptController implements CSVReader, CSVWriter {
-    private final String receiptPath = "receiptList.csv";
+public class ReceiptController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
+    private final static String receiptPath = "receiptList.csv";
     private static HashMap<Integer, Receipt> receipts = new HashMap<>();
 
-    public void init(){
+    private static UserController userController;
+    private static ProjectController projectController;
+    private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
+
+    public void init()
+    {
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
+
         try {
             readData();
         }
@@ -78,10 +93,11 @@ public class ReceiptController implements CSVReader, CSVWriter {
         return false;
     }
 
-    public static boolean generateReceipt(Application application)
+    public boolean generateReceipt(Application application)
     {
         Receipt receipt = new Receipt(application, application.getUser());
         receipts.put(receipt.getReceipt_id(), receipt);
+        writeData();
         return true;
     }
 

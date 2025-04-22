@@ -4,6 +4,8 @@ import entity.*;
 import controller.*;
 import interfaces.CSVReader;
 import interfaces.CSVWriter;
+import interfaces.ExitRequired;
+import interfaces.InitRequired;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,21 +13,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ApplicationController implements CSVReader, CSVWriter {
+public class ApplicationController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
     private final String applicationPath = "ApplicationList.csv";
     private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
-    //private List<Application> applications = new ArrayList<Application>();
+
     private static UserController userController;
     private static ProjectController projectController;
-
-    public void setControllers(UserController uController, ProjectController pController)
-    {
-        userController = uController;
-        projectController = pController;
-    }
+    private static ApplicationController applicationController;
+    private static EnquiryController enquiryController;
+    private static ReceiptController receiptController;
 
     public void init()
     {
+        userController = SessionController.getUserController();
+        projectController = SessionController.getProjectController();
+        applicationController = SessionController.getApplicationController();
+        enquiryController = SessionController.getEnquiryController();
+        receiptController = SessionController.getReceiptController();
+
         try {
             readData();
         }
@@ -49,7 +54,7 @@ public class ApplicationController implements CSVReader, CSVWriter {
                 Application.Status status = Application.Status.valueOf(data[5]);
 
                 Applicant user = (Applicant) UserController.getUser(applicant_id);
-                Project project = ProjectController.getProject(project_id);
+                Project project = projectController.getProject(project_id);
 
                 Flat flat = flat_id != -1 ? project.getFlat(flat_id) : null;
 
@@ -65,6 +70,7 @@ public class ApplicationController implements CSVReader, CSVWriter {
     {
         writeData();
     }
+
     public boolean writeData()
     {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(applicationPath))){
@@ -109,11 +115,11 @@ public class ApplicationController implements CSVReader, CSVWriter {
 
         Application application = new Application((Applicant) user, flat.getProject(), flat, Application.Status.PENDING, Application.Type.Applicant);
         applications.put(application.getId(), application);
+        writeData();
         return application;
-        //return false;
     }
 
-    public static Application tryApplyOfficer(Officer officer, Project project)
+    public Application tryApplyOfficer(Officer officer, Project project)
     {
         //get all projects officer is applied to.
         //TODO: CHECK AGAINST SELF (APPLICANT)
@@ -133,6 +139,7 @@ public class ApplicationController implements CSVReader, CSVWriter {
         }
         Application app = new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
         applications.put(app.getId(), app);
+        writeData();
         return app;
     }
 
@@ -140,15 +147,17 @@ public class ApplicationController implements CSVReader, CSVWriter {
     {
         if(applications.containsValue(application)) {
             application.setStatus(Application.Status.REQUESTED_WITHDRAW);
+            writeData();
             return true;
         }
         return false;
     }
 
-    public static boolean tryBookApplication(Application application)
+    public boolean tryBookApplication(Application application)
     {
         application.book();
-        ReceiptController.generateReceipt(application);
+        receiptController.generateReceipt(application);
+        writeData();
         return true;
     }
 }

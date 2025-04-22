@@ -1,6 +1,7 @@
 import boundary.ApplicantBoundary;
 import boundary.MainBoundary;
 import boundary.ManagerBoundary;
+import boundary.OfficerBoundary;
 import entity.*;
 import controller.*;
 
@@ -18,13 +19,16 @@ public class Main {
         EnquiryController enquiryController = new EnquiryController();
         ReceiptController receiptController = new ReceiptController();
 
-        projectController.setUserController(userController);
-        applicationController.setControllers(userController, projectController);
+        SessionController.setUserController(userController);
+        SessionController.setApplicationController(applicationController);
+        SessionController.setEnquiryController(enquiryController);
+        SessionController.setReceiptController(receiptController);
+        SessionController.setProjectController(projectController);
 
-        MainBoundary.setUserController(userController);
-        ApplicantBoundary.setControllers(userController, projectController, applicationController, enquiryController);
-        enquiryController.setControllers(userController, projectController);
-        ManagerBoundary.setControllers(userController, projectController, applicationController);
+        MainBoundary.init();
+        ApplicantBoundary.init();
+        OfficerBoundary.init();
+        ManagerBoundary.init();
 
         userController.init();
         projectController.init();
