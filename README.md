@@ -92,7 +92,7 @@ btoSystem/
 
 ---
 
-##✨ Additional Features
+## ✨ Additional Features
 - **DAO Layer Using CSV**:  
   Abstracted data access via `DAO` and `CSVDAO` classes for all major entities. This design allows flexible data handling and future extensibility (e.g., database integration).
 - **Audit Logging**:  
@@ -152,7 +152,7 @@ To run the application:
 
 ## UML Diagrams
 Both UML Class and Sequence diagrams can be found in the `UML Diagram/` folder of this repository:  
-[https://github.com/ngzhiwei517/SC2002-SCE2-Group-5/tree/master/UML%20Diagram](https://github.com/ngzhiwei517/SC2002-SCE2-Group-5/tree/master/UML%20Diagram)
+
 
 
 ---
