@@ -80,7 +80,7 @@ btoSystem/
 
 ---
 
-##  Core Features
+##  🚀Core Features
 - **Role-Based Login** (Applicant, Officer, Manager)
 - **View and Filter Projects**
 - **Project Application Handling**
@@ -92,7 +92,7 @@ btoSystem/
 
 ---
 
-## Additional Features
+##✨ Additional Features
 - **DAO Layer Using CSV**:  
   Abstracted data access via `DAO` and `CSVDAO` classes for all major entities. This design allows flexible data handling and future extensibility (e.g., database integration).
 - **Audit Logging**:  
@@ -104,7 +104,7 @@ btoSystem/
 
 ---
 
-##  Installation
+## 🛠️ Installation
 To install and run the project:
 
 1. Clone this repository.
@@ -114,7 +114,7 @@ To install and run the project:
 
 ---
 
-##  Running the Application
+## ▶️ Running the Application
 To run the application:
 
 1. Navigate to the root project directory.
