@@ -20,7 +20,7 @@ public class ApplicationCSVDAO implements ApplicationDAO {
 
     @Override
     public HashMap<Integer, Application> get() {
-        return null;
+        return applications;
     }
 
     @Override
