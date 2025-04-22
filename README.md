@@ -1,6 +1,6 @@
 #  BTO Management System (BTO-MS)
 
-##  Table of Contents
+## 📚 Table of Contents
 - [Project Overview](#project-overview)
 - [Approach Overview](#approach-overview)
 - [Object-Oriented Concepts Applied](#object-oriented-concepts-applied)
@@ -18,7 +18,7 @@
 
 ---
 
-##  Project Overview
+## 📌 Project Overview
 The BTO Management System (BTO-MS) is designed to streamline the application and management process for Build-To-Order (BTO) projects. It facilitates interactions between Applicants, HDB Officers, and HDB Managers through a command-line interface (CLI). The system is implemented using Java and follows an Object-Oriented Programming (OOP) approach to ensure maintainability, scalability, and testability.
 
 ---
@@ -36,7 +36,7 @@ This separation ensures a clean structure and promotes single-responsibility des
 
 ---
 
-##  Object-Oriented Concepts Applied
+## 🧱 Object-Oriented Concepts Applied
 - **Encapsulation**: Each class restricts direct access to data using private attributes and public getters/setters.
 - **Inheritance**: Subclasses like `Manager`, `Officer`, and `Applicant` extend from the base `User` class.
 - **Abstraction**: Abstract classes and interfaces define high-level roles with implementation hidden.
@@ -44,7 +44,7 @@ This separation ensures a clean structure and promotes single-responsibility des
 
 ---
 
-##  SOLID Principles Applied
+## 🧩 SOLID Principles Applied
 - **S**ingle Responsibility: Each class handles one specific task.
 - **O**pen/Closed: Classes can be extended without modifying existing code.
 - **L**iskov Substitution: Subtypes are interchangeable with their parent types.
@@ -71,7 +71,7 @@ btoSystem/
 
 ---
 
-##  Assumptions
+## Assumptions
 - All users are pre-registered in CSV files.
 - Default password for all users is `"password"`.
 - Data in CSV files is well-formed and consistent.
@@ -92,17 +92,14 @@ btoSystem/
 
 ---
 
-##  Additional Features
-- **DAO Layer Using CSV**  
+## Additional Features
+- **DAO Layer Using CSV**:  
   Abstracted data access via `DAO` and `CSVDAO` classes for all major entities. This design allows flexible data handling and future extensibility (e.g., database integration).
-
-- **Audit Logging**  
+- **Audit Logging**:  
   Logs all critical system events (logins, bookings, approvals) in `AuditLog.csv`.
-
-- **Password Change Functionality**  
+- **Password Change Functionality**:  
   Users can change their passwords after login to secure their account.
-
-- **CSV-Based Persistence**  
+- **CSV-Based Persistence**:  
   Application state is saved and loaded from `.csv` files for user, project, flat, application, enquiry, and receipt data.
 
 ---
@@ -117,7 +114,7 @@ To install and run the project:
 
 ---
 
-## Running the Application
+##  Running the Application
 To run the application:
 
 1. Navigate to the root project directory.
@@ -129,39 +126,41 @@ To run the application:
 ##  Test Cases
 
 ###  Login
-- **Valid Login:** NRIC + correct password → success  
+- **Valid Login:** NRIC + correct password → success
 - **Invalid Login:** Wrong NRIC/password → error message
 
 ###  Applicant
-- Apply for eligible projects  
-- Withdraw an application  
-- View application status  
-- Submit, edit, delete enquiries  
+- Apply for eligible projects
+- Withdraw an application
+- View application status
+- Submit, edit, delete enquiries
 
 ###  HDB Officer
-- Register for a project  
-- View project details (regardless of visibility)  
-- Assist with booking and generate receipts  
-- Respond to project enquiries  
+- Register for a project
+- View project details (regardless of visibility)
+- Assist with booking and generate receipts
+- Respond to project enquiries
 
 ###  HDB Manager
-- Create/edit/delete projects  
-- Toggle project visibility  
-- Approve/reject officer registration  
-- Approve/reject BTO applications  
-- Generate filtered booking reports  
+- Create/edit/delete projects
+- Toggle project visibility
+- Approve/reject officer registration
+- Approve/reject BTO applications
+- Generate filtered booking reports
 
 ---
 
-##  UML Diagrams
-UML Class and Sequence diagrams are available in the `docs/` folder or in the GitHub repository under the Diagrams section.
+## UML Diagrams
+Both UML Class and Sequence diagrams can be found in the `UML Diagram/` folder of this repository:  
+[https://github.com/ngzhiwei517/SC2002-SCE2-Group-5/tree/master/UML%20Diagram](https://github.com/ngzhiwei517/SC2002-SCE2-Group-5/tree/master/UML%20Diagram)
+
 
 ---
 
-##  License
+## 📄 License
 This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## ⚠️ Disclaimer
-This project is created for academic purposes only for SC2002 at NTU. It is not intended for real-world deployment or production use.
+##  Disclaimer
+This project is created for academic purposes only for SC2002 at NTU. It is not intended for real-world deployment or commercial use.
