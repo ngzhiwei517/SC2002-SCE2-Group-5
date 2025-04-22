@@ -16,6 +16,19 @@ public class ReceiptController implements CSVReader, CSVWriter {
     private final String receiptPath = "receiptList.csv";
     private static HashMap<Integer, Receipt> receipts = new HashMap<>();
 
+    public void init(){
+        try {
+            readData();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exit(){
+        writeData();
+    }
+
     public boolean readData() throws IOException
     {
         try (BufferedReader br = new BufferedReader(new FileReader(receiptPath))) {

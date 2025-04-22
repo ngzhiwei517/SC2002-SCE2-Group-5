@@ -16,6 +16,7 @@ public class Main {
         ProjectController projectController = new ProjectController();
         ApplicationController applicationController = new ApplicationController();
         EnquiryController enquiryController = new EnquiryController();
+        ReceiptController receiptController = new ReceiptController();
 
         projectController.setUserController(userController);
         applicationController.setControllers(userController, projectController);
@@ -29,6 +30,7 @@ public class Main {
         projectController.init();
         applicationController.init();
         enquiryController.init();
+        receiptController.init();
 
         boolean exit = true;
         while (exit){
@@ -39,6 +41,7 @@ public class Main {
         projectController.exit();
         enquiryController.exit();
         userController.exit();
+        receiptController.exit();
 
     }
 }

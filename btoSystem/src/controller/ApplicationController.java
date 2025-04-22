@@ -32,7 +32,6 @@ public class ApplicationController implements CSVReader, CSVWriter {
         catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public boolean readData() throws IOException
