@@ -27,7 +27,7 @@ public class ManagerBoundary {
 
 
     public static void welcome(){
-        System.out.println("Welcome " + SessionController.getLoggedUser().getName()); //add applicant name here
+        System.out.println("\n\nWelcome " + SessionController.getLoggedUser().getName()); //add applicant name here
         displayDashboard();
         int choice = 0;
         boolean exit = false;
@@ -36,21 +36,25 @@ public class ManagerBoundary {
             choice = sc.nextInt();
             switch(choice){
                 case 1:
+                    System.out.println();
                     viewBTOListings();
                     waitForContinue(true);
                     exit = true;
                     break;
                 case 2:
+                    System.out.println();
                     createBTOListing();
                     waitForContinue(true);
                     exit = true;
                     break;
                 case 3:
+                    System.out.println();
                     viewAllEnquiries();
                     exit = true;
                     waitForContinue(true);
                     break;
                 case 4:
+                    System.out.println();
                     exit = true;
                     System.out.println("Logging Out");
                     break;
@@ -111,6 +115,7 @@ public class ManagerBoundary {
                 System.out.print("q to quit, v to toggle visibility (OFF), a to view ALL projects: ");
             }
             else {
+                System.out.println();
                 System.out.print("Select Project (number to select, q to quit, v to toggle visibility (OFF), a to view ALL projects): ");
             }
 
@@ -130,6 +135,7 @@ public class ManagerBoundary {
                     }
                     break;
                 } else if (choice == -1) {
+                    System.out.println();
                     System.out.println("Invalid Option");
                 } else if (choice == -4) {
                     projects = projectController.getProjects(filter);
@@ -152,6 +158,7 @@ public class ManagerBoundary {
     {
         int exitcode = 1;
         while(exitcode == 1) {
+            System.out.println();
             project.print(true);
             System.out.println("1. Update Selected Project");
             System.out.println("2. Delete Selected Project");
@@ -161,6 +168,7 @@ public class ManagerBoundary {
             System.out.println("6. View Enquiries");
             System.out.println("7. Generate Report");
             System.out.println("q or to quit, b to back.");
+            System.out.println();
             Map<String, Integer> options = new HashMap<>();
             Scanner sc = new Scanner(System.in);
             options.put("b", -2);
@@ -210,6 +218,7 @@ public class ManagerBoundary {
         int exitcode = 2;
 
         while(exitcode == 2) {
+            System.out.println();
             System.out.println("1. Edit Project Name");
             System.out.println("2. Change Neighbourhood");
             System.out.println("3. Change Opening Date");
@@ -219,7 +228,7 @@ public class ManagerBoundary {
             System.out.println("7. Officer Options");
 
             System.out.println("Input (b to back): ");
-
+            System.out.println();
             Scanner sc = new Scanner(System.in);
             Map<String, Integer> options = new HashMap<>();
             options.put("b", -2);
