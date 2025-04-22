@@ -5,5 +5,5 @@ a.id,u.id,p.id,f.id,type,status
 4,4,2,3,Applicant,PENDING,
 5,5,1,1,Applicant,REQUESTED_WITHDRAW,
 6,9,2,3,Applicant,SUCCESSFUL,
-7,10,1,2,1Applicant,BOOKED,
+7,10,1,2,Applicant,BOOKED,
 8,7,1,-1,Officer,SUCCESSFUL,

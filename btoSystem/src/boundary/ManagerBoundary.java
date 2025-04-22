@@ -162,7 +162,7 @@ public class ManagerBoundary {
             options.put("q", -3);
             while (true) {
                 String input = sc.nextLine();
-                int choice = utils.getRange(options, 1, 6, input);
+                int choice = utils.getRange(options, 1, 7, input);
                 if (choice == -2) {
                     return 0;
                 }
@@ -1117,7 +1117,85 @@ public class ManagerBoundary {
 
     private static int generateReport(Project project)
     {
-        return -1;
+        //get filter
+        System.out.println("1. Filter By: Marriage Status");
+        System.out.println("2. Filter By: Flat Types");
+
+        Scanner sc = new Scanner(System.in);
+        int choice;
+        while(true) {
+            String input = sc.nextLine();
+            if (input.equalsIgnoreCase("1")) {
+                choice = 1;
+                break;
+
+            } else if (input.equalsIgnoreCase("2")) {
+                choice = 2;
+                break;
+
+            } else {
+                System.out.println("Invalid Option");
+            }
+        }
+
+        List<Application> displayedApplications = null;
+
+        if(choice == 1)
+        {
+            System.out.println("1. Married");
+            System.out.println("2. Single");
+            while(true)
+            {
+                String input = sc.nextLine();
+                if (input.equalsIgnoreCase("1")) {
+                    displayedApplications = project.getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), true, Application.Type.Applicant);
+                    //get all applications, filtered by married.
+                    break;
+
+                }
+                else if (input.equalsIgnoreCase("2")) {
+                    displayedApplications = project.getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), false, Application.Type.Applicant);
+                    //get all applications, filtered by single.
+                    break;
+                } else {
+                    System.out.println("Invalid Option");
+                }
+            }
+
+
+        }
+        else if(choice == 2)
+        {
+            System.out.println("1. 2-Room");
+            System.out.println("2. 3-Room");
+            while(true)
+            {
+                String input = sc.nextLine();
+                if (input.equalsIgnoreCase("1")) {
+                    displayedApplications = project.getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Flat.Type.TwoRoom, Application.Type.Applicant);
+                    break;
+                }
+                else if (input.equalsIgnoreCase("2")) {
+                    displayedApplications = project.getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Flat.Type.ThreeRoom, Application.Type.Applicant);
+                    break;
+                } else {
+                    System.out.println("Invalid Option");
+                }
+            }
+        }
+
+        if(displayedApplications.isEmpty())
+        {
+            System.out.println("No applications found");
+            return 1;
+        }
+
+        for(Application app : displayedApplications)
+        {
+            app.print();
+        }
+        //
+        return 1;
     }
 
     private static void viewAllEnquiries(){

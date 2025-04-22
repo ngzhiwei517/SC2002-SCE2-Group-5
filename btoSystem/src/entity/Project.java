@@ -304,8 +304,6 @@ public class Project {
         return Officers.remove(officer);
     }
 
-
-
     public List<Application> getApplications() { return applications; }
 
     public List<Application> getApplications(Application.Type type) {
@@ -323,6 +321,30 @@ public class Project {
         List<Application> filtered = new ArrayList<>(); //filter here
         for(Application application : applications) {
             if(filter.contains(application.getStatus()) && type.equals(application.getType()))
+            {
+                filtered.add(application);
+            }
+        }
+        return filtered;
+    }
+
+    public List<Application> getApplications(List<Application.Status> filter, boolean isMarried, Application.Type type)
+    {
+        List<Application> filtered = new ArrayList<>(); //filter here
+        for(Application application : applications) {
+            if(filter.contains(application.getStatus()) && type.equals(application.getType()) && application.getUser().isMarried() == isMarried)
+            {
+                filtered.add(application);
+            }
+        }
+        return filtered;
+    }
+
+    public List<Application> getApplications(List<Application.Status> filter, Flat.Type flat_type, Application.Type type)
+    {
+        List<Application> filtered = new ArrayList<>(); //filter here
+        for(Application application : applications) {
+            if(filter.contains(application.getStatus()) && type.equals(application.getType()) && application.getFlat().getType() == flat_type)
             {
                 filtered.add(application);
             }
