@@ -84,7 +84,8 @@ public class EnquiryCSVDAO implements EnquiryDAO {
                 enquiryString += enq.getTitle() + ",";
                 enquiryString += enq.getText() + ",";
                 enquiryString += (enq.getResponder() != null ? enq.getResponder().getID() : "null") + ",";
-                enquiryString += (enq.getResponse() != null || !enq.getResponse().equals("null") ? enq.getResponse() : "null") + ",";
+                String response = enq.getResponse();
+                enquiryString += (response != null && !response.equals("null") ? response : "null") + ",";
                 bw.write(enquiryString);
                 bw.newLine();
                 System.out.println("Writing Enq"); //TODO: REMOVE DEBUG IDENTIFIER.

@@ -52,61 +52,6 @@ public class ApplicationController implements InitRequired, ExitRequired {
        //writeData();
     }
 
-    /*
-    public boolean readData() throws IOException
-    {
-        try (BufferedReader br = new BufferedReader(new FileReader(applicationPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                int id = Integer.parseInt(data[0]);
-                int applicant_id = Integer.parseInt(data[1]);
-                int project_id = Integer.parseInt(data[2]);
-                int flat_id = Integer.parseInt(data[3]);
-                Application.Type type = Application.Type.valueOf(data[4]);
-                Application.Status status = Application.Status.valueOf(data[5]);
-
-                Applicant user = (Applicant) userController.getUser(applicant_id);
-                Project project = projectController.getProject(project_id);
-
-                Flat flat = flat_id != -1 ? project.getFlat(flat_id) : null;
-
-                Application application = new Application(id, user, project,flat,status,type);
-                applications.put(id, application);
-                System.out.println("Reading");
-            }
-        }
-        return false;
-    }
-
-
-
-    public boolean writeData()
-    {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(applicationPath))){
-            bw.write("a.id,u.id,p.id,f.id,type,status");
-            bw.newLine();
-            //form the line application string here
-            for(int key : applications.keySet()) {
-                Application app = applications.get(key);
-                String applicationString = "";
-                applicationString += app.getId() + ",";
-                applicationString += app.getUser().getID() + ",";
-                applicationString += app.getProject().getProjectID() + ",";
-                applicationString += (app.getFlat() != null ? app.getFlat().getId() : "-1") + ",";
-                applicationString += app.getType().toString() + ",";
-                applicationString += app.getStatus().toString() + ",";
-                bw.write(applicationString);
-                bw.newLine();
-                System.out.println("Writing");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }*/
-
     public List<Application> getApplications(List<Application.Status> filter, Application.Type type)
     {
         HashMap<Integer, Application> applications = applicationDAO.get();
@@ -182,5 +127,39 @@ public class ApplicationController implements InitRequired, ExitRequired {
         receiptController.generateReceipt(application);
         applicationDAO.write();
         return true;
+    }
+
+    public List<Application> getApplications(Flat flat)
+    {
+        List<Application> retList = new ArrayList<>();
+        HashMap<Integer, Application> applications = applicationDAO.get();
+        for(Application app : applications.values()) {
+            if(app.getFlat().equals(flat))
+            {
+                retList.add(app);
+            }
+        }
+        return retList;
+    }
+
+    public List<Application> getApplications(Project project)
+    {
+        List<Application> retList = new ArrayList<>();
+        HashMap<Integer, Application> applications = applicationDAO.get();
+        for(Application app : applications.values()) {
+            if(app.getProject().equals(project))
+            {
+                retList.add(app);
+            }
+        }
+        return retList;
+    }
+
+    public boolean deleteApplication(Application application)
+    {
+        if(applicationDAO.remove(application)) {
+            return true;
+        }
+        return false;
     }
 }

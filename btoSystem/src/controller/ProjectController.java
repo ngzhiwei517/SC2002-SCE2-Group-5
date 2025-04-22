@@ -298,10 +298,54 @@ public class ProjectController  implements InitRequired, ExitRequired {
         return false;
     }
 
-    public boolean toggleVisibility(Manager manager, Project project)
-    {
+    public boolean toggleVisibility(Manager manager, Project project) {
         project.toggleVisibility();
         projectDAO.write();
+        return true;
+    }
+
+    public boolean deleteFlat(Manager manager, Flat flat)
+    {
+        List<Application> applications = applicationController.getApplications(flat); //get applications
+        for(Application application : applications) {
+            if(!applicationController.deleteApplication(application)){ //fixes dependency issues on next import.
+                System.out.println("tried to delete non-existent application");
+            }
+        }
+
+        flat.deleteSelf(); //once removed from project, GC will handle.
+        projectDAO.write();
+        return true;
+    }
+
+    public boolean deleteProject(Manager manager, Project project)
+    {
+        //find all applications related to project and delete them.
+        List<Application> applications = applicationController.getApplications(project);
+        for(Application application : applications) {
+            if(!applicationController.deleteApplication(application)){ //fixes dependency issues on next import.
+                System.out.println("tried to delete non-existent application");
+            }
+        }
+
+        //this should find all enquiries related to project and delete them.
+        List<Enquiry> enquiries = enquiryController.getEnquiries(project);
+        for(Enquiry enquiry : enquiries) {
+            if (!enquiryController.deleteEnquiry(enquiry)){
+                System.out.println("tried to delete non-existent application");
+            }
+        }
+
+        //project.delete();
+        manager.removeProject(project); //remove project from manager, then remove project from projectDAO
+
+        if(projectDAO.remove(project))
+        {
+            System.out.println("Project deleted successfully");
+        }
+        else {
+            System.out.println("Failed to delete project");
+        }
         return true;
     }
 

@@ -1,4 +1,3 @@
 p_id,Project Name,Neighborhood,opening_date,closing_date,manager_id,officer_slot,officer_list,status
-1,Acacia Breeze,Yishun,2/15/2025,3/20/2025,6,1,"7",VISIBLE
 2,Pine Grove,Jurong East,2/15/2025,3/20/2025,6,3,"",INVISIBLE
 3,Sunflower Heights,Tampines,3/1/2025,4/15/2025,12,3,"",VISIBLE

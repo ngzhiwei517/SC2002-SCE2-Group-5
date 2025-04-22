@@ -53,70 +53,6 @@ public class EnquiryController implements InitRequired, ExitRequired {
         //writeData();
     }
 
-    /*
-    public boolean readData() throws IOException
-    {
-        try (BufferedReader br = new BufferedReader(new FileReader(enquiryPath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                int e_id = Integer.parseInt(data[0]);
-                int p_id = Integer.parseInt(data[1]);
-                int u_id = Integer.parseInt(data[2]);
-                String status = data[3];
-                String title = data[4];
-                String body = data[5];
-                String str_responder_id = data[6];
-                String response = data[7];
-
-                Project project = projectController.getProject(p_id);
-                Applicant user = (Applicant) userController.getUser(u_id);
-
-                User responder = null;
-                if(!str_responder_id.equalsIgnoreCase("null"))
-                {
-                    responder = userController.getUser(Integer.parseInt(str_responder_id));
-                }
-
-                //sanity check to check if e_id already in hashmap
-                if(enquiries.containsKey(e_id))
-                {
-                    System.out.println("Duplicate Key Detected: " + e_id);
-                }
-
-                Enquiry enquiry = new Enquiry(e_id,project,user,status,title,body,responder, response);
-                enquiries.put(e_id, enquiry);
-            }
-        }
-        return false;
-    }
-
-    public boolean writeData() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(enquiryPath))){
-            bw.write("e.id,p.id,u.id,status,title,body,responder_id,response");
-            bw.newLine();
-            for(int key : enquiries.keySet()) {
-                Enquiry enq = enquiries.get(key);
-                String enquiryString = "";
-                enquiryString += enq.getEnquiryId() + ",";
-                enquiryString += enq.getProject().getProjectID() + ",";
-                enquiryString += enq.getUser().getID() + ",";
-                enquiryString += enq.getStatus().toString() + ",";
-                enquiryString += enq.getTitle() + ",";
-                enquiryString += enq.getText() + ",";
-                enquiryString += (enq.getResponder() != null ? enq.getResponder().getID() : "null") + ",";
-                enquiryString += (enq.getResponse() != null || !enq.getResponse().equals("null") ? enq.getResponse() : "null") + ",";
-                bw.write(enquiryString);
-                bw.newLine();
-                System.out.println("Writing"); //TODO: REMOVE DEBUG IDENTIFIER.
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }*/
-
 
     public boolean newEnquiry(Applicant user, Project project, String title, String body)
     {
@@ -124,6 +60,28 @@ public class EnquiryController implements InitRequired, ExitRequired {
         enquiryDAO.add(enquiry);
         enquiryDAO.write();
         return true;
+    }
+
+    public List<Enquiry> getEnquiries(Project project)
+    {
+        List<Enquiry> retList = new ArrayList<>();
+        HashMap<Integer, Enquiry> enquiries = enquiryDAO.get();
+        for(Enquiry enq : enquiries.values()) {
+            if(enq.getProject().equals(project))
+            {
+                retList.add(enq);
+            }
+        }
+        return retList;
+    }
+
+    public boolean deleteEnquiry(Enquiry enquiry)
+    {
+        if(enquiryDAO.remove(enquiry))
+        {
+            return true;
+        }
+        return false;
     }
 
 }

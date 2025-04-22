@@ -457,7 +457,8 @@ public class ManagerBoundary {
         {
             String input = sc.nextLine();
             if(input.equals("y")) {
-                flat.deleteSelf(); //TODO:: SHIFT INTO CONTROLLER.
+                projectController.deleteFlat((Manager) SessionController.getLoggedUser(), flat);
+                //flat.deleteSelf(); //TODO:: SHIFT INTO CONTROLLER.
                 break;
             }
             else if(input.equals("n")) {
@@ -624,7 +625,7 @@ public class ManagerBoundary {
 
     private static int deleteListing(Project project){
         project.print(true);
-        System.out.println("Confirm Delete?");
+        System.out.println("Confirm Delete? (y/n)");
 
         Scanner sc = new Scanner(System.in);
         while(true)
@@ -632,7 +633,7 @@ public class ManagerBoundary {
             String input = sc.nextLine();
             if(input.equalsIgnoreCase("y"))
             {
-                project.delete();
+                projectController.deleteProject((Manager) SessionController.getLoggedUser(), project);
                 return-1;
             }
             else if(input.equalsIgnoreCase("n"))
