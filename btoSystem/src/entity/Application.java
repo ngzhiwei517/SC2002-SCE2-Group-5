@@ -48,7 +48,7 @@ public class Application  {
         this.flat = flat;
         this.status=status;
         this.type = type;
-
+//
         this.project.addApplication(this);
         this.user.addApplication(this);
     }
