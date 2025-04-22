@@ -86,7 +86,7 @@ public class ApplicantBoundary {
     }
 
     public static void displayDashboard() {
-        System.out.println("Welcome "); //add applicant name here
+        System.out.println("Welcome " + SessionController.getLoggedUser().getName()); //add applicant name here
         System.out.println("1. View & Apply for Projects");
         System.out.println("2. View All Applications");
         System.out.println("3. View All Enquiries");

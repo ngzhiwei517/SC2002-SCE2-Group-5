@@ -1,5 +1,6 @@
 package controller;
 
+import dao.UserDAO;
 import entity.*;
 import interfaces.Reader;
 import interfaces.Writer;
@@ -12,9 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserController implements Reader, Writer, InitRequired, ExitRequired {
-    private static Map<String, User> Users = new HashMap<>();;
-    private final String userPath = "ApplicantList.csv";
+public class UserController implements InitRequired, ExitRequired {
+    //private static Map<String, User> Users = new HashMap<>();;
+    //private final String userPath = "ApplicantList.csv";
+
+    private UserDAO userDAO;
 
     private static UserController userController;
     private static ProjectController projectController;
@@ -30,8 +33,12 @@ public class UserController implements Reader, Writer, InitRequired, ExitRequire
         enquiryController = SessionController.getEnquiryController();
         receiptController = SessionController.getReceiptController();
 
+        userDAO = SessionController.getUserDAO();
+
         try {
-            readData();
+            System.out.println("READ DAO");
+            userDAO.read();
+            //readData();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -40,9 +47,11 @@ public class UserController implements Reader, Writer, InitRequired, ExitRequire
 
     public void exit()
     {
-        writeData();
+        userDAO.write();
+        //writeData();
     }
 
+    /*
     public boolean readData() throws IOException
     {
         //process applicants
@@ -108,11 +117,12 @@ public class UserController implements Reader, Writer, InitRequired, ExitRequire
             e.printStackTrace();
         }
         return false;
-    }
+    }*/
 
-    public static User getUser(int id)
+    public User getUser(int id)
     {
-        for(User user: Users.values())
+        HashMap<String, User> users = userDAO.get();
+        for(User user: users.values())
         {
             if(user.getID() == id)
                 return user;
@@ -120,21 +130,23 @@ public class UserController implements Reader, Writer, InitRequired, ExitRequire
         return null;
     }
 
-    public static User getUser(String username)
+    public User getUser(String username)
     {
-        if(Users.containsKey(username))
-            return Users.get(username);
+        HashMap<String, User> users = userDAO.get();
+        if(users.containsKey(username))
+            return users.get(username);
         return null;
     }
 
 
     public Manager getManager(int id)
     {
-        for(String key : Users.keySet())
+        HashMap<String, User> users = userDAO.get();
+        for(String key : users.keySet())
         {
-            if(Users.get(key).getID() == id && Users.get(key) instanceof Manager)
+            if(users.get(key).getID() == id && users.get(key) instanceof Manager)
             {
-                return (Manager) Users.get(key);
+                return (Manager) users.get(key);
             }
         }
         return null;
@@ -142,23 +154,24 @@ public class UserController implements Reader, Writer, InitRequired, ExitRequire
 
     public Officer getOfficer(int id)
     {
-        for(String key : Users.keySet())
+        HashMap<String, User> users = userDAO.get();
+        for(String key : users.keySet())
         {
-            if(Users.get(key).getID() == id && Users.get(key) instanceof Officer)
+            if(users.get(key).getID() == id && users.get(key) instanceof Officer)
             {
-                return (Officer) Users.get(key);
+                return (Officer) users.get(key);
             }
         }
         return null;
     }
 
     public boolean resetPassword(String username, String currentPassword, String newPassword) {
-        if(!Users.containsKey(username)) {
+        HashMap<String, User> users = userDAO.get();
+        if(!users.containsKey(username)) {
             return false;
         }
-        User user = Users.get(username);
+        User user = users.get(username);
         if(user.changePassword(currentPassword, newPassword)){
-            writeData();
             return true;
         }
         return false;

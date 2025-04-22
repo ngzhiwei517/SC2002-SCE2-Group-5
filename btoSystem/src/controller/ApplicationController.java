@@ -1,5 +1,6 @@
 package controller;
 
+import dao.ApplicationDAO;
 import entity.*;
 import controller.*;
 import interfaces.Reader;
@@ -13,15 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ApplicationController implements Reader, Writer, InitRequired, ExitRequired {
-    private final String applicationPath = "ApplicationList.csv";
-    private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
+public class ApplicationController implements InitRequired, ExitRequired {
+    //private final String applicationPath = "ApplicationList.csv";
+    //private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
 
     private static UserController userController;
     private static ProjectController projectController;
     private static ApplicationController applicationController;
     private static EnquiryController enquiryController;
     private static ReceiptController receiptController;
+
+    private ApplicationDAO applicationDAO;
 
     public void init()
     {
@@ -31,14 +34,25 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
         enquiryController = SessionController.getEnquiryController();
         receiptController = SessionController.getReceiptController();
 
+        applicationDAO = SessionController.getApplicationDAO();
+        applicationDAO.injectDAO(SessionController.getUserDAO(), SessionController.getProjectDAO());
+
+
         try {
-            readData();
+            applicationDAO.read();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void exit()
+    {
+        applicationDAO.write();
+       //writeData();
+    }
+
+    /*
     public boolean readData() throws IOException
     {
         try (BufferedReader br = new BufferedReader(new FileReader(applicationPath))) {
@@ -53,7 +67,7 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
                 Application.Type type = Application.Type.valueOf(data[4]);
                 Application.Status status = Application.Status.valueOf(data[5]);
 
-                Applicant user = (Applicant) UserController.getUser(applicant_id);
+                Applicant user = (Applicant) userController.getUser(applicant_id);
                 Project project = projectController.getProject(project_id);
 
                 Flat flat = flat_id != -1 ? project.getFlat(flat_id) : null;
@@ -66,10 +80,7 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
         return false;
     }
 
-    public void exit()
-    {
-        writeData();
-    }
+
 
     public boolean writeData()
     {
@@ -94,10 +105,11 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
             e.printStackTrace();
         }
         return false;
-    }
+    }*/
 
     public List<Application> getApplications(List<Application.Status> filter, Application.Type type)
     {
+        HashMap<Integer, Application> applications = applicationDAO.get();
         List<Application> filteredApplications = new ArrayList<>();
         for(int key: applications.keySet()) {
             Application app = applications.get(key);
@@ -114,9 +126,16 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
         //assertion check that user does not already have an application for this flat.
 
         Application application = new Application((Applicant) user, flat.getProject(), flat, Application.Status.PENDING, Application.Type.Applicant);
-        applications.put(application.getId(), application);
-        writeData();
-        return application;
+
+        if(applicationDAO.add(application))
+        {
+            applicationDAO.write();
+            return application;
+        }
+        return null;
+        //applications.put(application.getId(), application);
+        //writeData();
+
     }
 
     public Application tryApplyOfficer(Officer officer, Project project)
@@ -138,16 +157,20 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
             return null;
         }
         Application app = new Application(officer, project, Application.Status.PENDING, Application.Type.Officer);
-        applications.put(app.getId(), app);
-        writeData();
-        return app;
+        if(applicationDAO.add(app))
+        {
+            applicationDAO.write();
+            return app;
+        }
+        return null;
     }
 
     public boolean tryWithdrawApplication(Application application)
     {
+        HashMap<Integer, Application> applications = applicationDAO.get();
         if(applications.containsValue(application)) {
             application.setStatus(Application.Status.REQUESTED_WITHDRAW);
-            writeData();
+            applicationDAO.write();
             return true;
         }
         return false;
@@ -157,7 +180,7 @@ public class ApplicationController implements Reader, Writer, InitRequired, Exit
     {
         application.book();
         receiptController.generateReceipt(application);
-        writeData();
+        applicationDAO.write();
         return true;
     }
 }

@@ -1,6 +1,8 @@
 package controller;
 
 
+import dao.EnquiryCSVDAO;
+import dao.EnquiryDAO;
 import entity.*;
 import interfaces.Reader;
 import interfaces.Writer;
@@ -15,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnquiryController implements Reader, Writer, InitRequired, ExitRequired {
+public class EnquiryController implements InitRequired, ExitRequired {
     private static Map<Integer, Enquiry> enquiries = new HashMap<Integer, Enquiry>();
     private final String enquiryPath = "EnquiryList.csv";
     private static UserController userController;
@@ -24,6 +26,8 @@ public class EnquiryController implements Reader, Writer, InitRequired, ExitRequ
     private static EnquiryController enquiryController;
     private static ReceiptController receiptController;
 
+    private EnquiryDAO enquiryDAO;
+
     public void init()
     {
         userController = SessionController.getUserController();
@@ -31,8 +35,13 @@ public class EnquiryController implements Reader, Writer, InitRequired, ExitRequ
         applicationController = SessionController.getApplicationController();
         enquiryController = SessionController.getEnquiryController();
         receiptController = SessionController.getReceiptController();
+
+        enquiryDAO = SessionController.getEnquiryDAO();
+        enquiryDAO.injectDAO(SessionController.getUserDAO(), SessionController.getProjectDAO());
+
         try {
-            readData();
+            enquiryDAO.read();
+            //readData();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -40,9 +49,11 @@ public class EnquiryController implements Reader, Writer, InitRequired, ExitRequ
     }
     public void exit()
     {
-        writeData();
+        enquiryDAO.write();
+        //writeData();
     }
 
+    /*
     public boolean readData() throws IOException
     {
         try (BufferedReader br = new BufferedReader(new FileReader(enquiryPath))) {
@@ -65,7 +76,7 @@ public class EnquiryController implements Reader, Writer, InitRequired, ExitRequ
                 User responder = null;
                 if(!str_responder_id.equalsIgnoreCase("null"))
                 {
-                    responder = UserController.getUser(Integer.parseInt(str_responder_id));
+                    responder = userController.getUser(Integer.parseInt(str_responder_id));
                 }
 
                 //sanity check to check if e_id already in hashmap
@@ -104,14 +115,14 @@ public class EnquiryController implements Reader, Writer, InitRequired, ExitRequ
             e.printStackTrace();
         }
         return false;
-    }
+    }*/
 
 
     public boolean newEnquiry(Applicant user, Project project, String title, String body)
     {
         Enquiry enquiry = new Enquiry(project, user, Enquiry.Status.PENDING, title, body);
-        enquiries.put(enquiry.getEnquiryId(), enquiry);
-        writeData();
+        enquiryDAO.add(enquiry);
+        enquiryDAO.write();
         return true;
     }
 

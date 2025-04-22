@@ -2,8 +2,10 @@ import boundary.ApplicantBoundary;
 import boundary.MainBoundary;
 import boundary.ManagerBoundary;
 import boundary.OfficerBoundary;
+
 import entity.*;
 import controller.*;
+import dao.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ public class Main {
 
 
     public static void main(String[] args) {
+
+
         UserController userController = new UserController();
         ProjectController projectController = new ProjectController();
         ApplicationController applicationController = new ApplicationController();
@@ -24,6 +28,16 @@ public class Main {
         SessionController.setEnquiryController(enquiryController);
         SessionController.setReceiptController(receiptController);
         SessionController.setProjectController(projectController);
+
+        UserDAO userDAO = new UserCSVDAO();
+        ProjectDAO projectDAO = new ProjectCSVDAO();
+        EnquiryDAO enquiryDAO = new EnquiryCSVDAO();
+        ApplicationDAO applicationDAO = new ApplicationCSVDAO();
+
+        SessionController.setUserDAO(userDAO);
+        SessionController.setProjectDAO(projectDAO);
+        SessionController.setEnquiryDAO(enquiryDAO);
+        SessionController.setApplicationDAO(applicationDAO);
 
         MainBoundary.init();
         ApplicantBoundary.init();

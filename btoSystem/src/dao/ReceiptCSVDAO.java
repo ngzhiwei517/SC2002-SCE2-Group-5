@@ -1,52 +1,25 @@
-package controller;
+package dao;
 
-import entity.*;
-import interfaces.Reader;
-import interfaces.Writer;
-import interfaces.ExitRequired;
-import interfaces.InitRequired;
+import entity.Receipt;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class ReceiptController implements Reader, Writer, InitRequired, ExitRequired {
-    private final static String receiptPath = "receiptList.csv";
-    private static HashMap<Integer, Receipt> receipts = new HashMap<>();
+public class ReceiptCSVDAO implements ReceiptDAO {
 
-    private static UserController userController;
-    private static ProjectController projectController;
-    private static ApplicationController applicationController;
-    private static EnquiryController enquiryController;
-    private static ReceiptController receiptController;
+    private HashMap<Integer, Receipt> receipts = new HashMap<>();
+    private final String path = "users.csv";
 
-    public void init()
-    {
-        userController = SessionController.getUserController();
-        projectController = SessionController.getProjectController();
-        applicationController = SessionController.getApplicationController();
-        enquiryController = SessionController.getEnquiryController();
-        receiptController = SessionController.getReceiptController();
-
-        try {
-            readData();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Override
+    public HashMap<Integer, Receipt> get() {
+        return receipts;
     }
 
-    public void exit(){
-        writeData();
-    }
-
-    public boolean readData() throws IOException
-    {
-        try (BufferedReader br = new BufferedReader(new FileReader(receiptPath))) {
+    @Override
+    public boolean read() {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
@@ -64,11 +37,17 @@ public class ReceiptController implements Reader, Writer, InitRequired, ExitRequ
                 receipts.put(receipt_id ,new Receipt(receipt_id, application_id, applicant_id, applicantName, nric, age, isMarried, flatType, projectName, bookingDate));
             }
         }
-        return false;
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+        return true;
     }
 
-    public boolean writeData() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(receiptPath))) {
+    @Override
+    public boolean write() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
             bw.write("r.id,a.id,u.id,applicantname,nric,age,isMarried,flattype,projectname,bookingdate");
             bw.newLine();
             for(int key : receipts.keySet()) {
@@ -89,25 +68,27 @@ public class ReceiptController implements Reader, Writer, InitRequired, ExitRequ
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean add(Receipt receipt) {
+        if(!receipts.containsKey(receipt.getReceipt_id()))
+        {
+            receipts.put(receipt.getReceipt_id(), receipt);
+            return true;
         }
         return false;
     }
 
-    public boolean generateReceipt(Application application)
-    {
-        Receipt receipt = new Receipt(application, application.getUser());
-        receipts.put(receipt.getReceipt_id(), receipt);
-        writeData();
-        return true;
-    }
-
-    public static List<Receipt> getReceipt(Applicant applicant) {
-        List<Receipt> receiptList = new ArrayList<>();
-        for(int key : receipts.keySet()) {
-            if(applicant.getID() == receipts.get(key).getApplicantID()) {
-                receiptList.add(receipts.get(key));
-            }
+    @Override
+    public boolean remove(Receipt receipt) {
+        if(receipts.containsKey(receipt.getReceipt_id())) {
+            receipts.remove(receipt.getReceipt_id());
+            return true;
         }
-        return receiptList;
+        return false;
     }
 }

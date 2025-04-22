@@ -1,5 +1,9 @@
 package controller;
 
+import dao.ApplicationDAO;
+import dao.EnquiryDAO;
+import dao.ProjectDAO;
+import dao.UserDAO;
 import entity.User;
 
 public class SessionController {
@@ -10,12 +14,54 @@ public class SessionController {
     private static ProjectController projectController;
     private static ReceiptController receiptController;
 
+    private static UserDAO userDAO;
+    private static ProjectDAO projectDAO;
+    private static EnquiryDAO enquiryDAO;
+    private static ApplicationDAO applicationDAO;
+
+
     private static User loggedUser = null;
     public static User getLoggedUser()
     {
         return loggedUser;
     }
     public static void clearLoggedUser() { loggedUser = null; }
+
+    public static void setApplicationDAO(ApplicationDAO applicationDAO)
+    {
+        SessionController.applicationDAO = applicationDAO;
+    }
+
+    public static ApplicationDAO getApplicationDAO()
+    {
+        return applicationDAO;
+    }
+
+    public static void setEnquiryDAO(EnquiryDAO enquiryDAO) {
+        SessionController.enquiryDAO = enquiryDAO;
+    }
+
+    public static EnquiryDAO getEnquiryDAO() {
+        return enquiryDAO;
+    }
+
+    public static void setProjectDAO(ProjectDAO projectDAO)
+    {
+        SessionController.projectDAO = projectDAO;
+    }
+
+    public static ProjectDAO getProjectDAO()
+    {
+        return projectDAO;
+    }
+
+    public static void setUserDAO(UserDAO userDAO) {
+        SessionController.userDAO = userDAO;
+    }
+
+    public static UserDAO getUserDAO() {
+        return userDAO;
+    }
 
     // Setter for UserController
     public static void setUserController(UserController controller) {
@@ -65,7 +111,7 @@ public class SessionController {
     public static void logOut(){ clearLoggedUser();}
     public static boolean login(String username, String password)
     {
-        User user = UserController.getUser(username);
+        User user = userController.getUser(username);
         if (user != null) {
             if(user.verifyPassword(password))
             {

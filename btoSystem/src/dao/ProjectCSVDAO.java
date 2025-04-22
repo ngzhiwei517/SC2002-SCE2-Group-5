@@ -1,59 +1,36 @@
-package controller;
+package dao;
 
-import dao.ProjectDAO;
-import entity.*;
-import interfaces.Reader;
-import interfaces.Writer;
-import interfaces.ExitRequired;
-import interfaces.InitRequired;
+import entity.Flat;
+import entity.Manager;
+import entity.Officer;
+import entity.Project;
 
 import java.io.*;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class ProjectController  implements InitRequired, ExitRequired {
-    //private Map<Integer, Project> projects = new HashMap<Integer, Project>();
-    //private final String projectPath = "ProjectList.csv";
-    //private final String flatPath = "FlatList.csv";
-    //private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+public class ProjectCSVDAO implements ProjectDAO {
+    private UserDAO userDAO;
+    private HashMap<Integer, Project> projects = new HashMap<>();
+    private final String projectPath = "ProjectList.csv";
+    private final String flatPath = "FlatList.csv";
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
-    private ProjectDAO projectDAO;
-
-    private static UserController userController;
-    private static ProjectController projectController;
-    private static ApplicationController applicationController;
-    private static EnquiryController enquiryController;
-    private static ReceiptController receiptController;
-
-    public void init()
-    {
-        userController = SessionController.getUserController();
-        projectController = SessionController.getProjectController();
-        applicationController = SessionController.getApplicationController();
-        enquiryController = SessionController.getEnquiryController();
-        receiptController = SessionController.getReceiptController();
-
-        projectDAO = SessionController.getProjectDAO();
-        projectDAO.injectDAO(SessionController.getUserDAO());
-
-        try {
-            projectDAO.read();
-            //readData();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void injectDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
-    public void exit() {
-        projectDAO.write();
-        //writeData();
+    @Override
+    public HashMap<Integer, Project> get() {
+        return projects;
     }
 
-    /*
-    public boolean readData() throws IOException {
+    @Override
+    public boolean read() {
         //process applicants
         try (BufferedReader br = new BufferedReader(new FileReader(projectPath))) {
             String line;
@@ -74,8 +51,8 @@ public class ProjectController  implements InitRequired, ExitRequired {
                 LocalDate closingDate = LocalDate.parse(closingDateStr, formatter);
 
                 Manager assignedManager = null;
-                if (userController.getManager(managerID) != null) {
-                    assignedManager = userController.getManager(managerID);
+                if (userDAO.getManager(managerID) != null) {
+                    assignedManager = userDAO.getManager(managerID);
                 }
 
                 List<Officer> officerList = new ArrayList<Officer>();
@@ -83,8 +60,8 @@ public class ProjectController  implements InitRequired, ExitRequired {
                     officerArr = officerArr.replaceAll("[\"']", "");
                     String[] officerStrings = officerArr.split(",");
                     for (String officerString : officerStrings) {
-                        if (userController.getOfficer(Integer.parseInt(officerString)) != null) {
-                            officerList.add(userController.getOfficer(Integer.parseInt(officerString)));
+                        if (userDAO.getOfficer(Integer.parseInt(officerString)) != null) {
+                            officerList.add(userDAO.getOfficer(Integer.parseInt(officerString)));
                         }
                     }
                 }
@@ -103,7 +80,10 @@ public class ProjectController  implements InitRequired, ExitRequired {
                     System.out.println("Duplicate Project ID" + project_id);
                 }
             }
-
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
+            return false;
         }
         try (BufferedReader br = new BufferedReader(new FileReader(flatPath))) {
             String line;
@@ -125,10 +105,15 @@ public class ProjectController  implements InitRequired, ExitRequired {
                 }
             }
         }
+        catch (IOException ex){
+            ex.printStackTrace();
+            return false;
+        }
         return true;
     }
 
-    public boolean writeData() {
+    @Override
+    public boolean write() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(projectPath))){
             bw.write("p_id,Project Name,Neighborhood,opening_date,closing_date,manager_id,officer_slot,officer_list,status");
             bw.newLine();
@@ -158,6 +143,7 @@ public class ProjectController  implements InitRequired, ExitRequired {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(flatPath))){
@@ -180,129 +166,35 @@ public class ProjectController  implements InitRequired, ExitRequired {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean add(Project project) {
+        if(!projects.containsKey(project.getProjectID())) {
+            projects.put(project.getProjectID(), project);
+            return true;
         }
         return false;
     }
 
-    */
-
-    public Project addProject(String projectName, String neighbourhood, LocalDate OpeningDate, LocalDate ClosingDate, Manager manager, int officerSlots, Project.Status visiblity)
-    {
-        HashMap<Integer, Project> projects = projectDAO.get();
-
-        Project new_project = new Project(projectName, neighbourhood,
-                OpeningDate, ClosingDate, manager,
-                officerSlots, new ArrayList<Officer>() {
-        }, visiblity) ;
-
-        if(!projects.containsKey(new_project.getProjectID())) {
-            projectDAO.add(new_project);
-            projectDAO.write();
+    @Override
+    public boolean remove(Project project) {
+        if(projects.containsKey(project.getProjectID())) {
+            projects.remove(project.getProjectID());
+            return true;
         }
-        return new_project;
+        return false;
     }
 
-    public Project getProject(int id)
-    {
-        HashMap<Integer, Project> projects = projectDAO.get();
-        if(projects.containsKey(id))
-        {
+    @Override
+    public Project getProject(int id) {
+        if(projects.containsKey(id)) {
             return projects.get(id);
         }
         else
             return null;
     }
-
-    public List<Project> getProjects(List<Project.Status> filter)
-    {
-        HashMap<Integer, Project> projects = projectDAO.get();
-        List<Project> filteredList = new ArrayList<>();
-            for (int key : projects.keySet()) {
-                if(filter.contains(projects.get(key).getStatus())) {
-                    filteredList.add(projects.get(key));
-                }
-        }
-        return filteredList;
-    }
-
-    public List<Project> getProjects(Officer officer)
-    {
-        HashMap<Integer, Project> projects = projectDAO.get();
-        List<Project> filtered = new ArrayList<Project>();
-        for(int key : projects.keySet()) {
-            if(projects.get(key).getOfficers().contains(officer)) {
-                filtered.add(projects.get(key));
-            }
-        }
-        return filtered;
-    }
-
-    public List<Project> getProjects()
-    {
-        HashMap<Integer, Project> projects = projectDAO.get();
-        List<Project> ret = new ArrayList<Project>();
-        for(int key : projects.keySet()) {
-            ret.add(projects.get(key));
-        }
-        return ret;
-    }
-
-    public List<Project> getEligibleProjects(User user) {
-
-        HashMap<Integer, Project> projects = projectDAO.get();
-        List<Project> remapped = new ArrayList<Project>();
-        for (int key : projects.keySet()) {
-            if(projects.get(key).isEligible(user) && projects.get(key).getStatus() == Project.Status.VISIBLE) {
-                remapped.add(projects.get(key));
-            }
-        }
-        return remapped;
-    }
-
-    public static boolean crossAssignFlat(Project project, List<Flat> flats)
-    {
-        for (Flat flat : flats) {
-            project.addFlat(flat);
-            flat.setProject(project);
-        }
-        return true;
-    }
-
-    public void setProjectName(Manager manager, Project project, String name)
-    {
-        project.setProjectName(name);
-        projectDAO.write();
-    }
-
-    public void setNeighborhood(Manager manager, Project project, String neighbourhood)
-    {
-        project.setNeighborhood(neighbourhood);
-        projectDAO.write();
-    }
-
-    public boolean setOpeningDate(Manager manager, Project project, LocalDate date) {
-        if (SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
-            project.setOpeningDate(date);
-            projectDAO.write();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean setClosingDate(Manager manager, Project project, LocalDate date) {
-        if(SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
-            project.setClosingDate(date);
-            projectDAO.write();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean toggleVisibility(Manager manager, Project project)
-    {
-        project.toggleVisibility();
-        projectDAO.write();
-        return true;
-    }
-
 }
