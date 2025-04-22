@@ -145,4 +145,11 @@ public class ApplicationController implements CSVReader, CSVWriter {
         }
         return false;
     }
+
+    public static boolean tryBookApplication(Application application)
+    {
+        application.book();
+        ReceiptController.generateReceipt(application);
+        return true;
+    }
 }

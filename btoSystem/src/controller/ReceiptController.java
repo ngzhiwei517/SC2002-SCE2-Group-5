@@ -65,6 +65,13 @@ public class ReceiptController implements CSVReader, CSVWriter {
         return false;
     }
 
+    public static boolean generateReceipt(Application application)
+    {
+        Receipt receipt = new Receipt(application, application.getUser());
+        receipts.put(receipt.getReceipt_id(), receipt);
+        return true;
+    }
+
     public Receipt getReceipt(int receipt_id) {
         if(receipts.containsKey(receipt_id)) {
             return receipts.get(receipt_id);

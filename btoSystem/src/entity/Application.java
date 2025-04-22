@@ -89,7 +89,7 @@ public class Application  {
     }
     public int getId() { return id; }
 
-    public User getUser() { return user; }
+    public Applicant getUser() { return user; }
 
     public Project getProject() { return project; }
 

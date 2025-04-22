@@ -307,7 +307,7 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                selectedApplication.book();
+                ApplicationController.tryBookApplication(selectedApplication);
                 break;
             }
             else if (input.equalsIgnoreCase("n")) {
