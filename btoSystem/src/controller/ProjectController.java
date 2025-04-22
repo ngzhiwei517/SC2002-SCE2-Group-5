@@ -252,17 +252,17 @@ public class ProjectController {
         return true;
     }
 
-    public static void setProjectName(Project project, String name)
+    public static void setProjectName(Manager manager, Project project, String name)
     {
         project.setProjectName(name);
     }
 
-    public static void setNeighborhood(Project project, String neighbourhood)
+    public static void setNeighborhood(Manager manager, Project project, String neighbourhood)
     {
         project.setNeighborhood(neighbourhood);
     }
 
-    public static boolean setOpeningDate(Project project, LocalDate date) {
+    public static boolean setOpeningDate(Manager manager, Project project, LocalDate date) {
         if (UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
             project.setOpeningDate(date);
             return true;
@@ -270,7 +270,7 @@ public class ProjectController {
         return false;
     }
 
-    public static boolean setClosingDate(Project project, LocalDate date) {
+    public static boolean setClosingDate(Manager manager, Project project, LocalDate date) {
         if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
             project.setClosingDate(date);
             return true;
@@ -278,7 +278,7 @@ public class ProjectController {
         return false;
     }
 
-    public static boolean toggleVisibility(Project project)
+    public static boolean toggleVisibility(Manager manager, Project project)
     {
         project.toggleVisibility();
         return true;

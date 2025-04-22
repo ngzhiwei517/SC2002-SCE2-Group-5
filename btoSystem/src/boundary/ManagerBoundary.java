@@ -243,7 +243,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    ProjectController.setProjectName(project, input);
+                    ProjectController.setProjectName((Manager) UserController.getLoggedUser(), project , input);
                     exitcode = 1;
                 }
                 break;
@@ -258,7 +258,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    ProjectController.setNeighborhood(project, input);
+                    ProjectController.setNeighborhood((Manager) UserController.getLoggedUser(), project, input);
                     exitcode = 1;
 
                 }
@@ -278,7 +278,7 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); //check correct pattern.
-                            if(ProjectController.setOpeningDate(project, date))
+                            if(ProjectController.setOpeningDate((Manager) UserController.getLoggedUser(), project, date))
                             {
                                 exitcode = 1;
                                 break;
@@ -308,7 +308,7 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                            if(ProjectController.setClosingDate(project, date))
+                            if(ProjectController.setClosingDate((Manager) UserController.getLoggedUser(), project, date))
                             {
                                 exitcode = 1;
                                 break;
@@ -324,7 +324,7 @@ public class ManagerBoundary {
                 break;
                 case 5: {
                     //just toggle visibility from here
-                    ProjectController.toggleVisibility(project);
+                    ProjectController.toggleVisibility((Manager) UserController.getLoggedUser(), project);
                     System.out.println("Project is now " + project.getStatus().toString());
                     exitcode = 1;
                 }

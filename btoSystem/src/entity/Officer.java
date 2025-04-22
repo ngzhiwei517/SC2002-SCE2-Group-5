@@ -7,7 +7,6 @@ import java.util.List;
 public class Officer extends Applicant {
 
     private List<Project> projects = new ArrayList<Project>();
-    private List<Application> officerApplications = new ArrayList<>();
 
     public Officer(int id, String name, String nric, int age, boolean isMarried, String password) {
         super(id, name, nric,  age, isMarried, password);

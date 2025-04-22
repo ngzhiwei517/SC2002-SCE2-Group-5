@@ -19,26 +19,22 @@ public class MainBoundary {
     public static boolean welcome() {
         displayDashboard();
 
-        int choice = 0;
-        while (choice != 4) {
+        String choice = "0";
+        while (!choice.equalsIgnoreCase("3")) {
             Scanner sc = new Scanner(System.in); //garbage collection should handle this once i close the obejct
-            choice = sc.nextInt();
+            choice = sc.nextLine();
             //sc.close();
             switch (choice) {
-                case 1:
+                case "1":
                     login();
                     displayDashboard();
                     // go to login ui.
                     break;
-                case 2:
+                case "2":
+                    resetPassword();
                     displayDashboard();
-                    // go to register user ui.
                     break;
-                case 3:
-                    displayDashboard();
-                    // go to forgot password ui
-                    break;
-                case 4:
+                case "3":
                     break;
                 default:
                     System.out.println("Invalid choice");
@@ -53,9 +49,24 @@ public class MainBoundary {
         //clear screen here
         utils.clear();
         System.out.println("1. Login");
-        System.out.println("3. Register User");
         System.out.println("2. Reset Password");
-        System.out.println("4. Exit");
+        System.out.println("3. Exit");
+    }
+
+    public static void resetPassword()
+    {
+        System.out.println("Resetting Password");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Username: ");
+        String username = sc.nextLine();
+        System.out.println("Current Password: ");
+        String password = sc.nextLine();
+        System.out.println("New Password: ");
+        String newpassword = sc.nextLine();
+
+        if(userController.resetPassword(username, password, newpassword)) {
+            System.out.println("Password Reset Successful");
+        }
     }
 
     public static void login()

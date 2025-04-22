@@ -147,4 +147,15 @@ public class UserController {
         }
         return null;
     }
+
+    public boolean resetPassword(String username, String currentPassword, String newPassword) {
+        if(Users.containsKey(username)) {
+            return false;
+        }
+        User user = Users.get(username);
+        if(user.changePassword(currentPassword, newPassword)){
+            return true;
+        }
+        return false;
+    }
 }
