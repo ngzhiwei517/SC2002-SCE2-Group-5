@@ -12,3 +12,4 @@ u.id,name,nric,age,marital_status,password,account_type
 11,Peter Ong,S2839405K,27,Married,password,Applicant
 12,Susan Heng,S9273645L,48,Married,password,Manager
 19,Wendy Ng,S1029384H,32,Married,password,Officer
+20,Penny Chin,S2020356H,23,Married,password,Officer
