@@ -9,9 +9,8 @@ import java.io.*;
 import java.util.HashMap;
 
 public class UserCSVDAO implements UserDAO {
-    private UserDAO userDAO;
     private HashMap<String, User> users = new HashMap<>();
-    private final String path = "applicantList.csv";
+    private final String path = "ApplicantList.csv";
 
     @Override
     public HashMap<String, User> get() {

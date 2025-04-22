@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class ReceiptCSVDAO implements ReceiptDAO {
 
     private HashMap<Integer, Receipt> receipts = new HashMap<>();
-    private final String path = "users.csv";
+    private final String path = "ReceiptList.csv";
 
     @Override
     public HashMap<Integer, Receipt> get() {
