@@ -43,7 +43,7 @@ public class OfficerBoundary {
                     ApplicantBoundary.welcome();
                     break;
                 case 5:
-                    userController.clearLoggedUser();
+                    SessionController.logOut();
                     projectController.clearSelectedProject();
                     System.out.println("Logging Out");
                     exit = true;
@@ -65,7 +65,7 @@ public class OfficerBoundary {
 
     private static void viewProjects()
     {
-        if(!(UserController.getLoggedUser() instanceof Officer)) //sanity check.
+        if(!(SessionController.getLoggedUser() instanceof Officer)) //sanity check.
         {
             return;
         }
@@ -76,21 +76,21 @@ public class OfficerBoundary {
         while(exitcode == 0) {
             List<Project> projects = ProjectController.getProjects(filter);
 
-            for(Project p: ((Officer) ((Officer) UserController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
+            for(Project p: ((Officer) ((Officer) SessionController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
                 if(projects.contains(p))
                 {
                     projects.remove(p);
                 }
             }
 
-            for(Application a : ((Officer) ((Officer) UserController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Applicant)) {
+            for(Application a : ((Officer) ((Officer) SessionController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Applicant)) {
                 if(projects.contains(a.getProject())) //remove all projects that officer has applied for
                 {
                     projects.remove(a.getProject());
                 }
             }
 
-            for(Application a : ((Officer) ((Officer) UserController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Officer)) {
+            for(Application a : ((Officer) ((Officer) SessionController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Officer)) {
                 if(projects.contains(a.getProject())) //TODO: remove all projects that clashes with all existing applications
                 {
                     projects.remove(a.getProject());
@@ -144,11 +144,11 @@ public class OfficerBoundary {
 
     public static int registerForProject(Project project) {
         //sanity check if can register for project to begin with
-        if(!(UserController.getLoggedUser() instanceof Officer))
+        if(!(SessionController.getLoggedUser() instanceof Officer))
         {
             return -1;
         }
-        if(!((Officer) UserController.getLoggedUser()).canApplyProject(project)) {  //should never happen
+        if(!((Officer) SessionController.getLoggedUser()).canApplyProject(project)) {  //should never happen
             System.out.println("CannotApplyProject REG");
             return 0;
         }
@@ -160,7 +160,7 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                Application application = ApplicationController.tryApplyOfficer((Officer) UserController.getLoggedUser(), project);
+                Application application = ApplicationController.tryApplyOfficer((Officer) SessionController.getLoggedUser(), project);
                 if(application != null)
                 {
                     System.out.println("Application Number " + application.getId() + " sent");
@@ -186,7 +186,7 @@ public class OfficerBoundary {
         List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
         while(true) {
 
-            List<Project> projects = ((Officer) UserController.getLoggedUser()).getProjects(filter);
+            List<Project> projects = ((Officer) SessionController.getLoggedUser()).getProjects(filter);
             int index = 1;
             for(Project project : projects) {
                 System.out.println(index++ + ".");
@@ -356,7 +356,7 @@ public class OfficerBoundary {
                break;
             }
             else {
-                selectedEnquiry.respond(UserController.getLoggedUser(), response);
+                selectedEnquiry.respond(SessionController.getLoggedUser(), response);
                 break;
             }
         }
@@ -367,7 +367,7 @@ public class OfficerBoundary {
 
     public static void viewOutstandingApplications()
     {
-        List<Application> applications = ((Officer) UserController.getLoggedUser()).getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL), Application.Type.Officer);
+        List<Application> applications = ((Officer) SessionController.getLoggedUser()).getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL), Application.Type.Officer);
         for (Application application : applications) {
             application.print();
         }

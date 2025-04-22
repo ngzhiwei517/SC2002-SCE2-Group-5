@@ -22,7 +22,7 @@ public class ManagerBoundary {
     }
 
     public static void welcome(){
-        System.out.println("Welcome " + UserController.getLoggedUser().getName()); //add applicant name here
+        System.out.println("Welcome " + SessionController.getLoggedUser().getName()); //add applicant name here
         displayDashboard();
         int choice = 0;
         boolean exit = false;
@@ -54,7 +54,7 @@ public class ManagerBoundary {
             }
         }
         //log out of everything.
-        UserController.clearLoggedUser();
+        SessionController.logOut();
         ProjectController.clearSelectedProject();
     }
 
@@ -70,7 +70,7 @@ public class ManagerBoundary {
 
     private static void viewBTOListings()
     {
-        if(!(UserController.getLoggedUser() instanceof Manager)) //sanity check.
+        if(!(SessionController.getLoggedUser() instanceof Manager)) //sanity check.
         {
             return;
         }
@@ -80,7 +80,7 @@ public class ManagerBoundary {
         int exitcode = 0;
         while(exitcode == 0) {
             //view only manager's projects.
-            List<Project> projects = ((Manager) UserController.getLoggedUser()).getProjects(filter);
+            List<Project> projects = ((Manager) SessionController.getLoggedUser()).getProjects(filter);
 
             //print out projects.
             int index = 1;
@@ -243,7 +243,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    ProjectController.setProjectName((Manager) UserController.getLoggedUser(), project , input);
+                    ProjectController.setProjectName((Manager) SessionController.getLoggedUser(), project , input);
                     exitcode = 1;
                 }
                 break;
@@ -258,7 +258,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    ProjectController.setNeighborhood((Manager) UserController.getLoggedUser(), project, input);
+                    ProjectController.setNeighborhood((Manager) SessionController.getLoggedUser(), project, input);
                     exitcode = 1;
 
                 }
@@ -278,7 +278,7 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); //check correct pattern.
-                            if(ProjectController.setOpeningDate((Manager) UserController.getLoggedUser(), project, date))
+                            if(ProjectController.setOpeningDate((Manager) SessionController.getLoggedUser(), project, date))
                             {
                                 exitcode = 1;
                                 break;
@@ -308,7 +308,7 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                            if(ProjectController.setClosingDate((Manager) UserController.getLoggedUser(), project, date))
+                            if(ProjectController.setClosingDate((Manager) SessionController.getLoggedUser(), project, date))
                             {
                                 exitcode = 1;
                                 break;
@@ -324,7 +324,7 @@ public class ManagerBoundary {
                 break;
                 case 5: {
                     //just toggle visibility from here
-                    ProjectController.toggleVisibility((Manager) UserController.getLoggedUser(), project);
+                    ProjectController.toggleVisibility((Manager) SessionController.getLoggedUser(), project);
                     System.out.println("Project is now " + project.getStatus().toString());
                     exitcode = 1;
                 }
@@ -685,7 +685,7 @@ public class ManagerBoundary {
             try{ openingDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); } //assert date format
             catch (Exception e){ System.out.println("Invalid Format"); }
 
-            if(UserController.getLoggedUser().assertDateClash(openingDate, null) && openingDate != null){ //assert date clashing
+            if(SessionController.getLoggedUser().assertDateClash(openingDate, null) && openingDate != null){ //assert date clashing
                 break;
             }
             else { System.out.println("Date Clashed with Managed Project"); }
@@ -704,7 +704,7 @@ public class ManagerBoundary {
             try{ closingDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); } //assert date format
             catch (Exception e){ System.out.println("Invalid Format"); }
 
-            if(UserController.getLoggedUser().assertDateClash(closingDate, null) && closingDate != null){ //assert date clashing
+            if(SessionController.getLoggedUser().assertDateClash(closingDate, null) && closingDate != null){ //assert date clashing
                 break;
             }
             else { System.out.println("Date Clashed with Managed Project"); }
@@ -756,7 +756,7 @@ public class ManagerBoundary {
         List<Flat> flats = requestFlats();
 
         //manager will be passed in as user.loggeduser.
-        Project project = ProjectController.addProject(projectName,neighbourhood, openingDate, closingDate, (Manager) userController.getLoggedUser(), officerSlots, visibility);
+        Project project = ProjectController.addProject(projectName,neighbourhood, openingDate, closingDate, (Manager) SessionController.getLoggedUser(), officerSlots, visibility);
         for(Flat flat : flats) {
             project.addFlat(flat);
         }
@@ -1037,7 +1037,7 @@ public class ManagerBoundary {
                 {
                     return 0;
                 }
-                if(!selected_enquiry.respond(userController.getLoggedUser(), response))
+                if(!selected_enquiry.respond(SessionController.getLoggedUser(), response))
                 {
                     System.out.println("Response Failed");
                 }

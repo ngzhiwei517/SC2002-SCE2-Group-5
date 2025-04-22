@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class UserController implements CSVReader, CSVWriter {
-    private static User loggedUser = null;
-
     private static Map<String, User> Users = new HashMap<>();;
     private final String userPath = "ApplicantList.csv";
 
@@ -29,13 +27,6 @@ public class UserController implements CSVReader, CSVWriter {
     {
         writeData();
     }
-
-    public static User getLoggedUser()
-    {
-        return loggedUser;
-    }
-
-    public static void clearLoggedUser() { loggedUser = null; }
 
     public boolean readData() throws IOException
     {

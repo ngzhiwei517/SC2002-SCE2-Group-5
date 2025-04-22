@@ -1,5 +1,6 @@
 package boundary;
 
+import controller.SessionController;
 import controller.UserController;
 import entity.*;
 import utils.utils;
@@ -86,11 +87,11 @@ public class MainBoundary {
             {
                 System.out.println("Login Successful");
                 login = true;
-                if(userController.getLoggedUser() instanceof Manager)
+                if(SessionController.getLoggedUser() instanceof Manager)
                 {
                     ManagerBoundary.welcome();
                 }
-                else if(userController.getLoggedUser() instanceof Officer) {
+                else if(SessionController.getLoggedUser() instanceof Officer) {
                     OfficerBoundary.welcome();
                 }
                 else {

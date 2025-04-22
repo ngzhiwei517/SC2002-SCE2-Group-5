@@ -265,7 +265,7 @@ public class ProjectController  implements CSVReader, CSVWriter{
     }
 
     public static boolean setOpeningDate(Manager manager, Project project, LocalDate date) {
-        if (UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
+        if (SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
             project.setOpeningDate(date);
             return true;
         }
@@ -273,7 +273,7 @@ public class ProjectController  implements CSVReader, CSVWriter{
     }
 
     public static boolean setClosingDate(Manager manager, Project project, LocalDate date) {
-        if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
+        if(SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
             project.setClosingDate(date);
             return true;
         }
