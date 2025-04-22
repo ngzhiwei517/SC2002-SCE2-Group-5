@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ApplicationController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
-    private final String applicationPath = "ApplicationList.csv";
+    private final String applicationPath = "btoSystem/data/ApplicationList.csv";
     private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
 
     private static UserController userController;

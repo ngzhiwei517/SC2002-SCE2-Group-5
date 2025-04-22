@@ -53,13 +53,23 @@ public class MainBoundary {
         return false;
     }
 
-    public static void displayDashboard() //displayed on logout and on login.
-    {
-        //clear screen here
+    public static void displayDashboard() {
+        // Clear the screen
         utils.clear();
+
+        // Display decorated header
+        System.out.println("================================================");
+        System.out.println("||       WELCOME TO BTO MANAGEMENT SYSTEM     ||");
+        System.out.println("||        Housing & Development Board         ||");
+        System.out.println("================================================");
+        System.out.println();
+        System.out.println("Please select an option:");
+        System.out.println("------------------------------------------------");
         System.out.println("1. Login");
         System.out.println("2. Reset Password");
         System.out.println("3. Exit");
+        System.out.println("------------------------------------------------");
+        System.out.print("Enter your choice: ");
     }
 
     public static void resetPassword()

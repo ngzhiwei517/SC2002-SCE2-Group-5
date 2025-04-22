@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class UserController implements CSVReader, CSVWriter, InitRequired, ExitRequired {
     private static Map<String, User> Users = new HashMap<>();;
-    private final String userPath = "ApplicantList.csv";
+    private final String userPath = "btoSystem/data/ApplicantList.csv";
 
     private static UserController userController;
     private static ProjectController projectController;
