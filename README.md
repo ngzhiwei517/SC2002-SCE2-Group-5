@@ -23,7 +23,7 @@ The BTO Management System (BTO-MS) is designed to streamline the application and
 
 ---
 
-##  Approach Overview
+## 🔧 Approach Overview
 We employed a modular design and followed the Model-View-Controller (MVC) architecture. The system is split into distinct packages:
 
 - **Boundary**: Handles user interaction (input/output).
@@ -53,7 +53,7 @@ This separation ensures a clean structure and promotes single-responsibility des
 
 ---
 
-##  General Structure
+## 🗂️ General Structure
 btoSystem/  
 ├── data/                  # CSV files for persistent storage  
 │   ├── ApplicantList.csv  
@@ -71,7 +71,7 @@ btoSystem/
 
 ---
 
-## Assumptions
+## 📌 Assumptions
 - All users are pre-registered in CSV files.
 - Default password for all users is `"password"`.
 - Data in CSV files is well-formed and consistent.
@@ -150,7 +150,7 @@ To run the application:
 
 ---
 
-## UML Diagrams
+## 🗺️ UML Diagrams
 Both UML Class and Sequence diagrams can be found in the `UML Diagram/` folder of this repository:  
 
 
