@@ -252,12 +252,36 @@ public class ProjectController {
         return true;
     }
 
-    public static boolean tryApplyForProject(Project project, Officer officer){
-        //TODO: sanity check if officer can apply again, this should be redundant, as its already checked previously
-        return project.addOfficer(officer);
+    public static void setProjectName(Project project, String name)
+    {
+        project.setProjectName(name);
     }
 
-    public boolean tryApplyForProject(Project project, Applicant applicant){
+    public static void setNeighborhood(Project project, String neighbourhood)
+    {
+        project.setNeighborhood(neighbourhood);
+    }
+
+    public static boolean setOpeningDate(Project project, LocalDate date) {
+        if (UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
+            project.setOpeningDate(date);
+            return true;
+        }
         return false;
     }
+
+    public static boolean setClosingDate(Project project, LocalDate date) {
+        if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
+            project.setClosingDate(date);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean toggleVisibility(Project project)
+    {
+        project.toggleVisibility();
+        return true;
+    }
+
 }

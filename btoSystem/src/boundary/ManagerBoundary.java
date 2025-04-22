@@ -243,7 +243,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    project.setProjectName(input);
+                    ProjectController.setProjectName(project, input);
                     exitcode = 1;
                 }
                 break;
@@ -258,7 +258,7 @@ public class ManagerBoundary {
                         return 0; //0 brings back to view page.
                     }
                     //data validation here
-                    project.setNeighborhood(input);
+                    ProjectController.setNeighborhood(project, input);
                     exitcode = 1;
 
                 }
@@ -277,13 +277,13 @@ public class ManagerBoundary {
                             return 0; //0 brings back to view page.
                         }
                         try {
-                            LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                            if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date))
+                            LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); //check correct pattern.
+                            if(ProjectController.setOpeningDate(project, date))
                             {
-                                project.setOpeningDate(date);
                                 exitcode = 1;
                                 break;
                             }
+
                             else {
                                 System.out.println("Date Assertion Failed");
                             }
@@ -308,9 +308,8 @@ public class ManagerBoundary {
                         }
                         try {
                             LocalDate date = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy"));
-                            if(UserController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date))
+                            if(ProjectController.setClosingDate(project, date))
                             {
-                                project.setClosingDate(date);
                                 exitcode = 1;
                                 break;
                             }
@@ -325,7 +324,7 @@ public class ManagerBoundary {
                 break;
                 case 5: {
                     //just toggle visibility from here
-                    project.toggleVisibility();
+                    ProjectController.toggleVisibility(project);
                     System.out.println("Project is now " + project.getStatus().toString());
                     exitcode = 1;
                 }
