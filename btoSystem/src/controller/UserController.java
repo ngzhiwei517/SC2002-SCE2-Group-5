@@ -1,6 +1,8 @@
 package controller;
 
 import entity.*;
+import interfaces.CSVReader;
+import interfaces.CSVWriter;
 
 import java.io.*;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserController {
+public class UserController implements CSVReader, CSVWriter {
     private static User loggedUser = null;
 
     private static Map<String, User> Users = new HashMap<>();;
@@ -149,7 +151,7 @@ public class UserController {
     }
 
     public boolean resetPassword(String username, String currentPassword, String newPassword) {
-        if(Users.containsKey(username)) {
+        if(!Users.containsKey(username)) {
             return false;
         }
         User user = Users.get(username);

@@ -2,6 +2,8 @@ package controller;
 
 import entity.*;
 import controller.*;
+import interfaces.CSVReader;
+import interfaces.CSVWriter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ApplicationController {
+public class ApplicationController implements CSVReader, CSVWriter {
     private final String applicationPath = "ApplicationList.csv";
     private static Map<Integer, Application> applications = new HashMap<Integer, Application>();
     //private List<Application> applications = new ArrayList<Application>();

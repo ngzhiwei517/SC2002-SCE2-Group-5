@@ -2,6 +2,8 @@ package controller;
 
 
 import entity.*;
+import interfaces.CSVReader;
+import interfaces.CSVWriter;
 
 import javax.swing.*;
 import java.io.*;
@@ -11,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnquiryController {
+public class EnquiryController implements CSVReader, CSVWriter {
     private static Map<Integer, Enquiry> enquiries = new HashMap<Integer, Enquiry>();
     private final String enquiryPath = "EnquiryList.csv";
     private UserController userController;

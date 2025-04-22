@@ -1,6 +1,8 @@
 package controller;
 
 import entity.*;
+import interfaces.CSVReader;
+import interfaces.CSVWriter;
 
 import java.io.*;
 
@@ -8,7 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class ProjectController {
+public class ProjectController  implements CSVReader, CSVWriter{
     private static Project selectedProject = null;
     private static Map<Integer, Project> projects = new HashMap<Integer, Project>();
     private static UserController userController;
