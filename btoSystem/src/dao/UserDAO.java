@@ -3,10 +3,12 @@ package dao;
 import entity.Manager;
 import entity.Officer;
 import entity.User;
+import interfaces.Reader;
+import interfaces.Writer;
 
 import java.util.HashMap;
 
-public interface UserDAO {
+public interface UserDAO extends Reader, Writer {
     HashMap<String, User> get(); // keyed by NRIC/Username
     boolean read();
     boolean write();

@@ -8,19 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AuditController  implements Reader, Writer {
+public class AuditController {
     private HashMap<Integer, AuditLog> auditlogs = new HashMap<>();
-
-    @Override
-    public boolean readData() throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean writeData() throws Exception {
-        return false;
-    }
-
 
     public boolean init()
     {

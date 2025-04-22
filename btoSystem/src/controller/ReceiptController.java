@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ReceiptController implements Reader, Writer, InitRequired, ExitRequired {
+public class ReceiptController implements InitRequired, ExitRequired {
     private final static String receiptPath = "receiptList.csv";
     private static HashMap<Integer, Receipt> receipts = new HashMap<>();
 
