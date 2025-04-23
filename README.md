@@ -18,12 +18,12 @@
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 The BTO Management System (BTO-MS) is designed to streamline the application and management process for Build-To-Order (BTO) projects. It facilitates interactions between Applicants, HDB Officers, and HDB Managers through a command-line interface (CLI). The system is implemented using Java and follows an Object-Oriented Programming (OOP) approach to ensure maintainability, scalability, and testability.
 
 ---
 
-## 🔧 Approach Overview
+##  Approach Overview
 We employed a modular design and followed the Model-View-Controller (MVC) architecture. The system is split into distinct packages:
 
 - **Boundary**: Handles user interaction (input/output).
@@ -44,7 +44,7 @@ This separation ensures a clean structure and promotes single-responsibility des
 
 ---
 
-## 🧩 SOLID Principles Applied
+##  SOLID Principles Applied
 - **S**ingle Responsibility: Each class handles one specific task.
 - **O**pen/Closed: Classes can be extended without modifying existing code.
 - **L**iskov Substitution: Subtypes are interchangeable with their parent types.
@@ -53,7 +53,7 @@ This separation ensures a clean structure and promotes single-responsibility des
 
 ---
 
-## 🗂️ General Structure
+##  General Structure
 btoSystem/  
 ├── data/                  # CSV files for persistent storage  
 │   ├── ApplicantList.csv  
@@ -71,7 +71,7 @@ btoSystem/
 
 ---
 
-## 📌 Assumptions
+##  Assumptions
 - All users are pre-registered in CSV files.
 - Default password for all users is `"password"`.
 - Data in CSV files is well-formed and consistent.
@@ -92,7 +92,7 @@ btoSystem/
 
 ---
 
-## ✨ Additional Features
+##  Additional Features
 - **DAO Layer Using CSV**  
   Abstracted data access via `DAO` and `CSVDAO` classes for all major entities. This design allows flexible data handling and future extensibility (e.g., database integration).
 
@@ -107,7 +107,7 @@ btoSystem/
 
 ---
 
-## 🛠️ Installation
+##  Installation
 To install and run the project:
 
 1. Clone this repository.
@@ -158,10 +158,10 @@ UML Class and Sequence diagrams are available in the `docs/` folder or in the Gi
 
 ---
 
-## 📄 License
+##  License
 This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## ⚠️ Disclaimer
+##  Disclaimer
 This project is created for academic purposes only for SC2002 at NTU. It is not intended for real-world deployment or production use.
