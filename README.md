@@ -1,4 +1,4 @@
-#  BTO Management System (BTO-MS)
+# 🏗️ BTO Management System (BTO-MS)
 
 ## 📚 Table of Contents
 - [Project Overview](#project-overview)
@@ -36,7 +36,7 @@ This separation ensures a clean structure and promotes single-responsibility des
 
 ---
 
-## 🧱 Object-Oriented Concepts Applied
+##  Object-Oriented Concepts Applied
 - **Encapsulation**: Each class restricts direct access to data using private attributes and public getters/setters.
 - **Inheritance**: Subclasses like `Manager`, `Officer`, and `Applicant` extend from the base `User` class.
 - **Abstraction**: Abstract classes and interfaces define high-level roles with implementation hidden.
@@ -80,7 +80,7 @@ btoSystem/
 
 ---
 
-##  🚀Core Features
+##  Core Features
 - **Role-Based Login** (Applicant, Officer, Manager)
 - **View and Filter Projects**
 - **Project Application Handling**
@@ -93,13 +93,16 @@ btoSystem/
 ---
 
 ## ✨ Additional Features
-- **DAO Layer Using CSV**:  
+- **DAO Layer Using CSV**  
   Abstracted data access via `DAO` and `CSVDAO` classes for all major entities. This design allows flexible data handling and future extensibility (e.g., database integration).
-- **Audit Logging**:  
+
+- **Audit Logging**  
   Logs all critical system events (logins, bookings, approvals) in `AuditLog.csv`.
-- **Password Change Functionality**:  
+
+- **Password Change Functionality**  
   Users can change their passwords after login to secure their account.
-- **CSV-Based Persistence**:  
+
+- **CSV-Based Persistence**  
   Application state is saved and loaded from `.csv` files for user, project, flat, application, enquiry, and receipt data.
 
 ---
@@ -114,7 +117,7 @@ To install and run the project:
 
 ---
 
-## ▶️ Running the Application
+##  Running the Application
 To run the application:
 
 1. Navigate to the root project directory.
@@ -126,34 +129,32 @@ To run the application:
 ##  Test Cases
 
 ###  Login
-- **Valid Login:** NRIC + correct password → success
+- **Valid Login:** NRIC + correct password → success  
 - **Invalid Login:** Wrong NRIC/password → error message
 
 ###  Applicant
-- Apply for eligible projects
-- Withdraw an application
-- View application status
-- Submit, edit, delete enquiries
+- Apply for eligible projects  
+- Withdraw an application  
+- View application status  
+- Submit, edit, delete enquiries  
 
 ###  HDB Officer
-- Register for a project
-- View project details (regardless of visibility)
-- Assist with booking and generate receipts
-- Respond to project enquiries
+- Register for a project  
+- View project details (regardless of visibility)  
+- Assist with booking and generate receipts  
+- Respond to project enquiries  
 
 ###  HDB Manager
-- Create/edit/delete projects
-- Toggle project visibility
-- Approve/reject officer registration
-- Approve/reject BTO applications
-- Generate filtered booking reports
+- Create/edit/delete projects  
+- Toggle project visibility  
+- Approve/reject officer registration  
+- Approve/reject BTO applications  
+- Generate filtered booking reports  
 
 ---
 
-## 🗺️ UML Diagrams
-Both UML Class and Sequence diagrams can be found in the `UML Diagram/` folder of this repository:  
-
-
+##  UML Diagrams
+UML Class and Sequence diagrams are available in the `docs/` folder or in the GitHub repository under the Diagrams section.
 
 ---
 
@@ -162,5 +163,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-##  Disclaimer
-This project is created for academic purposes only for SC2002 at NTU. It is not intended for real-world deployment or commercial use.
+## ⚠️ Disclaimer
+This project is created for academic purposes only for SC2002 at NTU. It is not intended for real-world deployment or production use.
