@@ -154,7 +154,7 @@ To run the application:
 ---
 
 ##  UML Diagrams
-UML Class and Sequence diagrams are available in the `docs/` folder or in the GitHub repository under the Diagrams section.
+Both UML Class and Sequence diagrams can be found in the `UML Diagram/` folder of this repository
 
 ---
 
