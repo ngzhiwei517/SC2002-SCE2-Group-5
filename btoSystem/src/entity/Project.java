@@ -391,9 +391,9 @@ public class Project {
             return false;
         }
 
-        System.out.println(date.toString());
-        System.out.println(getOpeningDate());
-        System.out.println(getClosingDate());
+        //System.out.println(date.toString());
+        //System.out.println(getOpeningDate());
+        //System.out.println(getClosingDate());
 
         if(date.isEqual(getOpeningDate()) || date.isEqual(getClosingDate()))
         {

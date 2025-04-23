@@ -83,7 +83,7 @@ public class Officer extends Applicant implements ProjectContainer {
         List<Application> filtered = getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED), Application.Type.Applicant);
         for(Application application : filtered){ //this checks if officer has already applied for this as a project.
             if(application.getProject() == project){
-                System.out.println("CannotApplyProject AS APPLICANT" + project.getProjectName());
+                //System.out.println("CannotApplyProject AS APPLICANT" + project.getProjectName());
                 return false;
             }
         }
@@ -91,7 +91,7 @@ public class Officer extends Applicant implements ProjectContainer {
         //check if officer applications date clash with any other applications as applicant
         for(Application application : filtered){
             if(!(application.getProject().assertDateClash(project.getOpeningDate()) && application.getProject().assertDateClash(project.getClosingDate()))){
-                System.out.println("CannotApplyProject DATE CLASH APPLICANT" + project.getProjectName());
+                //System.out.println("CannotApplyProject DATE CLASH APPLICANT" + project.getProjectName());
                 return false;
             }
         }
@@ -100,7 +100,7 @@ public class Officer extends Applicant implements ProjectContainer {
         filtered = getApplications(List.of(Application.Status.SUCCESSFUL, Application.Status.PENDING), Application.Type.Officer);
         for(Application application : filtered){
             if(application.getProject() == project){
-                System.out.println("CannotApplyProject AS OFFICER" + project.getProjectName());
+                //System.out.println("CannotApplyProject AS OFFICER" + project.getProjectName());
                 return false;
             }
         }
@@ -108,7 +108,7 @@ public class Officer extends Applicant implements ProjectContainer {
         //check if officer applications date clash with any other applications as officer
         for(Application application : filtered){
             if(!(application.getProject().assertDateClash(project.getOpeningDate()) && application.getProject().assertDateClash(project.getClosingDate()))){
-                System.out.println("CannotApplyProject DATE CLASH OFFICER" + project.getProjectName());
+                //System.out.println("CannotApplyProject DATE CLASH OFFICER" + project.getProjectName());
                 return false;
             }
         }
@@ -117,7 +117,7 @@ public class Officer extends Applicant implements ProjectContainer {
         for(Project proj : projects)
         {
             if(project == proj){
-                System.out.println("CannotApplyProject HASPROJECT" + project.getProjectName());
+                //System.out.println("CannotApplyProject HASPROJECT" + project.getProjectName());
                 return false;
             }
         }
@@ -126,7 +126,7 @@ public class Officer extends Applicant implements ProjectContainer {
             for(Application app : getApplications()) {
                 if (app.getType() == Application.Type.Applicant) {
                     if (app.getStatus() == Application.Status.BOOKED || app.getStatus() == Application.Status.PENDING || app.getStatus() == Application.Status.REQUESTED_WITHDRAW || app.getStatus() == Application.Status.SUCCESSFUL) {
-                        System.out.println("Removing as Applicant");
+                        //System.out.println("Removing as Applicant");
                         return false;
                     }
                 }
