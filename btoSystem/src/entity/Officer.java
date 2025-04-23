@@ -41,6 +41,7 @@ public class Officer extends Applicant implements ProjectContainer {
         return true;
     }
 
+    /*
     public boolean canApplyProject(Project project) {
         //check against list of projects, then check against applicant side's applicants.
 
@@ -72,15 +73,25 @@ public class Officer extends Applicant implements ProjectContainer {
 
         return true;
     }
+    */
 
-    public boolean canApply(Project project){
+    @Override
+    public boolean canApply(Project project, boolean asOfficer){
         //check against list of projects, then check against applicant side's applicants.
 
-        //check if officer has already applied to this project
+        //check if officer has already applied to this project as an applicant
         List<Application> filtered = getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED), Application.Type.Applicant);
         for(Application application : filtered){ //this checks if officer has already applied for this as a project.
             if(application.getProject() == project){
-                //System.out.println("CannotApplyProject AS APPLICANT");
+                System.out.println("CannotApplyProject AS APPLICANT" + project.getProjectName());
+                return false;
+            }
+        }
+
+        //check if officer applications date clash with any other applications as applicant
+        for(Application application : filtered){
+            if(!(application.getProject().assertDateClash(project.getOpeningDate()) && application.getProject().assertDateClash(project.getClosingDate()))){
+                System.out.println("CannotApplyProject DATE CLASH APPLICANT" + project.getProjectName());
                 return false;
             }
         }
@@ -89,25 +100,39 @@ public class Officer extends Applicant implements ProjectContainer {
         filtered = getApplications(List.of(Application.Status.SUCCESSFUL, Application.Status.PENDING), Application.Type.Officer);
         for(Application application : filtered){
             if(application.getProject() == project){
-                //System.out.println("CannotApplyProject AS OFFICER");
+                System.out.println("CannotApplyProject AS OFFICER" + project.getProjectName());
                 return false;
             }
         }
 
-        //check if officer applications date clash with any other applications.
+        //check if officer applications date clash with any other applications as officer
         for(Application application : filtered){
-            if(!application.getProject().assertDateClash(project.getOpeningDate()) && !application.getProject().assertDateClash(project.getClosingDate())){
-                //System.out.println("CannotApplyProject DATE CLASH");
+            if(!(application.getProject().assertDateClash(project.getOpeningDate()) && application.getProject().assertDateClash(project.getClosingDate()))){
+                System.out.println("CannotApplyProject DATE CLASH OFFICER" + project.getProjectName());
                 return false;
             }
         }
 
-        return super.canApply(project);
-    }
+        //check if officer already HAS project.
+        for(Project proj : projects)
+        {
+            if(project == proj){
+                System.out.println("CannotApplyProject HASPROJECT" + project.getProjectName());
+                return false;
+            }
+        }
 
-    public boolean canApplyForProject(Project project)
-    {
-        super.canApplyForProject(project);
+        if(!asOfficer){
+            for(Application app : getApplications()) {
+                if (app.getType() == Application.Type.Applicant) {
+                    if (app.getStatus() == Application.Status.BOOKED || app.getStatus() == Application.Status.PENDING || app.getStatus() == Application.Status.REQUESTED_WITHDRAW || app.getStatus() == Application.Status.SUCCESSFUL) {
+                        System.out.println("Removing as Applicant");
+                        return false;
+                    }
+                }
+            }
+        }
+
         return true;
     }
 

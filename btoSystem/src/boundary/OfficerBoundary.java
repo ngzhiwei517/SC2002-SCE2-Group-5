@@ -77,8 +77,27 @@ public class OfficerBoundary {
         List<Project.Status> filter = new ArrayList<>(List.of(Project.Status.VISIBLE));
         int exitcode = 0;
         while(exitcode == 0) {
+
+            List<Project> projects = projectController.getEligibleProjects((Applicant) SessionController.getLoggedUser(), true);
+
+            /*
             List<Project> projects = projectController.getProjects(filter);
 
+            List<Project> toRemove = new ArrayList<>();
+            for(Project p : projects) {
+                if(!((Officer) SessionController.getLoggedUser()).canApply(p, true))
+                {
+                        toRemove.add(p);
+                }
+            }
+
+            for(Project p : toRemove) {
+                System.out.println("removing");
+                projects.remove(p);
+            }
+            */
+
+            /*
             for(Project p: ((Officer) ((Officer) SessionController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
                 if(projects.contains(p))
                 {
@@ -98,7 +117,7 @@ public class OfficerBoundary {
                 {
                     projects.remove(a.getProject());
                 }
-            }
+            }*/
 
             //print out projects.
             int index = 1;
@@ -152,7 +171,7 @@ public class OfficerBoundary {
         {
             return -1;
         }
-        if(!((Officer) SessionController.getLoggedUser()).canApplyProject(project)) {  //should never happen
+        if(!((Officer) SessionController.getLoggedUser()).canApply(project, true)) {  //should never happen
             System.out.println("CannotApplyProject REG");
             return 0;
         }

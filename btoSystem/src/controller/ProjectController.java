@@ -123,14 +123,19 @@ public class ProjectController  implements InitRequired, ExitRequired {
         return ret;
     }
 
-    public List<Project> getEligibleProjects(User user) {
+    public List<Project> getEligibleProjects(Applicant user, boolean asOfficer) {
 
         HashMap<Integer, Project> projects = projectDAO.get();
         List<Project> remapped = new ArrayList<Project>();
         for (int key : projects.keySet()) {
-            if(projects.get(key).isEligible(user) && projects.get(key).getStatus() == Project.Status.VISIBLE) {
+            if(user.canApply(projects.get(key), asOfficer) && projects.get(key).getStatus() == Project.Status.VISIBLE)
+            {
                 remapped.add(projects.get(key));
             }
+            /*
+            if(projects.get(key).isEligible(user) && projects.get(key).getStatus() == Project.Status.VISIBLE) {
+                remapped.add(projects.get(key));
+            }*/
         }
         return remapped;
     }

@@ -108,7 +108,7 @@ public class ApplicantBoundary {
         Project selectedProject = null;
         Flat selectedFlat = null;
         //get project list, based on variables & visibility
-        List<Project> projectList = projectController.getEligibleProjects(SessionController.getLoggedUser());
+        List<Project> projectList = projectController.getEligibleProjects((Applicant) SessionController.getLoggedUser(), false);
         if(projectList.isEmpty())
         {
             System.out.println("You are not Eligible any ongoing projects");
@@ -175,7 +175,7 @@ public class ApplicantBoundary {
                     }
                 }
                 case 3: {
-                    if (((Applicant) SessionController.getLoggedUser()).canApply(selectedProject)) {
+                    if (((Applicant) SessionController.getLoggedUser()).canApply(selectedProject, false)) {
                         System.out.print("Input: number to select, b to back, q to exit, e to write enquiry");
                         Scanner sc = new Scanner(System.in);
                         String input = sc.nextLine();

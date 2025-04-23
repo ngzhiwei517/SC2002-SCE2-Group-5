@@ -41,14 +41,20 @@ public class Applicant extends User {
         return filtered;
     }
 
-
     public boolean removeApplication(Application app) {
         return applications.remove(app);
     }
 
-
-    public boolean canApply(Project project)
+    public boolean canApply(Project project, boolean asOfficer)
     {
+        if(project == null)
+            return false;
+
+        if(!project.isEligible(this)) //check age here.
+        {
+            return false;
+        }
+
         //if theres an application that has a pending/approved/booked status, return false
         for(Application app : applications)
         {
