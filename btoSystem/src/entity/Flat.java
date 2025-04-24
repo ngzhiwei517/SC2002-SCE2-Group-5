@@ -1,8 +1,5 @@
 package entity;
 
-
-import javax.xml.crypto.dsig.spec.HMACParameterSpec;
-
 public class Flat {
     public enum Type
     {

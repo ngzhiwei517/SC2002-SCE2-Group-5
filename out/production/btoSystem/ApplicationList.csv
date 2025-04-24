@@ -1,1 +1,3 @@
 a.id,u.id,p.id,f.id,type,status
+0,20,1,-1,Officer,SUCCESSFUL,
+1,9,1,2,Applicant,PENDING,

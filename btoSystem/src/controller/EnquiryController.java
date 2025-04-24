@@ -1,6 +1,6 @@
 package controller;
 
-
+import interfaces.*;
 import dao.AuditDAO;
 import dao.EnquiryCSVDAO;
 import dao.EnquiryDAO;
@@ -92,6 +92,16 @@ public class EnquiryController implements InitRequired, ExitRequired {
             auditDAO.append(aud);
             auditDAO.write();
 
+            return true;
+        }
+        return false;
+    }
+
+    public boolean respond(EnquiryResponder responder, String response, Enquiry enquiry)
+    {
+        if(enquiry.respond(responder, response))
+        {
+            enquiryDAO.write();
             return true;
         }
         return false;

@@ -73,7 +73,7 @@ public class ReceiptController implements InitRequired, ExitRequired {
             bw.newLine();
             for(int key : receipts.keySet()) {
                 Receipt receipt = receipts.get(key);
-                String receiptString = receipt.toString();
+                String receiptString = "";
                 receiptString += receipt.getReceipt_id() + ",";
                 receiptString += receipt.getApplicationID() + ",";
                 receiptString += receipt.getApplicantID() + ",";
@@ -81,8 +81,8 @@ public class ReceiptController implements InitRequired, ExitRequired {
                 receiptString += receipt.getNric() + ",";
                 receiptString += receipt.getAge() + ",";
                 receiptString += receipt.isMarried() + ",";
-                receiptString += receipt.getFlatType();
-                receiptString += receipt.getProjectName();
+                receiptString += receipt.getFlatType()+",";
+                receiptString += receipt.getProjectName()+ ",";
                 receiptString += receipt.getBookingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss"));
                 bw.write(receiptString);
                 bw.newLine();

@@ -2,6 +2,7 @@ package controller;
 
 import dao.ApplicationDAO;
 import dao.AuditDAO;
+import dao.ProjectDAO;
 import entity.*;
 import controller.*;
 import interfaces.Reader;
@@ -27,6 +28,7 @@ public class ApplicationController implements InitRequired, ExitRequired {
 
     private ApplicationDAO applicationDAO;
     private AuditDAO auditDAO;
+    private ProjectDAO projectDAO;
 
     public void init()
     {
@@ -39,6 +41,7 @@ public class ApplicationController implements InitRequired, ExitRequired {
         applicationDAO = SessionController.getApplicationDAO();
         applicationDAO.injectDAO(SessionController.getUserDAO(), SessionController.getProjectDAO());
         auditDAO = SessionController.getAuditDAO();
+        projectDAO = SessionController.getProjectDAO();
 
 
         try {
@@ -134,6 +137,7 @@ public class ApplicationController implements InitRequired, ExitRequired {
         if(applications.containsValue(application)) {
             application.setStatus(Application.Status.REQUESTED_WITHDRAW);
             applicationDAO.write();
+            projectDAO.write();
 
             AuditLog aud = new AuditLog(application.getUser().getName(), "application withdrew " + application.getId());
             auditDAO.append(aud);
@@ -152,12 +156,33 @@ public class ApplicationController implements InitRequired, ExitRequired {
         }
         receiptController.generateReceipt(application);
         applicationDAO.write();
+        projectDAO.write();
 
         AuditLog aud = new AuditLog(application.getUser().getName(), "application booked " + application.getId());
         auditDAO.append(aud);
         auditDAO.write();
 
         return true;
+    }
+
+    public boolean tryAcceptApplication(Application application)
+    {
+        if(!application.approve())
+        {
+            return false;
+        }
+
+        applicationDAO.write();
+        AuditLog aud = new AuditLog(application.getUser().getName(), "application accepted " + application.getId());
+        auditDAO.append(aud);
+        auditDAO.write();
+
+        return true;
+    }
+
+    public void tryRejectApplication(Application application)
+    {
+        application.reject();
     }
 
     public List<Application> getApplications(Flat flat)

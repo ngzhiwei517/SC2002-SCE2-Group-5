@@ -239,8 +239,8 @@ public class Project {
             return false;
         }
         //TODO: remove debug statements here
-        System.out.println(getOpeningDate());
-        System.out.println(getClosingDate());
+        //System.out.println(getOpeningDate());
+        //System.out.println(getClosingDate());
 
         if(opdate.isEqual(getOpeningDate()) || opdate.isEqual(getClosingDate()))
         {
@@ -254,12 +254,12 @@ public class Project {
         }
         else if(opdate.isAfter(getOpeningDate()) && opdate.isBefore(getClosingDate()))
         {
-            System.out.println("between");
+            //System.out.println("between");
             return false;
         }
         else if(cldate.isAfter(getOpeningDate()) && cldate.isBefore(getClosingDate()))
         {
-            System.out.println("between");
+            //System.out.println("between");
             return false;
         }
         return true;
@@ -267,25 +267,26 @@ public class Project {
 
     public boolean addOfficer(Officer officer)
     {
-        if(!Officers.contains(officer))
-        {
-            Officers.add(officer);
-            officer.addProject(this);
-            OfficerSlots--;
-            return true;
+        if(OfficerSlots > 0) {
+            if (!Officers.contains(officer)) {
+                Officers.add(officer);
+                officer.addProject(this);
+                OfficerSlots--;
+                return true;
+            }
         }
         return false;
-    }
-
-    public boolean deleteFlat(Flat flat)
-    {
-        return flats.remove(flat);
     }
 
     public boolean removeOfficer(Officer officer)
     {
         officer.removeProject(this);
         return Officers.remove(officer);
+    }
+
+    public boolean deleteFlat(Flat flat)
+    {
+        return flats.remove(flat);
     }
 
     public List<Application> getApplications() { return applications; }
@@ -381,12 +382,12 @@ public class Project {
 
         if(date.isEqual(getOpeningDate()) || date.isEqual(getClosingDate()))
         {
-            System.out.println("equal");
+            //System.out.println("equal");
             return false;
         }
         else if(date.isAfter(getOpeningDate()) && date.isBefore(getClosingDate()))
         {
-            System.out.println("between");
+            //System.out.println("between");
             return false;
         }
         return true;

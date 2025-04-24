@@ -349,7 +349,10 @@ public class OfficerBoundary {
                break;
             }
             else {
-                selectedEnquiry.respond(SessionController.getLoggedUser(), response);
+                if(!enquiryController.respond((Manager) SessionController.getLoggedUser(), response, selectedEnquiry))
+                {
+                    System.out.println("Response Failed");
+                }
                 break;
             }
         }

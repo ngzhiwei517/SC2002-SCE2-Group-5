@@ -71,7 +71,7 @@ public class ApplicantBoundary {
             System.out.println("Something Went Wrong, Session User Data is not of Class Applicant");
             return;
         }
-        List<Receipt> receipts = ReceiptController.getReceipt((Applicant) SessionController.getLoggedUser());
+        List<Receipt> receipts = receiptController.getReceipt((Applicant) SessionController.getLoggedUser());
 
         if(receipts.isEmpty())
         {
@@ -281,7 +281,7 @@ public class ApplicantBoundary {
                 count++;
             }
             Scanner sc = new Scanner(System.in);
-            System.out.println("Withdraw Application (number to withdraw, b to back): ");
+            System.out.println("Select Application (number to select, b to back): ");
 
 
             Application selectedApplication;
@@ -301,12 +301,72 @@ public class ApplicantBoundary {
                 }
             }
 
+
+
             selectedApplication = applications.get(choice-1);
+
+            if(selectedApplication.getStatus() == Application.Status.PENDING || selectedApplication.getStatus() == Application.Status.BOOKED)
+            {
+                System.out.println("v to view, w to withdraw, b to back, e to write enquiry");
+                while(true)
+                {
+                    String input = sc.nextLine();
+                    if(input.equalsIgnoreCase("v"))
+                    {
+                        selectedApplication.getProject().printBasicInformation();
+                        selectedApplication.getFlat().print();
+                        break;
+                    }
+                    else if(input.equalsIgnoreCase("w"))
+                    {
+                        selectedApplication.print();
+                        System.out.println("Confirm Withdraw? (y/n)");
+                        while(true){
+                            input = sc.nextLine();
+                            if(input.equals("y")) {
+                                if(applicationController.tryWithdrawApplication(selectedApplication))
+                                {
+                                    System.out.println("Successfully Withdrew Application");
+                                }
+                                else {
+                                    System.out.println("Failed to withdraw");
+                                }
+                                break;
+                            }
+                            else if(input.equals("n")) {
+                                break;
+                            }
+                            else{
+                                System.out.println("Invalid Input.");
+                            }
+                        }
+                        break;
+                    }
+                    else if(input.equalsIgnoreCase("e"))
+                    {
+                        System.out.print("Title: ");
+                        String title = sc.nextLine();
+                        if(title.equals("b") || title.equals("q")) {
+                            break;
+                        }
+                        System.out.println("Text Body: ");
+                        String body = sc.nextLine();
+                        if(body.equals("b") || body.equals("q")) {
+                            break;
+                        }
+                        enquiryController.newEnquiry((Applicant) SessionController.getLoggedUser(), selectedApplication.getProject(), title, body);
+                        break;
+                    }
+                }
+                //give option to withdraw or view
+            }
+
             if(selectedApplication.getStatus() == Application.Status.REQUESTED_WITHDRAW || selectedApplication.getStatus() == Application.Status.WITHDRAWN || selectedApplication.getStatus() == Application.Status.REQUESTED_WITHDRAW_BOOKED) {
-                System.out.println("This Application is not eligible to withdraw.");
+                System.out.println("This Application is view only.");
                 return;
             }
 
+            /*
             selectedApplication.print();
             System.out.println("Confirm Withdraw? (y/n)");
             while(true){
@@ -327,7 +387,7 @@ public class ApplicantBoundary {
                 else{
                     System.out.println("Invalid Input.");
                 }
-            }
+            }*/
 
         }
         else {

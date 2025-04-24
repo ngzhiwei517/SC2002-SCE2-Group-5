@@ -1,12 +1,13 @@
 package entity;
 
+import interfaces.EnquiryResponder;
 import interfaces.ProjectContainer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Officer extends Applicant implements ProjectContainer {
+public class Officer extends Applicant implements ProjectContainer, EnquiryResponder {
 
     private List<Project> projects = new ArrayList<Project>();
 

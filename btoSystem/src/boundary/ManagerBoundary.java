@@ -163,9 +163,9 @@ public class ManagerBoundary {
             project.print(true);
             System.out.println("1. Update Selected Project");
             System.out.println("2. Delete Selected Project");
-            System.out.println("3. View Applicant Applications");
-            System.out.println("4. View Applicant Withdrawal Requests");
-            System.out.println("5. View Officer Applications");
+            System.out.println("3. View Applicant Applications (Pending Applications: " + project.getApplications(List.of(Application.Status.PENDING), Application.Type.Applicant).size() + ")");
+            System.out.println("4. View Applicant Withdrawal Requests (Pending Applications: " + project.getApplications(List.of(Application.Status.REQUESTED_WITHDRAW, Application.Status.REQUESTED_WITHDRAW_BOOKED), Application.Type.Applicant).size() + ")");
+            System.out.println("5. View Officer Applications (Pending Applications: " + project.getApplications(List.of(Application.Status.PENDING), Application.Type.Officer).size() + ")" );
             System.out.println("6. View Enquiries");
             System.out.println("7. Generate Report");
             System.out.println("q or to quit, b to back.");
@@ -1052,10 +1052,15 @@ public class ManagerBoundary {
                 {
                     return 0;
                 }
-                if(!selected_enquiry.respond(SessionController.getLoggedUser(), response))
+                if(!enquiryController.respond((Manager) SessionController.getLoggedUser(), response, selected_enquiry))
                 {
                     System.out.println("Response Failed");
                 }
+                /*
+                if(!selected_enquiry.respond(SessionController.getLoggedUser(), response))
+                {
+                    System.out.println("Response Failed");
+                }*/
             }
         }
     }
@@ -1114,9 +1119,17 @@ public class ManagerBoundary {
                 while (true) {
                     String input = sc.nextLine();
                     if (input.equals("y")) {
-                        selected_application.approve();
+                        if(applicationController.tryAcceptApplication(selected_application))
+                        {
+                            System.out.println("Application Accepted");
+                        }
+                        else {
+                            System.out.println("Failed");
+                        }
+                        //selected_application.approve();
                         return 1;
                     } else if (input.equals("n")) {
+                        applicationController.tryRejectApplication(selected_application);
                         selected_application.reject();
                         return 1;
                     } else if (input.equals("b")) {

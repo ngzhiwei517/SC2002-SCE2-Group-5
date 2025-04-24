@@ -73,33 +73,6 @@ public class UserController implements InitRequired, ExitRequired {
         return null;
     }
 
-
-    public Manager getManager(int id)
-    {
-        HashMap<String, User> users = userDAO.get();
-        for(String key : users.keySet())
-        {
-            if(users.get(key).getID() == id && users.get(key) instanceof Manager)
-            {
-                return (Manager) users.get(key);
-            }
-        }
-        return null;
-    }
-
-    public Officer getOfficer(int id)
-    {
-        HashMap<String, User> users = userDAO.get();
-        for(String key : users.keySet())
-        {
-            if(users.get(key).getID() == id && users.get(key) instanceof Officer)
-            {
-                return (Officer) users.get(key);
-            }
-        }
-        return null;
-    }
-
     public boolean resetPassword(String username, String currentPassword, String newPassword) {
         HashMap<String, User> users = userDAO.get();
         if(!users.containsKey(username)) {

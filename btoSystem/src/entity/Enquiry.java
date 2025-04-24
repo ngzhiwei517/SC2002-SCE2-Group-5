@@ -1,4 +1,7 @@
 package entity;
+
+import interfaces.EnquiryResponder;
+
 public class Enquiry {
     public enum Status {
         PENDING,
@@ -63,10 +66,10 @@ public class Enquiry {
         System.out.println("==================================");
     }
 
-    public boolean respond(User user, String response)
+    public boolean respond(EnquiryResponder responder, String response)
     {
-        if(user instanceof Officer || user instanceof Manager) {
-            this.responder = user;
+        if(responder != null) {
+            this.responder = (User) responder;
             this.response = response;
             this.status = Status.CLOSED;
             return true;
@@ -76,8 +79,6 @@ public class Enquiry {
 
     public void setText(String text){ this.text = text; }
     public void setTitle(String title){ this.title = title; }
-    public void setResponder(User responder){ this.responder = responder; }
-    public void setResponse(String response){ this.response = response; }
 
     public int getEnquiryId() { return e_id; }
     public Project getProject() { return project; }

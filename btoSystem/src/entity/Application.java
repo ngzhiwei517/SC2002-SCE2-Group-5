@@ -1,5 +1,5 @@
 package entity;
-import java.util.Date;
+
 public class Application  {
     public enum Type {
         Officer,
@@ -103,7 +103,7 @@ public class Application  {
         this.status = status;
     }
 
-    public void approve() {
+    public boolean approve() {
         if(this.status == Status.REQUESTED_WITHDRAW || this.status == Status.REQUESTED_WITHDRAW_BOOKED)
         {
             if(this.status == Status.REQUESTED_WITHDRAW_BOOKED) //TODO:CHECK WHETHER AFTER APPLYING - SLOTS OR AFTER BOOKING THEN - SLOTS.
@@ -113,12 +113,19 @@ public class Application  {
             this.status = Status.WITHDRAWN;
         }
         else {
-            this.status = Status.SUCCESSFUL;
+
             if (this.type == Type.Officer) {
+                if(project.getOfficerSlots() <= 0)
+                {
+                    return false;
+                }
                 //TODO: assert officer correct slots.
                 this.project.addOfficer((Officer) user);
             }
+            this.status = Status.SUCCESSFUL;
+            return true;
         }
+        return false;
     }
 
     public void reject() { this.status = Status.UNSUCCESSFUL; }

@@ -52,7 +52,7 @@ public class ReceiptCSVDAO implements ReceiptDAO {
             bw.newLine();
             for(int key : receipts.keySet()) {
                 Receipt receipt = receipts.get(key);
-                String receiptString = receipt.toString();
+                String receiptString = "";
                 receiptString += receipt.getReceipt_id() + ",";
                 receiptString += receipt.getApplicationID() + ",";
                 receiptString += receipt.getApplicantID() + ",";

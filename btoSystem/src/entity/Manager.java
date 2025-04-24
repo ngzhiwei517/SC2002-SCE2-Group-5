@@ -1,12 +1,13 @@
 package entity;
 
+import interfaces.EnquiryResponder;
 import interfaces.ProjectContainer;
 
 import java.time.LocalDate;
 import java.util.*;
 
 
-public class Manager extends User implements ProjectContainer {
+public class Manager extends User implements ProjectContainer, EnquiryResponder {
 
     private List<Project> projects = new ArrayList<>();
 

@@ -14,9 +14,8 @@ public interface UserDAO extends Reader, Writer {
     boolean write();
     boolean add(User user);
     boolean remove(User user);
-    public Manager getManager(int id);
-    public Officer getOfficer(int id);
-    public User getUser(int id);
-
+    Manager getManager(int id);
+    Officer getOfficer(int id);
+    User getUser(int id);
 }
 
