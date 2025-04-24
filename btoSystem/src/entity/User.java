@@ -45,8 +45,6 @@ public abstract class User {
 
     public String getPassword() { return password; }
 
-    public abstract String getAccountType();
-
     // Setters
     public void setName(String name) { this.name = name; }
 
@@ -69,6 +67,5 @@ public abstract class User {
         return false;
     }
 
-    public abstract boolean assertDateClash(LocalDate date, Project excluded);
-
+    public abstract String getAccountType();
 }

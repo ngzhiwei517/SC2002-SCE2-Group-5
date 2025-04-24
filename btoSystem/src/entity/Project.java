@@ -145,12 +145,6 @@ public class Project {
         System.out.println("Manager: " + this.getManager().getName());
     }
 
-    public void printName()
-    {
-        System.out.print("Project: ");
-        System.out.print(this.getProjectName());
-    }
-
     public boolean isEligible(User user)
     {
         /*
@@ -278,16 +272,6 @@ public class Project {
             Officers.add(officer);
             officer.addProject(this);
             OfficerSlots--;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean delete()
-    {
-        if(status != Status.DELETED)
-        {
-            status = Status.DELETED;
             return true;
         }
         return false;

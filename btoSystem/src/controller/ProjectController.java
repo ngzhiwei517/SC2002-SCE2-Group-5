@@ -169,7 +169,7 @@ public class ProjectController  implements InitRequired, ExitRequired {
     }
 
     public boolean setOpeningDate(Manager manager, Project project, LocalDate date) {
-        if (SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
+        if (manager.assertDateClash(date, project) && project.getClosingDate().isAfter(date)) {
             project.setOpeningDate(date);
             projectDAO.write();
 
@@ -183,7 +183,7 @@ public class ProjectController  implements InitRequired, ExitRequired {
     }
 
     public boolean setClosingDate(Manager manager, Project project, LocalDate date) {
-        if(SessionController.getLoggedUser().assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
+        if(manager.assertDateClash(date, project) && project.getClosingDate().isBefore(date)) {
             project.setClosingDate(date);
             projectDAO.write();
 

@@ -106,11 +106,11 @@ public class Application  {
     public void approve() {
         if(this.status == Status.REQUESTED_WITHDRAW || this.status == Status.REQUESTED_WITHDRAW_BOOKED)
         {
-            this.status = Status.WITHDRAWN;
             if(this.status == Status.REQUESTED_WITHDRAW_BOOKED) //TODO:CHECK WHETHER AFTER APPLYING - SLOTS OR AFTER BOOKING THEN - SLOTS.
             {
                 this.flat.withdraw();
             }
+            this.status = Status.WITHDRAWN;
         }
         else {
             this.status = Status.SUCCESSFUL;
@@ -123,12 +123,13 @@ public class Application  {
 
     public void reject() { this.status = Status.UNSUCCESSFUL; }
 
-    public void withdraw() { this.status = Status.WITHDRAWN; }
-
-    public void book() {
-        this.status = Status.BOOKED;
-        //TODO: minus slots from project if the requested withdraw was booked.
-        this.flat.book();
+    public boolean book() {
+        if(this.flat.book())
+        {
+            this.status = Status.BOOKED;
+            return true;
+        }
+        return false;
     }
 
 

@@ -294,7 +294,13 @@ public class OfficerBoundary {
 
         while(true) {
             if (input.equalsIgnoreCase("y")) {
-                applicationController.tryBookApplication(selectedApplication);
+                if(applicationController.tryBookApplication(selectedApplication))
+                {
+                    System.out.println("Booking Successful");
+                }
+                else {
+                    System.out.println("Booking Failed");
+                }
                 break;
             }
             else if (input.equalsIgnoreCase("n")) {

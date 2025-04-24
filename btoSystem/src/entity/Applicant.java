@@ -76,27 +76,6 @@ public class Applicant extends User {
         }
         return true;
 }
-
-    public boolean assertDateClash(LocalDate date, Project excluded)
-    {
-        return true;
-    }
-
-    public boolean canApplyForProject(Project project)
-    {
-        List<Application> filtered = getApplications(List.of(Application.Status.PENDING, Application.Status.SUCCESSFUL, Application.Status.BOOKED), Application.Type.Applicant);
-        if(filtered.isEmpty()) //check if has any outstanding applications.
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean assertDateClash(Project project)
-    {
-        return true;
-    }
-
     public String getAccountType(){
         return "Applicant";
     }

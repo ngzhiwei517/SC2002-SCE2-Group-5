@@ -146,7 +146,10 @@ public class ApplicationController implements InitRequired, ExitRequired {
 
     public boolean tryBookApplication(Application application)
     {
-        application.book();
+        if(!application.book())
+        {
+            return false;
+        }
         receiptController.generateReceipt(application);
         applicationDAO.write();
 

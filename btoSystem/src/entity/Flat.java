@@ -77,9 +77,13 @@ public class Flat {
     public void setUnits(int units) { this.units = units; }
     public void setProject(Project project) { this.project = project; }
 
-    public void book()
+    public boolean book()
     {
-        units--;
+        if(units > 0) {
+            units--;
+            return true;
+        }
+        return false;
     }
 
     public void withdraw()

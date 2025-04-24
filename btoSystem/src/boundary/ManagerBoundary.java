@@ -700,7 +700,7 @@ public class ManagerBoundary {
             try{ openingDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); } //assert date format
             catch (Exception e){ System.out.println("Invalid Format"); }
 
-            if(SessionController.getLoggedUser().assertDateClash(openingDate, null) && openingDate != null){ //assert date clashing
+            if(((Manager) SessionController.getLoggedUser()).assertDateClash(openingDate, null) && openingDate != null){ //assert date clashing
                 break;
             }
             else { System.out.println("Date Clashed with Managed Project"); }
@@ -719,7 +719,7 @@ public class ManagerBoundary {
             try{ closingDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("M/d/yyyy")); } //assert date format
             catch (Exception e){ System.out.println("Invalid Format"); }
 
-            if(SessionController.getLoggedUser().assertDateClash(closingDate, null) && closingDate != null){ //assert date clashing
+            if(((Manager) SessionController.getLoggedUser()).assertDateClash(closingDate, null) && closingDate != null){ //assert date clashing
                 break;
             }
             else { System.out.println("Date Clashed with Managed Project"); }
