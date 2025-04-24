@@ -62,6 +62,7 @@ public class OfficerBoundary {
         System.out.println("Welcome "); //add applicant name here
         System.out.println("1. View & Register Projects");
         System.out.println("2. View Managed Projects");
+        System.out.println("3. View Pending Officer Applications");
         System.out.println("4. Login as Applicant");
         System.out.println("5. Log Out");
     }
@@ -79,45 +80,6 @@ public class OfficerBoundary {
         while(exitcode == 0) {
 
             List<Project> projects = projectController.getEligibleProjects((Applicant) SessionController.getLoggedUser(), true);
-
-            /*
-            List<Project> projects = projectController.getProjects(filter);
-
-            List<Project> toRemove = new ArrayList<>();
-            for(Project p : projects) {
-                if(!((Officer) SessionController.getLoggedUser()).canApply(p, true))
-                {
-                        toRemove.add(p);
-                }
-            }
-
-            for(Project p : toRemove) {
-                System.out.println("removing");
-                projects.remove(p);
-            }
-            */
-
-            /*
-            for(Project p: ((Officer) ((Officer) SessionController.getLoggedUser())).getProjects()) { //removes all projects that officer is already part of.
-                if(projects.contains(p))
-                {
-                    projects.remove(p);
-                }
-            }
-
-            for(Application a : ((Officer) ((Officer) SessionController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Applicant)) {
-                if(projects.contains(a.getProject())) //remove all projects that officer has applied for
-                {
-                    projects.remove(a.getProject());
-                }
-            }
-
-            for(Application a : ((Officer) ((Officer) SessionController.getLoggedUser())).getApplications(List.of(Application.Status.PENDING, Application.Status.BOOKED, Application.Status.SUCCESSFUL), Application.Type.Officer)) {
-                if(projects.contains(a.getProject())) //TODO: remove all projects that clashes with all existing applications
-                {
-                    projects.remove(a.getProject());
-                }
-            }*/
 
             //print out projects.
             int index = 1;

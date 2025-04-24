@@ -132,10 +132,6 @@ public class ProjectController  implements InitRequired, ExitRequired {
             {
                 remapped.add(projects.get(key));
             }
-            /*
-            if(projects.get(key).isEligible(user) && projects.get(key).getStatus() == Project.Status.VISIBLE) {
-                remapped.add(projects.get(key));
-            }*/
         }
         return remapped;
     }

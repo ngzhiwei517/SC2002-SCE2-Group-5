@@ -123,6 +123,13 @@ public class Officer extends Applicant implements ProjectContainer {
         }
 
         if(!asOfficer){
+
+            LocalDate today = LocalDate.now();
+            if (today.isBefore(project.getOpeningDate()) || today.isAfter(project.getClosingDate())) {
+                // Today is NOT within the project period
+                return false;
+            }
+
             for(Application app : getApplications()) {
                 if (app.getType() == Application.Type.Applicant) {
                     if (app.getStatus() == Application.Status.BOOKED || app.getStatus() == Application.Status.PENDING || app.getStatus() == Application.Status.REQUESTED_WITHDRAW || app.getStatus() == Application.Status.SUCCESSFUL) {

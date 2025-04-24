@@ -125,6 +125,11 @@ public class ApplicationController implements InitRequired, ExitRequired {
 
     public boolean tryWithdrawApplication(Application application)
     {
+        if(application.getStatus().equals(Application.Status.REQUESTED_WITHDRAW) || application.getStatus().equals(Application.Status.REQUESTED_WITHDRAW_BOOKED) || application.getStatus().equals(Application.Status.WITHDRAWN))
+        {
+            return false;
+        }
+
         HashMap<Integer, Application> applications = applicationDAO.get();
         if(applications.containsValue(application)) {
             application.setStatus(Application.Status.REQUESTED_WITHDRAW);

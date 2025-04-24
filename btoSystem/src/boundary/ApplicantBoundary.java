@@ -302,13 +302,23 @@ public class ApplicantBoundary {
             }
 
             selectedApplication = applications.get(choice-1);
+            if(selectedApplication.getStatus() == Application.Status.REQUESTED_WITHDRAW || selectedApplication.getStatus() == Application.Status.WITHDRAWN || selectedApplication.getStatus() == Application.Status.REQUESTED_WITHDRAW_BOOKED) {
+                System.out.println("This Application is not eligible to withdraw.");
+                return;
+            }
 
             selectedApplication.print();
-            System.out.println("Confirm Delete? (y/n)");
+            System.out.println("Confirm Withdraw? (y/n)");
             while(true){
                 String input = sc.nextLine();
                 if(input.equals("y")) {
-                    applicationController.tryWithdrawApplication(selectedApplication);
+                    if(applicationController.tryWithdrawApplication(selectedApplication))
+                    {
+                        System.out.println("Successfully Withdrew Application");
+                    }
+                    else {
+                        System.out.println("Failed to withdraw");
+                    }
                     break;
                 }
                 else if(input.equals("n")) {

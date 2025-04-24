@@ -1,4 +1,1 @@
 a.id,u.id,p.id,f.id,type,status
-0,9,3,6,Applicant,BOOKED,
-1,19,1,-1,Officer,SUCCESSFUL,
-2,19,3,6,Applicant,PENDING,

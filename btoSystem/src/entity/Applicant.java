@@ -55,6 +55,14 @@ public class Applicant extends User {
             return false;
         }
 
+        //check if today's date within application period.
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(project.getOpeningDate()) || today.isAfter(project.getClosingDate())) {
+            // Today is NOT within the project period
+            return false;
+        }
+
+
         //if theres an application that has a pending/approved/booked status, return false
         for(Application app : applications)
         {
